@@ -134,21 +134,32 @@ const SPACES = [
 
 export default function ReservationForm() {
   const { openModal, closeModal, Modal } = useModal();
+  const { addReservation } = useReservations();
 
-  const handleSubmit = () => {
-    openModal(
-      "Reservación enviada",
-      <DialogContentText>
-        Gracias por reservar su espacio. La administración de la facultad
-        revisará su reservación y le responderá si puede realizarse a su correo
-        electrónico.
-      </DialogContentText>,
-      <>
-        <Button onClick={closeModal}>Hacer más reservaciones</Button>
-        <Button onClick={closeModal}>Regresar al calendario</Button>
-      </>,
-      false
-    );
+  const handleSubmit = async (values, actions) => {
+    const response = await addReservation(values);
+    if (response.status === 201) {
+      openModal(
+        "Reservación enviada",
+        <DialogContentText>
+          Gracias por reservar su espacio. La administración de la facultad
+          revisará su reservación y le responderá si puede realizarse a su
+          correo electrónico.
+        </DialogContentText>,
+        <>
+          <Button onClick={() => handleMoreReservations(actions)}>
+            Hacer más reservaciones
+          </Button>
+          <Button onClick={closeModal}>Regresar al calendario</Button>
+        </>,
+        false
+      );
+    }
+  };
+
+  const handleMoreReservations = (actions) => {
+    closeModal();
+    actions.resetForm();
   };
 
   return (
@@ -166,7 +177,7 @@ export default function ReservationForm() {
       <Header title="Reservar un espacio"></Header>
 
       <Formik
-        onSubmit={openModal}
+        onSubmit={handleSubmit}
         validationSchema={yup.object().shape({
           idEspacio: yup.number().min(1).required(MESSAGES_FIELD.REQUIRED),
           date: yup.object().required(MESSAGES_FIELD.REQUIRED),

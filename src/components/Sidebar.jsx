@@ -46,7 +46,7 @@ export default function Sidebar() {
         flex: 1,
       }}
       display={{ xs: "none", md: "flex" }}
-      padding={"50px 20px"}
+      padding={"50px 20px 50px 70px"}
       borderRadius={"0 10px 10px 0"}
     >
       <Typography

@@ -20,7 +20,18 @@ export const useReservations = () => {
     return momentReservations;
   };
 
-  const addReservation = async (values) => {};
+  const addReservation = async (values) => {
+    const body = {
+      motivo: values.motive,
+      fecha: moment(values.date).format("YYYY-MM-DD"),
+      inicio: moment(values.start).format("HH:mm"),
+      fin: moment(values.end).format("HH:mm"),
+      idUsuario: 1,
+      idEspacio: values.idEspacio,
+    };
+    const response = await apiWrapper.post("reservaciones", body);
+    return response;
+  };
 
-  return { getReservationsBySpaceDate };
+  return { getReservationsBySpaceDate, addReservation };
 };
