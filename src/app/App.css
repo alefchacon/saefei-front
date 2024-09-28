@@ -1,0 +1,118 @@
+:root{
+  display: flex;
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+
+  --bg: #f0f2f8;
+  --blue: #18529D;
+  --blue-dark: #1c5aaa;
+  --light-green: #e6f7e2;
+  --green: #269E18;
+  --yellow: #9E6F18;
+  --light-yellow: #f1e8d6;
+  --purple: #9E1870;
+  --light-purple: #F6E1EF;
+  --light-gray: #D0DCEB;
+  --gray: #233449;
+  --dark: #665f70;
+
+  --test: #e3ecf7;
+  color: var(--dark);
+
+  --field-gap: 3rem;
+}
+
+#root{
+  min-height: 100vh;
+  min-width: 100vw;
+  /* Additional styles for your root element */
+  display: flex;
+  flex-direction: column;
+}
+
+html, body{
+  height: 100%;
+  width: 100%;
+
+}
+
+body{
+  display: flex;
+  flex: 1;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+
+
+
+
+#content{
+  overflow: auto;
+}
+
+
+.flex-col{
+  display: flex;
+  flex-direction: column;
+}
+.flex-row{
+  display: flex;
+  flex-direction: row;
+}
+.gap-1rem{
+  gap: 1rem;
+}
+.padding-2rem{
+  padding: 2rem;
+}
+.padding-1rem{
+  padding: 1rem;
+}
+.flex-1{
+  flex: 1;
+}
+.flex-2{
+  flex: 2;
+}
+
+.bg-white{
+  background-color: white;
+}
+
+.rounded-10px{
+  border-radius: 10px;
+}
+
+.shadow{
+  box-shadow: 0 0 2px 0px rgba(0,0,0,0.2);
+}
+
+.side-padding{
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  padding-left: clamp(5px,5%, 100px);
+  padding-right: clamp(10px, 45%, 800px) 
+}
+
+.body{
+  height: 100%;
+}
+
+
+
+@media only screen and (max-width: 900px) {
+  
+  
+  .side-padding{
+    padding: 2rem 2rem
+  }
+
+  #header{
+    position: sticky;
+    top: 0;
+  }
+}
