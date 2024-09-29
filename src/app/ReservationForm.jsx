@@ -26,6 +26,7 @@ import { useModal } from "../components/hooks/useModal";
 import ButtonResponsive from "../components/ButtonResponsive";
 import Select from "../components/Select";
 import Fade from "@mui/material/Fade";
+import FormHelperText from "@mui/material/FormHelperText";
 
 const checkOverlap = (proposedReservation, existingReservation) => {
   const proposedReservationOverlapsAll =
