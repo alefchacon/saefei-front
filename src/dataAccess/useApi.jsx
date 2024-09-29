@@ -24,6 +24,7 @@ export default function useApi() {
     async post(url, data, config = {}) {
       try {
         const response = await api.post(url, data, config);
+        openSnackbar(response.data.message);
         return response;
       } catch (error) {
         handleApiError(error);

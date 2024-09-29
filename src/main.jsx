@@ -4,10 +4,14 @@ import App from "./app/App";
 import "./index.css";
 import { SnackbarProvider } from "./components/providers/SnackbarProvider";
 
+import { BrowserRouter } from "react-router-dom";
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <SnackbarProvider>
-      <App />
-    </SnackbarProvider>
+    <BrowserRouter>
+      <SnackbarProvider>
+        <App />
+      </SnackbarProvider>
+    </BrowserRouter>
   </StrictMode>
 );

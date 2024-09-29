@@ -16,14 +16,19 @@ import AddAlertIcon from "@mui/icons-material/AddAlert";
 import SchoolIcon from "@mui/icons-material/School";
 import FolderSharedIcon from "@mui/icons-material/FolderShared";
 import { styled } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import * as ROUTES from "../stores/ROUTES";
 
 import Badge from "@mui/material/Badge";
 
 export default function Sidebar() {
   const [selectedIndex, setSelectedIndex] = useState(1);
 
-  const handleListItemClick = (event, index) => {
+  const navigate = useNavigate();
+
+  const handleListItemClick = (event, index, route) => {
     setSelectedIndex(index);
+    navigate(route);
   };
 
   const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
@@ -46,7 +51,7 @@ export default function Sidebar() {
         flex: 1,
       }}
       display={{ xs: "none", md: "flex" }}
-      padding={"50px 20px"}
+      padding={"50px 20px 50px 70px"}
       borderRadius={"0 10px 10px 0"}
     >
       <Typography
@@ -75,7 +80,7 @@ export default function Sidebar() {
         </Stack>
         <CustomListItemButton
           selected={selectedIndex === 0}
-          onClick={(event) => handleListItemClick(event, 0)}
+          onClick={(event) => handleListItemClick(event, 0, ROUTES.ROUTE_INBOX)}
         >
           <ListItemIcon sx={{ color: "inherit" }}>
             <InboxIcon />
@@ -85,7 +90,9 @@ export default function Sidebar() {
         </CustomListItemButton>
         <CustomListItemButton
           selected={selectedIndex === 1}
-          onClick={(event) => handleListItemClick(event, 1)}
+          onClick={(event) =>
+            handleListItemClick(event, 1, ROUTES.ROUTE_MY_EVENTS)
+          }
         >
           <ListItemIcon sx={{ color: "inherit" }}>
             <FolderSharedIcon></FolderSharedIcon>
@@ -97,7 +104,9 @@ export default function Sidebar() {
       <List component="nav" aria-label="secondary mailbox folder">
         <CustomListItemButton
           selected={selectedIndex === 2}
-          onClick={(event) => handleListItemClick(event, 2)}
+          onClick={(event) =>
+            handleListItemClick(event, 2, ROUTES.ROUTE_SEARCH_EVENTS)
+          }
         >
           <ListItemIcon sx={{ color: "inherit" }}>
             <SearchIcon />
@@ -106,7 +115,9 @@ export default function Sidebar() {
         </CustomListItemButton>
         <CustomListItemButton
           selected={selectedIndex === 3}
-          onClick={(event) => handleListItemClick(event, 3)}
+          onClick={(event) =>
+            handleListItemClick(event, 3, ROUTES.ROUTE_CALENDAR_EVENTS)
+          }
         >
           <ListItemIcon sx={{ color: "inherit" }}>
             <CalendarMonthIcon />
@@ -115,16 +126,21 @@ export default function Sidebar() {
         </CustomListItemButton>
         <CustomListItemButton
           selected={selectedIndex === 4}
-          onClick={(event) => handleListItemClick(event, 4)}
+          onClick={(event) =>
+            handleListItemClick(event, 4, ROUTES.ROUTE_CALENDAR_RESERVATIONS)
+          }
         >
           <ListItemIcon sx={{ color: "inherit" }}>
             <DomainIcon />
           </ListItemIcon>
+
           <ListItemText primary="Reservaciones de espacios" />
         </CustomListItemButton>
         <CustomListItemButton
           selected={selectedIndex === 5}
-          onClick={(event) => handleListItemClick(event, 5)}
+          onClick={(event) =>
+            handleListItemClick(event, 5, ROUTES.ROUTE_NOTIFY)
+          }
         >
           <ListItemIcon sx={{ color: "inherit" }}>
             <AddAlertIcon />

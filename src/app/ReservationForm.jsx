@@ -1,30 +1,15 @@
 import { useState, useEffect } from "react";
-import reactLogo from "../assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 
-import { Card, DialogContentText, FormHelperText } from "@mui/material";
-import { Box } from "@mui/material";
 import { Typography } from "@mui/material";
-import { IconButton } from "@mui/material";
-import { Divider } from "@mui/material";
-import { CardActionArea } from "@mui/material";
-import TodayIcon from "@mui/icons-material/Today";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
 import Stack from "@mui/material/Stack";
-import CardHeader from "@mui/material/CardHeader";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 import Header from "../components/Header";
-import Sidebar from "../components/Sidebar";
-import Bottombar from "../components/Bottombar";
-import { styled } from "@mui/material/styles";
 
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { MobileDatePicker } from "@mui/x-date-pickers";
 import moment from "moment";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { StaticDatePicker } from "@mui/x-date-pickers";
 import { DatePicker } from "@mui/x-date-pickers";
 import { TimePicker } from "@mui/x-date-pickers";
 import TextField from "@mui/material/TextField";
@@ -33,11 +18,10 @@ import FormLabel from "@mui/material/FormLabel";
 import Button from "@mui/material/Button";
 import { Formik, Form, useFormikContext } from "formik";
 import ChipSpace from "../features/reservations/components/ChipSpace";
-import Space from "../features/spaces/businessLogic/Space";
 import { useReservations } from "../features/reservations/businessLogic/useReservations";
 import FormControl from "@mui/material/FormControl";
 import * as yup from "yup";
-import { MESSAGES_FIELD } from "../stores/messages";
+import { MESSAGES_FIELD } from "../stores/MESSAGGES";
 import { useModal } from "../components/hooks/useModal";
 import ButtonResponsive from "../components/ButtonResponsive";
 import Select from "../components/Select";
@@ -134,21 +118,32 @@ const SPACES = [
 
 export default function ReservationForm() {
   const { openModal, closeModal, Modal } = useModal();
+  const { addReservation } = useReservations();
 
-  const handleSubmit = () => {
-    openModal(
-      "Reservación enviada",
-      <DialogContentText>
-        Gracias por reservar su espacio. La administración de la facultad
-        revisará su reservación y le responderá si puede realizarse a su correo
-        electrónico.
-      </DialogContentText>,
-      <>
-        <Button onClick={closeModal}>Hacer más reservaciones</Button>
-        <Button onClick={closeModal}>Regresar al calendario</Button>
-      </>,
-      false
-    );
+  const handleSubmit = async (values, actions) => {
+    const response = await addReservation(values);
+    if (response.status === 201) {
+      openModal(
+        "Reservación enviada",
+        <DialogContentText>
+          Gracias por reservar su espacio. La administración de la facultad
+          revisará su reservación y le responderá si puede realizarse a su
+          correo electrónico.
+        </DialogContentText>,
+        <>
+          <Button onClick={() => handleMoreReservations(actions)}>
+            Hacer más reservaciones
+          </Button>
+          <Button onClick={closeModal}>Regresar al calendario</Button>
+        </>,
+        false
+      );
+    }
+  };
+
+  const handleMoreReservations = (actions) => {
+    closeModal();
+    actions.resetForm();
   };
 
   return (
@@ -166,7 +161,7 @@ export default function ReservationForm() {
       <Header title="Reservar un espacio"></Header>
 
       <Formik
-        onSubmit={openModal}
+        onSubmit={handleSubmit}
         validationSchema={yup.object().shape({
           idEspacio: yup.number().min(1).required(MESSAGES_FIELD.REQUIRED),
           date: yup.object().required(MESSAGES_FIELD.REQUIRED),
