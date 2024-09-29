@@ -23,6 +23,8 @@ import Bottombar from "../components/Bottombar";
 import "moment/dist/locale/es-mx";
 import moment from "moment";
 import LinearProgress from "@mui/material/LinearProgress";
+import { Routes, Route } from "react-router-dom";
+import { ROUTE_RESERVE } from "../stores/ROUTES";
 
 function App() {
   moment.locale("es-mx");
@@ -62,7 +64,12 @@ function App() {
             padding: { md: "2rem", xs: "0" },
           }}
         >
-          <ReservationForm></ReservationForm>
+          <Routes>
+            <Route
+              path={ROUTE_RESERVE}
+              element={<ReservationForm></ReservationForm>}
+            ></Route>
+          </Routes>
         </Stack>
         <Bottombar></Bottombar>
       </Stack>
