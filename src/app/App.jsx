@@ -20,6 +20,7 @@ import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Bottombar from "../components/Bottombar";
 import Reservations from "./Reservations";
+import EventView from "./EventView";
 
 import "moment/dist/locale/es-mx";
 import moment from "moment";
@@ -73,6 +74,10 @@ function App() {
             <Route
               path={ROUTES.ROUTE_CALENDAR_RESERVATIONS}
               element={<Reservations></Reservations>}
+            ></Route>
+            <Route
+              path={`${ROUTES.ROUTE_SEARCH_EVENTS}/:idEvento?`}
+              element={<EventView></EventView>}
             ></Route>
           </Routes>
         </Stack>

@@ -12,7 +12,7 @@ export default function ChipReservation({
     <Chip
       color={existingReservation.overlaps ? "error" : ""}
       label={schedule}
-      sx={{ maxWidth: "fit-content" }}
+      sx={{ maxWidth: "fit-content", fontFamily: "roboto condensed" }}
       size="small"
     />
   );
