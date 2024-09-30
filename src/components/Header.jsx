@@ -4,19 +4,24 @@ import Divider from "@mui/material/Divider";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Stack from "@mui/material/Stack";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { useLocation } from "react-router-dom";
 
 export default function Header({
   title = "Título",
   description = "",
   children,
 }) {
+  const location = useLocation();
+
+  const canGoBack = location.pathname.split("/").length > 2;
+
   return (
     <>
       <Stack
         id="header"
         role="header"
         display={"flex"}
-        flexDirection={"column"}
+        flexDirection={"row"}
         zIndex={5}
         className={`side-padding`}
         justifyContent={"space-between"}
@@ -24,6 +29,7 @@ export default function Header({
         paddingBottom={{ md: "20px", xs: "10px" }}
         borderBottom={{ xs: "1px solid var(--bg)", md: "none" }}
       >
+        {/*
         <Stack
           sx={{ opacity: 0.7 }}
           direction={"row"}
@@ -35,17 +41,14 @@ export default function Header({
           <ChevronRightIcon fontSize="50"></ChevronRightIcon> Reservar un
           espacio
         </Stack>
+        */}
         <Stack direction={"row"} gap={2}>
-          <IconButton
-            id="go-back-button"
-            sx={{
-              position: { md: "absolute", xs: "relative" },
-              left: { md: 20, xs: 0 },
-            }}
-          >
-            <ArrowBackIcon></ArrowBackIcon>
-          </IconButton>
-          <Stack>
+          {canGoBack && (
+            <IconButton id="go-back-button">
+              <ArrowBackIcon></ArrowBackIcon>
+            </IconButton>
+          )}
+          <Stack direction={"column"}>
             <Typography
               id="title"
               variant="h5"

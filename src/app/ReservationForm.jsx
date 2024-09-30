@@ -27,6 +27,9 @@ import ButtonResponsive from "../components/ButtonResponsive";
 import Select from "../components/Select";
 import Fade from "@mui/material/Fade";
 import FormHelperText from "@mui/material/FormHelperText";
+import Page from "../components/Page";
+import SPACES from "../stores/SPACES";
+import ChipReservation from "../features/reservations/components/ChipReservation";
 
 const checkOverlap = (proposedReservation, existingReservation) => {
   const proposedReservationOverlapsAll =
@@ -72,51 +75,6 @@ const checkOverlap = (proposedReservation, existingReservation) => {
   );
 };
 
-function ChipReservation({
-  existingReservation = { start: moment(), end: moment() },
-}) {
-  const schedule = `${moment(existingReservation.start, "HH:mm").format(
-    "HH:mm"
-  )} - ${moment(existingReservation.end, "HH:mm").format("HH:mm")}`;
-
-  return (
-    <Chip
-      color={existingReservation.overlaps ? "error" : ""}
-      label={schedule}
-      sx={{ maxWidth: "fit-content" }}
-      size="small"
-    />
-  );
-}
-
-const SPACES = [
-  {
-    name: "auditorio",
-    capacity: 10,
-    id: 1,
-  },
-  {
-    name: "audiovisual",
-    capacity: 11,
-    id: 2,
-  },
-  {
-    name: "salón de cristal",
-    capacity: 10,
-    id: 3,
-  },
-  {
-    name: "sala de maestros",
-    capacity: 10,
-    id: 4,
-  },
-  {
-    name: "teatro al aire libre",
-    capacity: 10,
-    id: 5,
-  },
-];
-
 export default function ReservationForm() {
   const { openModal, closeModal, Modal } = useModal();
   const { addReservation } = useReservations();
@@ -148,19 +106,7 @@ export default function ReservationForm() {
   };
 
   return (
-    <Stack
-      id="page"
-      sx={{
-        paddingBottom: 10,
-        bgcolor: "white",
-        borderRadius: 5,
-        height: "100%",
-        boxShadow: "0 0 3px 0px rgba(0,0,0,0.2)",
-      }}
-      position={"relative"}
-    >
-      <Header title="Reservar un espacio"></Header>
-
+    <Page title={"Reservar un espacio"}>
       <Formik
         onSubmit={handleSubmit}
         validationSchema={yup.object().shape({
@@ -183,62 +129,60 @@ export default function ReservationForm() {
       >
         {({ values, errors, setFieldValue, handleChange, touched }) => (
           <LocalizationProvider dateAdapter={AdapterMoment}>
-            <Form className="body side-padding">
-              <Stack id="fields" height={"100%"} gap={"var(--field-gap)"}>
-                <Select
-                  id="idEspacio"
-                  label="Seleccione el espacio a reservar"
-                  onChange={handleChange}
-                  value={values.idEspacio}
-                  error={Boolean(errors.idEspacio && touched.idEspacio)}
-                  helperText={
-                    Boolean(errors.idEspacio && touched.idEspacio)
-                      ? errors.idEspacio
-                      : ""
-                  }
-                >
-                  {SPACES.map((space, index) => (
-                    <Stack key={index} value={space.id}>
-                      <ChipSpace space={space}></ChipSpace>
-                      <Typography variant="caption" color="textSecondary">
-                        Capacidad: {space.capacity} personas
-                      </Typography>
-                    </Stack>
-                  ))}
-                </Select>
-
-                <DatePicker
-                  value={values.date}
-                  onChange={(value) => setFieldValue("date", value)}
-                  label={"Seleccione la fecha de su reservación"}
-                  sx={{ width: "100%" }}
-                  minDate={moment()}
-                  slotProps={{
-                    textField: {
-                      variant: "standard",
-                      fullWidth: true,
-                      error: Boolean(errors.date && touched.date),
-                      helperText: Boolean(errors.date && touched.date)
-                        ? errors.date
-                        : "",
-                    },
-                  }}
-                ></DatePicker>
-
-                <Fade in={values.date !== null && values.id !== null}>
-                  <Stack>
-                    <ProposedScheduleForm />
-                    <br />
-                    <ButtonResponsive>Reservar</ButtonResponsive>
+            <Form className="form">
+              <Select
+                id="idEspacio"
+                label="Seleccione el espacio a reservar"
+                onChange={handleChange}
+                value={values.idEspacio}
+                error={Boolean(errors.idEspacio && touched.idEspacio)}
+                helperText={
+                  Boolean(errors.idEspacio && touched.idEspacio)
+                    ? errors.idEspacio
+                    : ""
+                }
+              >
+                {SPACES.map((space, index) => (
+                  <Stack key={index} value={space.id}>
+                    <ChipSpace space={space}></ChipSpace>
+                    <Typography variant="caption" color="textSecondary">
+                      Capacidad: {space.capacity} personas
+                    </Typography>
                   </Stack>
-                </Fade>
-              </Stack>
+                ))}
+              </Select>
+
+              <DatePicker
+                value={values.date}
+                onChange={(value) => setFieldValue("date", value)}
+                label={"Seleccione la fecha de su reservación"}
+                sx={{ width: "100%" }}
+                minDate={moment()}
+                slotProps={{
+                  textField: {
+                    variant: "standard",
+                    fullWidth: true,
+                    error: Boolean(errors.date && touched.date),
+                    helperText: Boolean(errors.date && touched.date)
+                      ? errors.date
+                      : "",
+                  },
+                }}
+              ></DatePicker>
+
+              <Fade in={values.date !== null && values.id !== null}>
+                <Stack>
+                  <ProposedScheduleForm />
+                  <br />
+                  <ButtonResponsive>Reservar</ButtonResponsive>
+                </Stack>
+              </Fade>
             </Form>
           </LocalizationProvider>
         )}
       </Formik>
       <Modal></Modal>
-    </Stack>
+    </Page>
   );
 }
 
@@ -281,7 +225,7 @@ const ProposedScheduleForm = ({}) => {
 
   return (
     ready && (
-      <Stack className="conditional-fields" gap={"var(--field-gap)"}>
+      <Stack className="conditional-fields form">
         {reservationsAccepted.length > 0 && (
           <Stack id={"reservations-accepted"} gap={1}>
             <Stack

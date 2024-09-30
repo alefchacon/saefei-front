@@ -20,6 +20,14 @@ export const useReservations = () => {
     return momentReservations;
   };
 
+  const getReservationsByMonth = async (date = moment()) => {
+    return apiWrapper.get(
+      `reservaciones?anio[eq]=${date.format("YYYY")}&mes[eq]=${date.format(
+        "MM"
+      )}&idEstado[eq]=${STATUS.ACCEPTED}`
+    );
+  };
+
   const addReservation = async (values) => {
     const body = {
       motivo: values.motive,
@@ -33,5 +41,5 @@ export const useReservations = () => {
     return response;
   };
 
-  return { getReservationsBySpaceDate, addReservation };
+  return { getReservationsBySpaceDate, addReservation, getReservationsByMonth };
 };

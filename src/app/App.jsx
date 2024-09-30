@@ -19,12 +19,13 @@ import ReservationForm from "./ReservationForm";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Bottombar from "../components/Bottombar";
+import Reservations from "./Reservations";
 
 import "moment/dist/locale/es-mx";
 import moment from "moment";
 import LinearProgress from "@mui/material/LinearProgress";
 import { Routes, Route } from "react-router-dom";
-import { ROUTE_RESERVE } from "../stores/ROUTES";
+import * as ROUTES from "../stores/ROUTES";
 
 function App() {
   moment.locale("es-mx");
@@ -66,8 +67,12 @@ function App() {
         >
           <Routes>
             <Route
-              path={ROUTE_RESERVE}
+              path={ROUTES.ROUTE_RESERVE}
               element={<ReservationForm></ReservationForm>}
+            ></Route>
+            <Route
+              path={ROUTES.ROUTE_CALENDAR_RESERVATIONS}
+              element={<Reservations></Reservations>}
             ></Route>
           </Routes>
         </Stack>
