@@ -10,6 +10,7 @@ export default function Header({
   title = "Título",
   description = "",
   children,
+  padding = true,
 }) {
   const location = useLocation();
 
@@ -21,9 +22,9 @@ export default function Header({
         id="header"
         role="header"
         display={"flex"}
-        flexDirection={"row"}
+        flexDirection={"column"}
         zIndex={5}
-        className={`side-padding`}
+        className={padding ? `side-padding` : ""}
         justifyContent={"space-between"}
         paddingTop={{ md: "20px", xs: "10px" }}
         paddingBottom={{ md: "20px", xs: "10px" }}
