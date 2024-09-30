@@ -1,4 +1,4 @@
-import Chip from "@mui/material/Chip";
+import ChipCustom from "../../../components/Chip";
 import moment from "moment";
 
 export default function ChipReservation({
@@ -9,11 +9,9 @@ export default function ChipReservation({
   )} - ${moment(existingReservation.end, "HH:mm").format("HH:mm")}`;
 
   return (
-    <Chip
+    <ChipCustom
       color={existingReservation.overlaps ? "error" : ""}
       label={schedule}
-      sx={{ maxWidth: "fit-content", fontFamily: "roboto condensed" }}
-      size="small"
     />
   );
 }
