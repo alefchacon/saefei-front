@@ -16,8 +16,11 @@ import EventIcon from "@mui/icons-material/Event";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import moment from "moment";
-
-export default function CardReservation({ reservation }) {
+import { getScheduleString } from "../../../util/times";
+export default function CardReservation({
+  reservation,
+  activitySchedule = true,
+}) {
   return (
     <Stack gap={1} direction={"column"}>
       <ChipSpace space={reservation.space}></ChipSpace>
@@ -30,7 +33,9 @@ export default function CardReservation({ reservation }) {
         </Stack>
         <Stack direction={"row"} gap={1}>
           <AccessTimeIcon></AccessTimeIcon>
-          <Typography color="error">WIP</Typography>
+          <Typography>
+            {activitySchedule ? "WIP" : getScheduleString(reservation)}
+          </Typography>
         </Stack>
       </Stack>
     </Stack>

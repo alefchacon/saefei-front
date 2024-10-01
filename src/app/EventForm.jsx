@@ -28,6 +28,12 @@ import { useReservations } from "../features/reservations/businessLogic/useReser
 import useAuth from "./businessLogic/useAuth";
 import CardReservation from "../features/reservations/components/CardReservation";
 import CheckList from "../components/CheckList";
+import Divider from "@mui/material/Divider";
+
+import AccordionCustom from "../components/Accordion";
+
+import CardActivity from "../features/events/components/CardActivity";
+
 import { Formik, Form } from "formik";
 
 export default function EventForm({}) {
@@ -36,6 +42,7 @@ export default function EventForm({}) {
 
   const [step, setStep] = useState(-1);
   const [userReservations, setUserReservations] = useState([]);
+  const [selectedUserReservations, setSelectedUserReservations] = useState([]);
 
   useEffect(() => {
     getReservationsAvailableToUser(getUser().id).then((response) => {
@@ -45,15 +52,27 @@ export default function EventForm({}) {
 
   return (
     <Page title={"Notificar evento"}>
-      <Formik>
-        <StepperCustom>
-          <Stack title="Datos generales">
-            <GeneralForm userReservations={userReservations}></GeneralForm>
-          </Stack>
-          <Stack title="Horario">ponga su horario!!!!!</Stack>
-          <Stack title="Info. demográfica">:D</Stack>
-          <Stack title="Adicional">gdsfgsdfgsdgf</Stack>
-        </StepperCustom>
+      <Formik initialValues={{ reservations: [] }}>
+        {({ values, errors, setFieldValue, handleChange, touched }) => (
+          <StepperCustom>
+            <Stack title="Datos generales">
+              <Button onClick={() => console.log(values)}>testin</Button>
+              <GeneralForm
+                values={values}
+                userReservations={userReservations}
+                onFieldValueChange={setFieldValue}
+              ></GeneralForm>
+            </Stack>
+            <Stack title="Agenda">
+              <ScheduleForm
+                values={values}
+                userReservations={userReservations}
+              ></ScheduleForm>
+            </Stack>
+            <Stack title="Info. demográfica">:D</Stack>
+            <Stack title="Adicional">gdsfgsdfgsdgf</Stack>
+          </StepperCustom>
+        )}
       </Formik>
     </Page>
   );
@@ -61,59 +80,102 @@ export default function EventForm({}) {
 
 function fuck() {}
 
-function GeneralForm({ userReservations }) {
+function ScheduleForm({
+  values,
+  userReservations,
+  onFieldValueChange,
+  onSelectUserReservations,
+}) {
+  //const [selectedUserReservations, setSelectedUserReservations] = useState([]);
+
+  /*
+  useEffect(() => {
+    const filteredReservations = userReservations.filter((reservation) =>
+      values.reservations.includes(reservation.id)
+    );
+    setSelectedUserReservations(filteredReservations);
+  }, []);*/
+
+  const selectedUserReservations = userReservations.filter((reservation) =>
+    values.reservations.includes(reservation.id)
+  );
+
   return (
-    <Stack gap={"var(--field-gap)"}>
-      <TextField variant="standard" label="Nombre del evento" />
-      <TextField variant="standard" label="Descripción del evento" />
+    <LocalizationProvider dateAdapter={AdapterMoment}>
+      <FormLabel>
+        A continuación, ingrese las actividades que se llevarán a cabo durante
+        su evento.
+        <br />
+        <br />
+        Como mínimo, le pedimos que nos diga la hora de inicio y fin de su
+        evento. Se han asignado las siguientes por defecto, mismas que usted
+        puede modificar:
+      </FormLabel>
+      <br />
+      <Stack>
+        {selectedUserReservations.map((reservation, index) => (
+          <AccordionCustom
+            header={
+              <Stack
+                direction={"row"}
+                width={"100%"}
+                justifyContent={"space-between"}
+                alignItems={"center"}
+              >
+                <CardReservation
+                  key={index}
+                  reservation={reservation}
+                  activitySchedule={false}
+                />
+                <Button>Agregar actividad</Button>
+              </Stack>
+            }
+          >
+            <CardActivity></CardActivity>
+          </AccordionCustom>
+        ))}
+      </Stack>
+    </LocalizationProvider>
+  );
+}
 
-      <FormControl>
-        <FormLabel>
-          Estas son sus reservaciones aprobadas por la administración de la
-          facultad. Seleccione la(s) que utilizará para su evento:
-        </FormLabel>
-        <CheckList>
-          {userReservations.map((reservation, index) => (
-            <CardReservation
-              value={reservation.id}
-              key={index}
-              reservation={reservation}
-            ></CardReservation>
-          ))}
-        </CheckList>
-      </FormControl>
+function GeneralForm({
+  values,
+  userReservations,
+  onFieldValueChange,
+  onSelectUserReservations,
+}) {
+  return (
+    <Form>
+      <Stack gap={"var(--field-gap)"}>
+        <TextField variant="standard" label="Nombre del evento" />
+        <TextField variant="standard" label="Descripción del evento" />
 
-      <LocalizationProvider dateAdapter={AdapterMoment}>
-        <FormControl sx={{ gap: 1 }}>
-          <FormLabel>Ingrese el horario de su evento</FormLabel>
-          <Stack gap={"var(--field-gap)"} direction={"row"}>
-            <TimePicker
-              format="HH:mm"
-              name="start"
-              label={"Inicio"}
-              slotProps={{
-                textField: {
-                  fullWidth: true,
-                  variant: "standard",
-                  "aria-labelledby": "asdf",
-                },
-              }}
-            ></TimePicker>
-            <TimePicker
-              format="HH:mm"
-              label={"Fin"}
-              slotProps={{
-                textField: {
-                  fullWidth: true,
-                  variant: "standard",
-                  "aria-labelledby": "time-pickers-label",
-                },
-              }}
-            ></TimePicker>
-          </Stack>
+        <FormControl>
+          <FormLabel>
+            Cuenta con las siguientes reservaciones aprobadas por la
+            administración de la facultad. Seleccione la(s) que utilizará para
+            su evento:
+          </FormLabel>
+          <CheckList
+            name={"reservations"}
+            values={values.reservations}
+            onChange={(checked) => {
+              onFieldValueChange("reservations", checked);
+            }}
+          >
+            {userReservations.map((reservation, index) => (
+              <CardReservation
+                value={reservation.id}
+                key={index}
+                reservation={reservation}
+                activitySchedule={false}
+              ></CardReservation>
+            ))}
+          </CheckList>
         </FormControl>
-      </LocalizationProvider>
-    </Stack>
+      </Stack>
+    </Form>
   );
 }
 
