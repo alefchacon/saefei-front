@@ -31,7 +31,11 @@ import CheckList from "../components/CheckList";
 import Divider from "@mui/material/Divider";
 import { getHHssString } from "../util/times";
 import { useModal } from "../components/hooks/useModal";
-
+import SectionButton from "../components/SectionButton";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import SettingsIcon from "@mui/icons-material/Settings";
+import HailIcon from "@mui/icons-material/Hail";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import RadioList from "../components/RadioList";
 import AccordionCustom from "../components/Accordion";
 
@@ -76,7 +80,9 @@ export default function EventForm({}) {
             <Stack title="Info. demográfica">
               <DemographicForm></DemographicForm>
             </Stack>
-            <Stack title="Adicional">gdsfgsdfgsdgf</Stack>
+            <Stack title="Adicional">
+              <AdditionalForm></AdditionalForm>
+            </Stack>
           </StepperCustom>
         )}
       </Formik>
@@ -86,12 +92,55 @@ export default function EventForm({}) {
 
 function fuck() {}
 
-function DemographicForm(
+function AdditionalForm({
   values,
   userReservations,
   onFieldValueChange,
-  onSelectUserReservations
-) {
+  onSelectUserReservations,
+}) {
+  const iconSX = { height: "1.2em !important", width: "1.2em !important" };
+
+  return (
+    <Stack gap={2}>
+      <FormLabel>
+        Podemos brindarle un servicio más completo si usted configura las
+        siguientes opciones adicionales.
+      </FormLabel>
+      <SectionButton
+        icon={<CampaignIcon sx={iconSX} />}
+        name="Difusión"
+        description="Suba material promocional del evento (flyers) y la forma en que debe difundirse."
+      ></SectionButton>
+      <SectionButton
+        icon={<ReceiptLongIcon sx={iconSX} />}
+        name="Constancias"
+        description="Solicite constancias para los participantes de su evento."
+      ></SectionButton>
+      <SectionButton
+        icon={<SettingsIcon sx={iconSX} />}
+        name="Requisitos técnicos"
+        description="Solicite asistencia del Centro de Cómputo (equipo de cómputo, transmisión en vivo...) "
+      ></SectionButton>
+      <SectionButton
+        icon={<HailIcon sx={iconSX} />}
+        name="Participantes externos"
+        description="¿Requiere asistencia para participantes ajenos a la FEI? Cuéntenos aquí."
+      ></SectionButton>
+      <SectionButton
+        icon={<QuestionMarkIcon sx={iconSX} />}
+        name="Requisitos adicionales"
+        description="¿Nos faltó pedirle algo? Pídalo aquí."
+      ></SectionButton>
+    </Stack>
+  );
+}
+
+function DemographicForm({
+  values,
+  userReservations,
+  onFieldValueChange,
+  onSelectUserReservations,
+}) {
   return (
     <Stack gap={"var(--field-gap)"}>
       <FormLabel>
@@ -338,14 +387,12 @@ function GeneralForm({
             }}
           >
             {userReservations.map((reservation, index) => (
-              <Stack padding={"10px 0"}>
-                <CardReservation
-                  value={reservation.id}
-                  key={index}
-                  reservation={reservation}
-                  activitySchedule={false}
-                ></CardReservation>
-              </Stack>
+              <CardReservation
+                value={reservation.id}
+                key={index}
+                reservation={reservation}
+                activitySchedule={false}
+              ></CardReservation>
             ))}
           </CheckList>
         </FormControl>

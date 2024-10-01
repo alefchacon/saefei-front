@@ -20,6 +20,8 @@ export default function CheckList({
   const [selectedAll, setSelectedAll] = useState(false);
 
   const handleToggle = (value) => () => {
+    console.log(value);
+
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
 

@@ -7,18 +7,12 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Stack } from "@mui/material";
 
-const steps = [
-  "Select campaign settings",
-  "Create an ad group",
-  "Create an ad",
-];
-
 export default function StepperCustom({ children }) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
 
   const totalSteps = () => {
-    return steps.length;
+    return children.length;
   };
 
   const completedSteps = () => {
@@ -38,7 +32,7 @@ export default function StepperCustom({ children }) {
       isLastStep() && !allStepsCompleted()
         ? // It's the last step, but not all steps have been completed,
           // find the first step that has been completed
-          steps.findIndex((step, i) => !(i in completed))
+          children.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
     setActiveStep(newActiveStep);
   };
@@ -47,8 +41,8 @@ export default function StepperCustom({ children }) {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleStep = (step) => () => {
-    setActiveStep(step);
+  const handleStep = (stepIndex) => () => {
+    setActiveStep(stepIndex);
   };
 
   const handleComplete = () => {
@@ -63,8 +57,6 @@ export default function StepperCustom({ children }) {
     setActiveStep(0);
     setCompleted({});
   };
-
-  console.log(children);
 
   return (
     <Box sx={{ width: "100%" }}>
