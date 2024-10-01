@@ -29,7 +29,10 @@ import useAuth from "./businessLogic/useAuth";
 import CardReservation from "../features/reservations/components/CardReservation";
 import CheckList from "../components/CheckList";
 import Divider from "@mui/material/Divider";
+import { getHHssString } from "../util/times";
+import { useModal } from "../components/hooks/useModal";
 
+import RadioList from "../components/RadioList";
 import AccordionCustom from "../components/Accordion";
 
 import CardActivity from "../features/events/components/CardActivity";
@@ -52,7 +55,7 @@ export default function EventForm({}) {
 
   return (
     <Page title={"Notificar evento"}>
-      <Formik initialValues={{ reservations: [] }}>
+      <Formik initialValues={{ reservations: [], activities: [] }}>
         {({ values, errors, setFieldValue, handleChange, touched }) => (
           <StepperCustom>
             <Stack title="Datos generales">
@@ -67,9 +70,12 @@ export default function EventForm({}) {
               <ScheduleForm
                 values={values}
                 userReservations={userReservations}
+                onFieldValueChange={setFieldValue}
               ></ScheduleForm>
             </Stack>
-            <Stack title="Info. demográfica">:D</Stack>
+            <Stack title="Info. demográfica">
+              <DemographicForm></DemographicForm>
+            </Stack>
             <Stack title="Adicional">gdsfgsdfgsdgf</Stack>
           </StepperCustom>
         )}
@@ -80,31 +86,184 @@ export default function EventForm({}) {
 
 function fuck() {}
 
+function DemographicForm(
+  values,
+  userReservations,
+  onFieldValueChange,
+  onSelectUserReservations
+) {
+  return (
+    <Stack gap={"var(--field-gap)"}>
+      <FormLabel>
+        Para garantizar que su evento alcance su máximo potencial y cuente con
+        el respaldo adecuado, le solicitamos algunos detalles adicionales sobre
+        la audiencia y los temas de su evento. Esta información nos permitirá
+        alinear mejor los recursos y los esfuerzos de divulgación, asegurando la
+        atención y asistencia adecuadas para el éxito de su evento.
+      </FormLabel>
+
+      <CheckList label={"Programas educativos"} selectAll>
+        <Typography value={1}>
+          Doctorado en Ciencias de la Computación
+        </Typography>
+        <Typography value={2}>
+          Especialización en Métodos Estadísticos
+        </Typography>
+        <Typography value={3}>
+          Estadística - Ingeniería en Ciencia de Datos
+        </Typography>
+        <Typography value={4}>Ingeniería de Software</Typography>
+        <Typography value={5}>Maestría en Gestión de Calidad</Typography>
+        <Typography value={6}>
+          Maestría en Sistemas Interactivos Centrados en el Usuario
+        </Typography>
+        <Typography value={7}>
+          Redes y Servicios de Cómputo - Ingeniería en Civerseguridad e
+          Infrastructura de Cómputo
+        </Typography>
+        <Typography value={8}>
+          Tecnologías Computacionales - Ingeniería en Sistemas y Tecnologías de
+          la Información
+        </Typography>
+      </CheckList>
+
+      <CheckList label={"Audiencias"} selectAll>
+        <Typography value={"Estudiantes"}>Estudiantes</Typography>
+        <Typography value={"Académicos"}>Académicos</Typography>
+        <Typography value={"Personal administrativo"}>
+          Personal administrativo
+        </Typography>
+        <Typography value={"Público en general"}>Público en general</Typography>
+      </CheckList>
+
+      <RadioList label={"Tipo de evento"} id={"radio-list-event-type"}>
+        <Typography value={"Académico"}>Académico</Typography>
+        <Typography value={"Cultural"}>Cultural</Typography>
+        <Typography value={"Deportivo"}>Deportivo</Typography>
+        <Typography value={"Mixto"}>Mixto</Typography>
+      </RadioList>
+      <RadioList label={"Ámbito"} id={"radio-list-scope"}>
+        <Typography value={"Local/Regional"}>Local/Regional</Typography>
+        <Typography value={"Estatal"}>Estatal</Typography>
+        <Typography value={"Nacional"}>Nacional</Typography>
+        <Typography value={"Internacional"}>Internacional</Typography>
+      </RadioList>
+
+      <RadioList
+        label={"Éje del Programa de Trabajo al que impacta"}
+        id={"radio-list-axis"}
+      >
+        <Typography value={"Derechos Humanos"}>Derechos Humanos</Typography>
+        <Typography value={"Sustentabilidad"}>Sustentabilidad</Typography>
+        <Typography value={"Docencia e innovación académica"}>
+          Docencia e innovación académica
+        </Typography>
+        <Typography value={"Investigación e innovación"}>
+          Investigación e innovación
+        </Typography>
+        <Typography
+          value={"Difusión de la cultura y extensión de los servicios"}
+        >
+          Difusión de la cultura y extensión de los servicios
+        </Typography>
+      </RadioList>
+
+      <CheckList label={"Temáticas principales (mínimo 1, máximo 3)"} max={3}>
+        <Typography value={"Biodiversidad e integridad ecosistémica"}>
+          Biodiversidad e integridad ecosistémica
+        </Typography>
+        <Typography value={"Calidad ambiental y gestión de campus"}>
+          Calidad ambiental y gestión de campus
+        </Typography>
+        <Typography
+          value={
+            "Cultura de paz/Erradicación de la violencia/Integridad académica"
+          }
+        >
+          Cultura de paz/Erradicación de la violencia/Integridad académica{" "}
+        </Typography>
+        <Typography value={"Difusión de la oferta educativa"}>
+          Difusión de la oferta educativa
+        </Typography>
+        <Typography value={"Derechos humanos"}>Derechos humanos</Typography>
+        <Typography value={"Disciplinar"}>Disciplinar</Typography>
+        <Typography value={"Estilos de vida y patrones de consumo"}>
+          Estilos de vida y patrones de consumo
+        </Typography>
+        <Typography value={"Equidad de género y diversidad sexual"}>
+          Equidad de género y diversidad sexual
+        </Typography>
+        <Typography value={"Interculturalidad"}>Interculturalidad</Typography>
+        <Typography value={"Salud y deporte"}>Salud y deporte</Typography>
+      </CheckList>
+    </Stack>
+  );
+}
+
 function ScheduleForm({
   values,
   userReservations,
   onFieldValueChange,
   onSelectUserReservations,
 }) {
-  //const [selectedUserReservations, setSelectedUserReservations] = useState([]);
+  const [selectedUserReservations, setSelectedUserReservations] = useState([]);
+  const [startActivities, setStartActivities] = useState([]);
+  const [endActivities, setEndActivities] = useState([]);
 
-  /*
+  const { openModal, closeModal, Modal } = useModal();
+
   useEffect(() => {
-    const filteredReservations = userReservations.filter((reservation) =>
+    const _selectedUserReservations = userReservations.filter((reservation) =>
       values.reservations.includes(reservation.id)
     );
-    setSelectedUserReservations(filteredReservations);
-  }, []);*/
 
-  const selectedUserReservations = userReservations.filter((reservation) =>
-    values.reservations.includes(reservation.id)
-  );
+    setSelectedUserReservations(_selectedUserReservations);
+
+    const _startActivities = _selectedUserReservations.map((reservation) => {
+      return {
+        idReservacion: reservation.id,
+        time: moment(reservation.start, "HH:mm:ss").add(30, "minutes"),
+        name: `Inicio ${reservation.id}`,
+      };
+    });
+    setStartActivities(_startActivities);
+
+    const _endActivities = _selectedUserReservations.map((reservation) => {
+      return {
+        idReservacion: reservation.id,
+        time: moment(reservation.end, "HH:mm:ss").subtract(30, "minutes"),
+        name: `Fin ${reservation.id}`,
+      };
+    });
+    setEndActivities(_endActivities);
+    onFieldValueChange("activities", [..._startActivities, ..._endActivities]);
+  }, []);
+
+  const openAddActivityModal = () => {
+    openModal(
+      "Agregar actividad",
+      <Stack minWidth={"500px"} gap={"var(--field-gap)"}>
+        <TextField
+          label={"Nombre de la actividad"}
+          variant="standard"
+        ></TextField>
+        <TimePicker
+          slotProps={{ textField: { variant: "standard" } }}
+        ></TimePicker>
+        <br />
+        <Stack direction={"row"} gap={3} justifyContent={"end"}>
+          <Button onClick={closeModal}>Cancelar</Button>
+          <Button variant="contained">Agregar</Button>
+        </Stack>
+      </Stack>
+    );
+  };
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <FormLabel>
         A continuación, ingrese las actividades que se llevarán a cabo durante
-        su evento.
+        su evento en los horarios de las reservaciones seleccionadas.
         <br />
         <br />
         Como mínimo, le pedimos que nos diga la hora de inicio y fin de su
@@ -127,14 +286,28 @@ function ScheduleForm({
                   reservation={reservation}
                   activitySchedule={false}
                 />
-                <Button>Agregar actividad</Button>
+                <Button onClick={openAddActivityModal}>
+                  Agregar actividad
+                </Button>
               </Stack>
             }
           >
-            <CardActivity></CardActivity>
+            <CardActivity
+              activity={startActivities.find(
+                (activity) => activity.idReservacion === reservation.id
+              )}
+              required
+            ></CardActivity>
+            <CardActivity
+              activity={endActivities.find(
+                (activity) => activity.idReservacion === reservation.id
+              )}
+              required
+            ></CardActivity>
           </AccordionCustom>
         ))}
       </Stack>
+      <Modal></Modal>
     </LocalizationProvider>
   );
 }
@@ -165,12 +338,14 @@ function GeneralForm({
             }}
           >
             {userReservations.map((reservation, index) => (
-              <CardReservation
-                value={reservation.id}
-                key={index}
-                reservation={reservation}
-                activitySchedule={false}
-              ></CardReservation>
+              <Stack padding={"10px 0"}>
+                <CardReservation
+                  value={reservation.id}
+                  key={index}
+                  reservation={reservation}
+                  activitySchedule={false}
+                ></CardReservation>
+              </Stack>
             ))}
           </CheckList>
         </FormControl>

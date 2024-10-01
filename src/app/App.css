@@ -5,7 +5,7 @@
   width: 100%;
   flex-direction: column;
 
-  --bg: #f2f4fa;
+  --bg: #f5f7ff;
   --blue: #18529D;
   --blue-dark: #1c5aaa;
   --light-green: #e6f7e2;
@@ -64,6 +64,10 @@ body{
   height: 100%;
 }
 
+.button-row{
+  display: flex;
+  flex-direction: row;
+}
 
 #content{
   overflow: auto;
