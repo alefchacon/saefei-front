@@ -6,10 +6,11 @@ import Tooltip from "@mui/material/Tooltip";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
+import { getHHssString } from "../../../util/times";
 
 export default function CardActivity({
-  time = moment(),
-  name = "Activity name",
+  activity = { name: "activity", time: "12:00:00" },
+  required,
 }) {
   return (
     <Stack
@@ -19,9 +20,9 @@ export default function CardActivity({
     >
       <Stack direction={"row"} gap={3}>
         <Typography>
-          <b>{time.format("HH:mm")}</b>
+          <b>{getHHssString(activity.time)}</b>
         </Typography>
-        <Typography>{name}</Typography>
+        <Typography>{activity.name}</Typography>
       </Stack>
 
       <Stack direction={"row"}>
@@ -30,11 +31,13 @@ export default function CardActivity({
             <EditIcon></EditIcon>
           </IconButton>
         </Tooltip>
-        <Tooltip title="Eliminar actividad" placement="top-start">
-          <IconButton color="primary">
-            <DeleteIcon></DeleteIcon>
-          </IconButton>
-        </Tooltip>
+        {!required && (
+          <Tooltip title="Eliminar actividad" placement="top-start">
+            <IconButton color="primary">
+              <DeleteIcon></DeleteIcon>
+            </IconButton>
+          </Tooltip>
+        )}
       </Stack>
     </Stack>
   );
