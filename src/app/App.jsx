@@ -27,7 +27,7 @@ import moment from "moment";
 import LinearProgress from "@mui/material/LinearProgress";
 import { Routes, Route } from "react-router-dom";
 import * as ROUTES from "../stores/ROUTES";
-
+import EventForm from "./EventForm";
 function App() {
   moment.locale("es-mx");
 
@@ -78,6 +78,10 @@ function App() {
             <Route
               path={`${ROUTES.ROUTE_SEARCH_EVENTS}/:idEvento?`}
               element={<EventView></EventView>}
+            ></Route>
+            <Route
+              path={`${ROUTES.ROUTE_NOTIFY}`}
+              element={<EventForm />}
             ></Route>
           </Routes>
         </Stack>
