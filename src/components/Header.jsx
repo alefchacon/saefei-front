@@ -66,9 +66,9 @@ export default function Header({
                 {description}
               </Typography>
             )}
+            {children}
           </Stack>
         </Stack>
-        {children}
       </Stack>
       <Divider></Divider>
     </>

@@ -28,6 +28,12 @@ export const useReservations = () => {
     );
   };
 
+  const getReservationsAvailableToUser = async (idUsuario = 0) => {
+    return apiWrapper.get(
+      `reservaciones?idUsuario[eq]=${idUsuario}&idEstado[eq]=${STATUS.ACCEPTED}`
+    );
+  };
+
   const addReservation = async (values) => {
     const body = {
       motivo: values.motive,
@@ -41,5 +47,10 @@ export const useReservations = () => {
     return response;
   };
 
-  return { getReservationsBySpaceDate, addReservation, getReservationsByMonth };
+  return {
+    getReservationsBySpaceDate,
+    addReservation,
+    getReservationsByMonth,
+    getReservationsAvailableToUser,
+  };
 };
