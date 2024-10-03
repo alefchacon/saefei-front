@@ -27,7 +27,8 @@ import moment from "moment";
 import LinearProgress from "@mui/material/LinearProgress";
 import { Routes, Route } from "react-router-dom";
 import * as ROUTES from "../stores/ROUTES";
-import EventForm from "./EventForm";
+import EventForm from "./Notify/EventForm";
+
 function App() {
   moment.locale("es-mx");
 
@@ -85,7 +86,6 @@ function App() {
             ></Route>
           </Routes>
         </Stack>
-        <Bottombar></Bottombar>
       </Stack>
     </>
   );

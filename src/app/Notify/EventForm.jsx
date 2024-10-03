@@ -1,22 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Stack from "@mui/material/Stack";
-import Card from "@mui/material/Card";
-import CardActionArea from "@mui/material/CardActionArea";
-import CardActions from "@mui/material/CardActions";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import ChipCustom from "../components/Chip";
-import Header from "../components/Header";
-import StepperCustom from "../components/Stepper";
+import StepperCustom from "../../components/Stepper";
 
-import { useEvents } from "../features/events/businessLogic/useEvents";
-import ReplyIcon from "@mui/icons-material/Reply";
-import { useParams } from "react-router-dom";
-import ChipSpace from "../features/reservations/components/ChipSpace";
-import EventIcon from "@mui/icons-material/Event";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CampaignIcon from "@mui/icons-material/Campaign";
-import Page from "../components/Page";
+import Page from "../../components/Page";
 import TextField from "@mui/material/TextField";
 import moment from "moment";
 import { TimePicker } from "@mui/x-date-pickers";
@@ -24,30 +13,41 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import { useReservations } from "../features/reservations/businessLogic/useReservations";
-import useAuth from "./businessLogic/useAuth";
-import CardReservation from "../features/reservations/components/CardReservation";
-import CheckList from "../components/CheckList";
+import { useReservations } from "../../features/reservations/businessLogic/useReservations";
+import useAuth from "../businessLogic/useAuth";
+import CardReservation from "../../features/reservations/components/CardReservation";
+import CheckList from "../../components/CheckList";
 import Divider from "@mui/material/Divider";
-import { getHHssString } from "../util/times";
-import { useModal } from "../components/hooks/useModal";
-import SectionButton from "../components/SectionButton";
+import { getHHssString } from "../../util/times";
+import { useModal } from "../../components/hooks/useModal";
+import SectionButton from "../../components/SectionButton";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import SettingsIcon from "@mui/icons-material/Settings";
 import HailIcon from "@mui/icons-material/Hail";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
-import RadioList from "../components/RadioList";
-import AccordionCustom from "../components/Accordion";
-
-import CardActivity from "../features/events/components/CardActivity";
-
+import RadioList from "../../components/RadioList";
+import AccordionCustom from "../../components/Accordion";
+import { useNavigate } from "react-router-dom";
+import UploadButton from "../../components/UploadButton";
+import Slide from "@mui/material/Slide";
+import * as ROUTE from "../../stores/ROUTES";
+import BroadcastForm from "./OptionalForms/BroadcastForm";
+import CardActivity from "../../features/events/components/CardActivity";
+import OptionalSection from "../../components/OptionalSection";
 import { Formik, Form } from "formik";
+import TechRequirementsForm from "./OptionalForms/TechRequirementsForm";
+import ExternalParticipantsForm from "./OptionalForms/ExternalParticipantsForm";
+import AdditionalForm from "./OptionalForms/AdditionalForm";
+import { useFormikContext } from "formik";
+import { v4 as uuidv4 } from "uuid";
+
+import ScheduleForm from "./StepForms/ScheduleForm";
 
 export default function EventForm({}) {
   const { getReservationsAvailableToUser } = useReservations();
   const { getUser } = useAuth();
 
-  const [step, setStep] = useState(-1);
+  const [activeStep, setActiveStep] = useState(0);
   const [userReservations, setUserReservations] = useState([]);
   const [selectedUserReservations, setSelectedUserReservations] = useState([]);
 
@@ -57,48 +57,197 @@ export default function EventForm({}) {
     });
   }, []);
 
+  const handleSectionChange = (newSectionIndex) => {
+    setActiveSectionIndex(newSectionIndex);
+  };
+
   return (
-    <Page title={"Notificar evento"}>
-      <Formik initialValues={{ reservations: [], activities: [] }}>
-        {({ values, errors, setFieldValue, handleChange, touched }) => (
-          <StepperCustom>
-            <Stack title="Datos generales">
-              <Button onClick={() => console.log(values)}>testin</Button>
-              <GeneralForm
-                values={values}
-                userReservations={userReservations}
-                onFieldValueChange={setFieldValue}
-              ></GeneralForm>
-            </Stack>
-            <Stack title="Agenda">
-              <ScheduleForm
-                values={values}
-                userReservations={userReservations}
-                onFieldValueChange={setFieldValue}
-              ></ScheduleForm>
-            </Stack>
-            <Stack title="Info. demográfica">
-              <DemographicForm></DemographicForm>
-            </Stack>
-            <Stack title="Adicional">
-              <AdditionalForm></AdditionalForm>
-            </Stack>
-          </StepperCustom>
-        )}
-      </Formik>
+    <Formik
+      className="section"
+      initialValues={{
+        name: "",
+        reservations: [],
+        activities: [],
+        platforms: ["Página Web Institucional de la Facultad"],
+      }}
+    >
+      {({ values, errors, setFieldValue, handleChange, touched }) => (
+        <StepForm
+          values={values}
+          setFieldValue={setFieldValue}
+          userReservations={userReservations}
+        />
+      )}
+    </Formik>
+  );
+}
+
+function StepForm({
+  values,
+  errors,
+  setFieldValue,
+  handleChange,
+  touched,
+  userReservations,
+}) {
+  const [activeStep, setActiveStep] = useState(0);
+  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+
+  const handleSectionChange = (newSectionIndex) => {
+    setActiveSectionIndex(newSectionIndex);
+  };
+  const handleStepChange = (newActiveStep = 0) => {
+    setActiveStep(newActiveStep);
+  };
+
+  const selectedUserReservations = userReservations.filter((reservation) =>
+    values.reservations.includes(reservation.id)
+  );
+
+  return (
+    <Page
+      onSectionChange={handleSectionChange}
+      title={"Notificar evento"}
+      className={"section"}
+      id={"notificar-evento"}
+      activeSectionIndex={activeSectionIndex}
+    >
+      <StepperCustom onStepChange={handleStepChange} step={activeStep}>
+        <Stack title="Datos generales" id={"datos-generales"}>
+          <Button onClick={() => console.log(values)}>testin</Button>
+          <GeneralForm
+            values={values}
+            userReservations={userReservations}
+            onFieldValueChange={setFieldValue}
+          ></GeneralForm>
+        </Stack>
+        <Stack title="Agenda" id={"agenda"}>
+          <ScheduleForm
+            values={values}
+            userReservations={userReservations}
+            selectedUserReservations={selectedUserReservations}
+            onFieldValueChange={setFieldValue}
+          ></ScheduleForm>
+        </Stack>
+        <Stack title="Info. demográfica" id={"info-demografica"}>
+          <DemographicForm></DemographicForm>
+        </Stack>
+        <Stack title="Adicional" id={"adicional"}>
+          <EndStep
+            values={values}
+            userReservations={userReservations}
+            onFieldValueChange={setFieldValue}
+            onSectionChange={handleSectionChange}
+          ></EndStep>
+        </Stack>
+      </StepperCustom>
+      <Slide
+        direction="left"
+        in={activeSectionIndex === 1}
+        mountOnEnter
+        unmountOnExit
+      >
+        <Stack className="section" id={"difusion"}>
+          <BroadcastForm
+            values={values}
+            onFieldValueChange={setFieldValue}
+          ></BroadcastForm>
+        </Stack>
+      </Slide>
+      <Stack className="section" id={"requisitos-tecnicos"}>
+        <BroadcastForm
+          values={values}
+          onFieldValueChange={setFieldValue}
+        ></BroadcastForm>
+      </Stack>
+      <Stack className="section" id={"requisitos-tecnicos"}>
+        <TechRequirementsForm
+          values={values}
+          onFieldValueChange={setFieldValue}
+        ></TechRequirementsForm>
+      </Stack>
+      <Stack className="section" id={"requisitos-tecnicos"}>
+        <ExternalParticipantsForm
+          values={values}
+          onFieldValueChange={setFieldValue}
+        ></ExternalParticipantsForm>
+      </Stack>
+      <Stack className="section" id={"requisitos-tecnicos"}>
+        <AdditionalForm
+          values={values}
+          onFieldValueChange={setFieldValue}
+        ></AdditionalForm>
+      </Stack>
     </Page>
   );
 }
 
 function fuck() {}
 
-function AdditionalForm({
+function EndStep({
   values,
   userReservations,
   onFieldValueChange,
   onSelectUserReservations,
+  onSectionChange,
 }) {
   const iconSX = { height: "1.2em !important", width: "1.2em !important" };
+  const navigate = useNavigate();
+  const { closeModal, openModal, Modal } = useModal();
+  const [showUpload, setShowUpload] = useState(false);
+  const [section, setSection] = useState("");
+
+  const openBroadcastModal = () => {
+    openModal(
+      "Difusión",
+      <Stack gap={"var(--field-gap)"}>
+        <Stack>
+          <CheckList
+            label={
+              "Seleccione los medios donde se requiere hacer difusión del evento"
+            }
+          >
+            <Typography value={"Página Web Institucional de la Facultad"}>
+              Página Web Institucional de la Facultad
+            </Typography>
+            <Typography value={"Correo Institucional de la Facultad"}>
+              Correo Institucional de la Facultad
+            </Typography>
+            <Typography
+              value={"Redes sociales (Facebook, Instagram, Twitter/X)"}
+            >
+              Redes sociales (Facebook, Instagram, Twitter/X)
+            </Typography>
+            <Typography value={"Comunicación UV"}>Comunicación UV</Typography>
+            <Typography value={"Radio UV"}>Radio UV</Typography>
+          </CheckList>
+          <TextField variant="standard" label="Otra(s)"></TextField>
+        </Stack>
+        <RadioList
+          label={"¿Se proporcionará material promocional?"}
+          onChange={(e) => setShowUpload(e.target.value)}
+        >
+          <Typography value={true}>Sí</Typography>
+          <Typography value={false}>
+            No (En caso de no contar con un diseño específico, se empleará un
+            diseño básico preestablecido por la facultad)
+          </Typography>
+        </RadioList>
+        {showUpload && (
+          <Stack>
+            <FormLabel>
+              Por favor, proporcione los recursos que se van a publicar.
+            </FormLabel>
+            <UploadButton></UploadButton>
+          </Stack>
+        )}
+      </Stack>,
+      <Stack>
+        <Button variant="contained">YEahhhhhh</Button>
+      </Stack>,
+      true
+    );
+  };
 
   return (
     <Stack gap={2}>
@@ -106,7 +255,51 @@ function AdditionalForm({
         Podemos brindarle un servicio más completo si usted configura las
         siguientes opciones adicionales.
       </FormLabel>
+
       <SectionButton
+        onClick={() => onSectionChange(1)}
+        icon={<CampaignIcon sx={iconSX} />}
+        name="Difusión"
+        description="Suba material promocional del evento (flyers) y la forma en que debe difundirse."
+      ></SectionButton>
+      <SectionButton
+        onClick={() => onSectionChange(2)}
+        icon={<ReceiptLongIcon sx={iconSX} />}
+        name="Constancias"
+        description="Solicite constancias para los participantes de su evento."
+      ></SectionButton>
+      <SectionButton
+        onClick={() => onSectionChange(3)}
+        icon={<SettingsIcon sx={iconSX} />}
+        name="Requisitos técnicos"
+        description="Solicite asistencia del Centro de Cómputo (equipo de cómputo, transmisión en vivo...) "
+      ></SectionButton>
+      <SectionButton
+        onClick={() => onSectionChange(4)}
+        icon={<HailIcon sx={iconSX} />}
+        name="Participantes externos"
+        description="¿Requiere asistencia para participantes ajenos a la FEI? Cuéntenos aquí."
+      ></SectionButton>
+      <SectionButton
+        onClick={() => onSectionChange(5)}
+        icon={<QuestionMarkIcon sx={iconSX} />}
+        name="Requisitos adicionales"
+        description="¿Nos faltó pedirle algo? Pídalo aquí."
+      ></SectionButton>
+      <Modal></Modal>
+    </Stack>
+  );
+}
+
+function Sections() {
+  return (
+    <Stack gap={2}>
+      <FormLabel>
+        Podemos brindarle un servicio más completo si usted configura las
+        siguientes opciones adicionales.
+      </FormLabel>
+      <SectionButton
+        onClick={openBroadcastModal}
         icon={<CampaignIcon sx={iconSX} />}
         name="Difusión"
         description="Suba material promocional del evento (flyers) y la forma en que debe difundirse."
@@ -131,6 +324,7 @@ function AdditionalForm({
         name="Requisitos adicionales"
         description="¿Nos faltó pedirle algo? Pídalo aquí."
       ></SectionButton>
+      <Modal></Modal>
     </Stack>
   );
 }
@@ -249,118 +443,6 @@ function DemographicForm({
   );
 }
 
-function ScheduleForm({
-  values,
-  userReservations,
-  onFieldValueChange,
-  onSelectUserReservations,
-}) {
-  const [selectedUserReservations, setSelectedUserReservations] = useState([]);
-  const [startActivities, setStartActivities] = useState([]);
-  const [endActivities, setEndActivities] = useState([]);
-
-  const { openModal, closeModal, Modal } = useModal();
-
-  useEffect(() => {
-    const _selectedUserReservations = userReservations.filter((reservation) =>
-      values.reservations.includes(reservation.id)
-    );
-
-    setSelectedUserReservations(_selectedUserReservations);
-
-    const _startActivities = _selectedUserReservations.map((reservation) => {
-      return {
-        idReservacion: reservation.id,
-        time: moment(reservation.start, "HH:mm:ss").add(30, "minutes"),
-        name: `Inicio ${reservation.id}`,
-      };
-    });
-    setStartActivities(_startActivities);
-
-    const _endActivities = _selectedUserReservations.map((reservation) => {
-      return {
-        idReservacion: reservation.id,
-        time: moment(reservation.end, "HH:mm:ss").subtract(30, "minutes"),
-        name: `Fin ${reservation.id}`,
-      };
-    });
-    setEndActivities(_endActivities);
-    onFieldValueChange("activities", [..._startActivities, ..._endActivities]);
-  }, []);
-
-  const openAddActivityModal = () => {
-    openModal(
-      "Agregar actividad",
-      <Stack minWidth={"500px"} gap={"var(--field-gap)"}>
-        <TextField
-          label={"Nombre de la actividad"}
-          variant="standard"
-        ></TextField>
-        <TimePicker
-          slotProps={{ textField: { variant: "standard" } }}
-        ></TimePicker>
-        <br />
-        <Stack direction={"row"} gap={3} justifyContent={"end"}>
-          <Button onClick={closeModal}>Cancelar</Button>
-          <Button variant="contained">Agregar</Button>
-        </Stack>
-      </Stack>
-    );
-  };
-
-  return (
-    <LocalizationProvider dateAdapter={AdapterMoment}>
-      <FormLabel>
-        A continuación, ingrese las actividades que se llevarán a cabo durante
-        su evento en los horarios de las reservaciones seleccionadas.
-        <br />
-        <br />
-        Como mínimo, le pedimos que nos diga la hora de inicio y fin de su
-        evento. Se han asignado las siguientes por defecto, mismas que usted
-        puede modificar:
-      </FormLabel>
-      <br />
-      <Stack>
-        {selectedUserReservations.map((reservation, index) => (
-          <AccordionCustom
-            header={
-              <Stack
-                direction={"row"}
-                width={"100%"}
-                justifyContent={"space-between"}
-                alignItems={"center"}
-              >
-                <CardReservation
-                  key={index}
-                  reservation={reservation}
-                  activitySchedule={false}
-                />
-                <Button onClick={openAddActivityModal}>
-                  Agregar actividad
-                </Button>
-              </Stack>
-            }
-          >
-            <CardActivity
-              activity={startActivities.find(
-                (activity) => activity.idReservacion === reservation.id
-              )}
-              required
-            ></CardActivity>
-            <CardActivity
-              activity={endActivities.find(
-                (activity) => activity.idReservacion === reservation.id
-              )}
-              required
-            ></CardActivity>
-          </AccordionCustom>
-        ))}
-      </Stack>
-      <Modal></Modal>
-    </LocalizationProvider>
-  );
-}
-
 function GeneralForm({
   values,
   userReservations,
@@ -370,7 +452,13 @@ function GeneralForm({
   return (
     <Form>
       <Stack gap={"var(--field-gap)"}>
-        <TextField variant="standard" label="Nombre del evento" />
+        <TextField
+          name="name"
+          value={values.name}
+          onChange={(e) => onFieldValueChange("name", e.target.value)}
+          variant="standard"
+          label="Nombre del evento"
+        />
         <TextField variant="standard" label="Descripción del evento" />
 
         <FormControl>

@@ -7,3 +7,4 @@ export const ROUTE_CALENDAR_RESERVATIONS = "/reservaciones";
 export const ROUTE_RESERVE = ROUTE_CALENDAR_RESERVATIONS.concat("/reservar"); 
 
 export const ROUTE_NOTIFY = "/notificar";
+export const ROUTE_NOTIFY_BROADCAST = ROUTE_NOTIFY.concat("/difusion");

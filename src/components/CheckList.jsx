@@ -53,7 +53,6 @@ export default function CheckList({
     <List
       sx={{
         width: "100%",
-        bgcolor: "background.paper",
       }}
     >
       <FormLabel>{label}</FormLabel>

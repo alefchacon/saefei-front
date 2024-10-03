@@ -7,12 +7,16 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import Stack from "@mui/material/Stack";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 export const useModal = () => {
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const screenIsTiny = useMediaQuery(theme.breakpoints.down("md"));
   const [isOpen, setIsOpen] = useState(false);
   const [content, setContent] = useState(null);
   const [title, setTitle] = useState(null);
@@ -36,12 +40,50 @@ export const useModal = () => {
     if (!isOpen) {
       return null;
     }
+
+    const goFullscreen = isResponsive && screenIsTiny;
+
+    function MobileTitle({ children }) {
+      return (
+        <Stack
+          direction={"row"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+        >
+          <Stack direction={"row"} gap={3} alignItems={"center"}>
+            <IconButton onClick={closeModal}>
+              <ArrowBackIcon></ArrowBackIcon>
+            </IconButton>
+            {children}
+          </Stack>
+          {actions}
+        </Stack>
+      );
+    }
+    function DesktopTitle({ children }) {
+      return (
+        <Stack direction={"row"} justifyContent={"space-between"}>
+          {children}
+
+          <IconButton onClick={closeModal}>
+            <CloseIcon></CloseIcon>
+          </IconButton>
+        </Stack>
+      );
+    }
+
     return (
       <>
-        <Dialog open={isOpen} fullScreen={isResponsive && fullScreen}>
-          <DialogTitle>{title}</DialogTitle>
+        <Dialog open={isOpen} fullScreen={goFullscreen}>
+          <DialogTitle>
+            {goFullscreen ? (
+              <MobileTitle>{title}</MobileTitle>
+            ) : (
+              <DesktopTitle>{title}</DesktopTitle>
+            )}
+          </DialogTitle>
           <DialogContent>{content}</DialogContent>
-          <DialogActions>{actions}</DialogActions>
+          {!goFullscreen && <DialogActions>{actions}</DialogActions>}
         </Dialog>
       </>
     );

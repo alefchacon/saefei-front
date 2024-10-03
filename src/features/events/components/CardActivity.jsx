@@ -11,7 +11,12 @@ import { getHHssString } from "../../../util/times";
 export default function CardActivity({
   activity = { name: "activity", time: "12:00:00" },
   required,
+  onDelete,
 }) {
+  const handleDeleteActivity = () => {
+    onDelete(activity);
+  };
+
   return (
     <Stack
       direction={"row"}
@@ -33,7 +38,7 @@ export default function CardActivity({
         </Tooltip>
         {!required && (
           <Tooltip title="Eliminar actividad" placement="top-start">
-            <IconButton color="primary">
+            <IconButton color="primary" onClick={handleDeleteActivity}>
               <DeleteIcon></DeleteIcon>
             </IconButton>
           </Tooltip>

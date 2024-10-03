@@ -11,26 +11,27 @@ export default function Header({
   description = "",
   children,
   padding = true,
+  sectionedPage = false,
+  onSectionChange,
 }) {
   const location = useLocation();
 
-  const canGoBack = location.pathname.split("/").length > 2;
+  const canGoBack = location.pathname.split("/").length > 2 || sectionedPage;
 
   return (
-    <>
-      <Stack
-        id="header"
-        role="header"
-        display={"flex"}
-        flexDirection={"column"}
-        zIndex={5}
-        className={padding ? `side-padding` : ""}
-        justifyContent={"space-between"}
-        paddingTop={{ md: "20px", xs: "10px" }}
-        paddingBottom={{ md: "20px", xs: "10px" }}
-        borderBottom={{ xs: "1px solid var(--bg)", md: "none" }}
-      >
-        {/*
+    <Stack
+      id="header"
+      role="header"
+      display={"flex"}
+      flexDirection={"column"}
+      zIndex={5}
+      className={padding ? `side-padding` : ""}
+      justifyContent={"space-between"}
+      paddingTop={{ md: "20px", xs: "20px" }}
+      paddingBottom={{ md: "20px", xs: "10px" }}
+      borderBottom={{ xs: "1px solid var(--bg)", md: "none" }}
+    >
+      {/*
         <Stack
           sx={{ opacity: 0.7 }}
           direction={"row"}
@@ -43,34 +44,32 @@ export default function Header({
           espacio
         </Stack>
         */}
-        <Stack direction={"row"} gap={2}>
-          {canGoBack && (
-            <IconButton id="go-back-button">
-              <ArrowBackIcon></ArrowBackIcon>
-            </IconButton>
-          )}
-          <Stack direction={"column"}>
-            <Typography
-              id="title"
-              variant="h5"
-              color="black"
-              height={"100%"}
-              alignItems={"center"}
-              display={"flex"}
-              fontSize={{ md: 28, xs: 20 }}
-            >
-              {title}
+      <Stack direction={"row"} gap={2}>
+        {canGoBack && (
+          <IconButton id="go-back-button" onClick={onSectionChange}>
+            <ArrowBackIcon></ArrowBackIcon>
+          </IconButton>
+        )}
+        <Stack direction={"column"}>
+          <Typography
+            id="title"
+            variant="h5"
+            color="black"
+            height={"100%"}
+            alignItems={"center"}
+            display={"flex"}
+            fontSize={{ md: 28, xs: 20 }}
+          >
+            {title}
+          </Typography>
+          {description && (
+            <Typography id="description" variant="caption">
+              {description}
             </Typography>
-            {description && (
-              <Typography id="description" variant="caption">
-                {description}
-              </Typography>
-            )}
-            {children}
-          </Stack>
+          )}
+          {children}
         </Stack>
       </Stack>
-      <Divider></Divider>
-    </>
+    </Stack>
   );
 }
