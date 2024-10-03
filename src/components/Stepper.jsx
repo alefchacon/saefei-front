@@ -7,8 +7,8 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Stack } from "@mui/material";
 
-export default function StepperCustom({ children }) {
-  const [activeStep, setActiveStep] = React.useState(0);
+export default function StepperCustom({ children, step = 0, onStepChange }) {
+  const [activeStep, setActiveStep] = React.useState(step);
   const [completed, setCompleted] = React.useState({});
 
   const totalSteps = () => {
@@ -20,35 +20,38 @@ export default function StepperCustom({ children }) {
   };
 
   const isLastStep = () => {
-    return activeStep === totalSteps() - 1;
+    return step === totalSteps() - 1;
   };
 
   const allStepsCompleted = () => {
     return completedSteps() === totalSteps();
   };
 
+  const handleStepChange = (newActiveStep = 0) => {
+    setActiveStep(newActiveStep);
+    onStepChange(newActiveStep);
+  };
+
   const handleNext = () => {
     const newActiveStep =
       isLastStep() && !allStepsCompleted()
-        ? // It's the last step, but not all steps have been completed,
-          // find the first step that has been completed
-          children.findIndex((step, i) => !(i in completed))
-        : activeStep + 1;
-    setActiveStep(newActiveStep);
+        ? children.findIndex((step, i) => !(i in completed))
+        : step + 1;
+    handleStepChange(newActiveStep);
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    handleStepChange((prevActiveStep) => prevActiveStep - 1);
   };
 
   const handleStep = (stepIndex) => () => {
-    setActiveStep(stepIndex);
+    handleStepChange(stepIndex);
   };
 
   const handleComplete = () => {
     setCompleted({
       ...completed,
-      [activeStep]: true,
+      [step]: true,
     });
     handleNext();
   };
@@ -60,7 +63,7 @@ export default function StepperCustom({ children }) {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Stepper nonLinear activeStep={activeStep}>
+      <Stepper nonLinear activeStep={step}>
         {children.map((label, index) => (
           <Step key={label.props.title} completed={completed[index]}>
             <StepButton color="inherit" onClick={handleStep(index)}>
@@ -72,13 +75,13 @@ export default function StepperCustom({ children }) {
       <div>
         <React.Fragment>
           <Stack paddingTop={5} paddingBottom={5}>
-            {children[activeStep].props.children}
+            {children[step].props.children}
           </Stack>
 
           <Stack direction={"row"}>
             <Button
               color="inherit"
-              disabled={activeStep === 0}
+              disabled={step === 0}
               onClick={handleBack}
               sx={{ mr: 1 }}
             >

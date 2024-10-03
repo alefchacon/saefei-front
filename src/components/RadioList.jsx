@@ -23,11 +23,15 @@ const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
   },
 }));
 
-export default function RadioButtonsGroup({ children, label, id }) {
+export default function RadioButtonsGroup({ children, label, id, onChange }) {
   return (
     <FormControl>
       <FormLabel id={id}>{label}</FormLabel>
-      <RadioGroup aria-labelledby={id} name="radio-buttons-group">
+      <RadioGroup
+        aria-labelledby={id}
+        onChange={onChange}
+        name="radio-buttons-group"
+      >
         {children.map((child) => (
           <StyledListItemButton key={child.props.value} divider>
             <StyledFormControlLabel
