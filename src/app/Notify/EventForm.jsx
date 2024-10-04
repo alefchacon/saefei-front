@@ -40,8 +40,10 @@ import ExternalParticipantsForm from "./OptionalForms/ExternalParticipantsForm";
 import AdditionalForm from "./OptionalForms/AdditionalForm";
 import { useFormikContext } from "formik";
 import { v4 as uuidv4 } from "uuid";
-
+import GeneralForm from "./StepForms/GeneralForm";
 import ScheduleForm from "./StepForms/ScheduleForm";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import DecorationForm from "./OptionalForms/DecorationForm";
 
 export default function EventForm({}) {
   const { getReservationsAvailableToUser } = useReservations();
@@ -49,7 +51,6 @@ export default function EventForm({}) {
 
   const [activeStep, setActiveStep] = useState(0);
   const [userReservations, setUserReservations] = useState([]);
-  const [selectedUserReservations, setSelectedUserReservations] = useState([]);
 
   useEffect(() => {
     getReservationsAvailableToUser(getUser().id).then((response) => {
@@ -66,15 +67,24 @@ export default function EventForm({}) {
       className="section"
       initialValues={{
         name: "",
+        description: "",
         reservations: [],
         activities: [],
-        platforms: ["Página Web Institucional de la Facultad"],
+        platforms: [],
+        programs: [],
+        audiences: [],
+        idTipo: "",
+        scope: "",
+        axis: "",
+        themes: [],
+        rechnicalRequirements: "",
+        needsLivestream: "",
       }}
     >
       {({ values, errors, setFieldValue, handleChange, touched }) => (
         <StepForm
           values={values}
-          setFieldValue={setFieldValue}
+          onFieldValueChange={setFieldValue}
           userReservations={userReservations}
         />
       )}
@@ -85,7 +95,7 @@ export default function EventForm({}) {
 function StepForm({
   values,
   errors,
-  setFieldValue,
+  onFieldValueChange,
   handleChange,
   touched,
   userReservations,
@@ -104,6 +114,66 @@ function StepForm({
     values.reservations.includes(reservation.id)
   );
 
+  useEffect(() => {
+    let defaultActivities = [];
+    for (let i = 0; i < selectedUserReservations.length; i++) {
+      const startActivity = values.activities.find(
+        (activity) =>
+          activity.idReservacion === selectedUserReservations[i].id &&
+          activity.start
+      );
+      const endActivity = values.activities.find(
+        (activity) =>
+          activity.idReservacion === selectedUserReservations[i].id &&
+          activity.end
+      );
+
+      if (!Boolean(startActivity)) {
+        const newActivity = {
+          idFrontend: uuidv4(),
+          idReservacion: selectedUserReservations[i].id,
+          name: "Inicio",
+          time: moment(selectedUserReservations[i].start, "HH:mm:ss").add(
+            30,
+            "minutes"
+          ),
+          start: true,
+        };
+        defaultActivities.push(newActivity);
+      }
+      if (!Boolean(endActivity)) {
+        const newActivity = {
+          idFrontend: uuidv4(),
+          idReservacion: selectedUserReservations[i].id,
+          name: "Fin",
+          time: moment(selectedUserReservations[i].end, "HH:mm:ss").subtract(
+            30,
+            "minutes"
+          ),
+          end: true,
+        };
+        defaultActivities.push(newActivity);
+      }
+    }
+    onFieldValueChange("activities", [
+      ...values.activities,
+      ...defaultActivities,
+    ]);
+
+    /*
+    const remainingActivities = values.activities.filter((activity) =>
+      selectedUserReservations.some(
+        (reservation) => reservation.id === activity.idReservacion
+      )
+    );
+    onFieldValueChange("activities", )
+    */
+  }, [values.reservations]);
+
+  values.activities.sort((activityA, activityB) =>
+    moment(activityA.time).diff(moment(activityB.time))
+  );
+
   return (
     <Page
       onSectionChange={handleSectionChange}
@@ -118,7 +188,7 @@ function StepForm({
           <GeneralForm
             values={values}
             userReservations={userReservations}
-            onFieldValueChange={setFieldValue}
+            onFieldValueChange={onFieldValueChange}
           ></GeneralForm>
         </Stack>
         <Stack title="Agenda" id={"agenda"}>
@@ -126,17 +196,22 @@ function StepForm({
             values={values}
             userReservations={userReservations}
             selectedUserReservations={selectedUserReservations}
-            onFieldValueChange={setFieldValue}
+            onFieldValueChange={onFieldValueChange}
           ></ScheduleForm>
         </Stack>
         <Stack title="Info. demográfica" id={"info-demografica"}>
-          <DemographicForm></DemographicForm>
+          <DemographicForm
+            values={values}
+            userReservations={userReservations}
+            onFieldValueChange={onFieldValueChange}
+            onSectionChange={handleSectionChange}
+          ></DemographicForm>
         </Stack>
         <Stack title="Adicional" id={"adicional"}>
           <EndStep
             values={values}
             userReservations={userReservations}
-            onFieldValueChange={setFieldValue}
+            onFieldValueChange={onFieldValueChange}
             onSectionChange={handleSectionChange}
           ></EndStep>
         </Stack>
@@ -150,32 +225,38 @@ function StepForm({
         <Stack className="section" id={"difusion"}>
           <BroadcastForm
             values={values}
-            onFieldValueChange={setFieldValue}
+            onFieldValueChange={onFieldValueChange}
           ></BroadcastForm>
         </Stack>
       </Slide>
       <Stack className="section" id={"requisitos-tecnicos"}>
         <BroadcastForm
           values={values}
-          onFieldValueChange={setFieldValue}
+          onFieldValueChange={onFieldValueChange}
         ></BroadcastForm>
+      </Stack>
+      <Stack className="section" id={"requisitos-tecnicos"}>
+        <DecorationForm
+          values={values}
+          onFieldValueChange={onFieldValueChange}
+        ></DecorationForm>
       </Stack>
       <Stack className="section" id={"requisitos-tecnicos"}>
         <TechRequirementsForm
           values={values}
-          onFieldValueChange={setFieldValue}
+          onFieldValueChange={onFieldValueChange}
         ></TechRequirementsForm>
       </Stack>
       <Stack className="section" id={"requisitos-tecnicos"}>
         <ExternalParticipantsForm
           values={values}
-          onFieldValueChange={setFieldValue}
+          onFieldValueChange={onFieldValueChange}
         ></ExternalParticipantsForm>
       </Stack>
       <Stack className="section" id={"requisitos-tecnicos"}>
         <AdditionalForm
           values={values}
-          onFieldValueChange={setFieldValue}
+          onFieldValueChange={onFieldValueChange}
         ></AdditionalForm>
       </Stack>
     </Page>
@@ -197,58 +278,6 @@ function EndStep({
   const [showUpload, setShowUpload] = useState(false);
   const [section, setSection] = useState("");
 
-  const openBroadcastModal = () => {
-    openModal(
-      "Difusión",
-      <Stack gap={"var(--field-gap)"}>
-        <Stack>
-          <CheckList
-            label={
-              "Seleccione los medios donde se requiere hacer difusión del evento"
-            }
-          >
-            <Typography value={"Página Web Institucional de la Facultad"}>
-              Página Web Institucional de la Facultad
-            </Typography>
-            <Typography value={"Correo Institucional de la Facultad"}>
-              Correo Institucional de la Facultad
-            </Typography>
-            <Typography
-              value={"Redes sociales (Facebook, Instagram, Twitter/X)"}
-            >
-              Redes sociales (Facebook, Instagram, Twitter/X)
-            </Typography>
-            <Typography value={"Comunicación UV"}>Comunicación UV</Typography>
-            <Typography value={"Radio UV"}>Radio UV</Typography>
-          </CheckList>
-          <TextField variant="standard" label="Otra(s)"></TextField>
-        </Stack>
-        <RadioList
-          label={"¿Se proporcionará material promocional?"}
-          onChange={(e) => setShowUpload(e.target.value)}
-        >
-          <Typography value={true}>Sí</Typography>
-          <Typography value={false}>
-            No (En caso de no contar con un diseño específico, se empleará un
-            diseño básico preestablecido por la facultad)
-          </Typography>
-        </RadioList>
-        {showUpload && (
-          <Stack>
-            <FormLabel>
-              Por favor, proporcione los recursos que se van a publicar.
-            </FormLabel>
-            <UploadButton></UploadButton>
-          </Stack>
-        )}
-      </Stack>,
-      <Stack>
-        <Button variant="contained">YEahhhhhh</Button>
-      </Stack>,
-      true
-    );
-  };
-
   return (
     <Stack gap={2}>
       <FormLabel>
@@ -258,6 +287,7 @@ function EndStep({
 
       <SectionButton
         onClick={() => onSectionChange(1)}
+        configured={values.platforms.length > 0}
         icon={<CampaignIcon sx={iconSX} />}
         name="Difusión"
         description="Suba material promocional del evento (flyers) y la forma en que debe difundirse."
@@ -270,56 +300,25 @@ function EndStep({
       ></SectionButton>
       <SectionButton
         onClick={() => onSectionChange(3)}
-        icon={<SettingsIcon sx={iconSX} />}
-        name="Requisitos técnicos"
-        description="Solicite asistencia del Centro de Cómputo (equipo de cómputo, transmisión en vivo...) "
+        configured={values.decoration}
+        icon={<AutoAwesomeIcon sx={iconSX} />}
+        name="Decoración"
+        description="Pida sus personificadores, banderas y demás."
       ></SectionButton>
       <SectionButton
         onClick={() => onSectionChange(4)}
-        icon={<HailIcon sx={iconSX} />}
-        name="Participantes externos"
-        description="¿Requiere asistencia para participantes ajenos a la FEI? Cuéntenos aquí."
-      ></SectionButton>
-      <SectionButton
-        onClick={() => onSectionChange(5)}
-        icon={<QuestionMarkIcon sx={iconSX} />}
-        name="Requisitos adicionales"
-        description="¿Nos faltó pedirle algo? Pídalo aquí."
-      ></SectionButton>
-      <Modal></Modal>
-    </Stack>
-  );
-}
-
-function Sections() {
-  return (
-    <Stack gap={2}>
-      <FormLabel>
-        Podemos brindarle un servicio más completo si usted configura las
-        siguientes opciones adicionales.
-      </FormLabel>
-      <SectionButton
-        onClick={openBroadcastModal}
-        icon={<CampaignIcon sx={iconSX} />}
-        name="Difusión"
-        description="Suba material promocional del evento (flyers) y la forma en que debe difundirse."
-      ></SectionButton>
-      <SectionButton
-        icon={<ReceiptLongIcon sx={iconSX} />}
-        name="Constancias"
-        description="Solicite constancias para los participantes de su evento."
-      ></SectionButton>
-      <SectionButton
         icon={<SettingsIcon sx={iconSX} />}
         name="Requisitos técnicos"
         description="Solicite asistencia del Centro de Cómputo (equipo de cómputo, transmisión en vivo...) "
       ></SectionButton>
       <SectionButton
+        onClick={() => onSectionChange(5)}
         icon={<HailIcon sx={iconSX} />}
-        name="Participantes externos"
-        description="¿Requiere asistencia para participantes ajenos a la FEI? Cuéntenos aquí."
+        name="Público externo"
+        description="¿Asistirán personas ajenas a la FEI? Cuéntenos aquí."
       ></SectionButton>
       <SectionButton
+        onClick={() => onSectionChange(6)}
         icon={<QuestionMarkIcon sx={iconSX} />}
         name="Requisitos adicionales"
         description="¿Nos faltó pedirle algo? Pídalo aquí."
@@ -345,7 +344,13 @@ function DemographicForm({
         atención y asistencia adecuadas para el éxito de su evento.
       </FormLabel>
 
-      <CheckList label={"Programas educativos"} selectAll>
+      <CheckList
+        label={"Programas educativos"}
+        selectAll
+        values={values.programs}
+        name={"programs"}
+        onChange={(checked) => onFieldValueChange("programs", checked)}
+      >
         <Typography value={1}>
           Doctorado en Ciencias de la Computación
         </Typography>
@@ -370,7 +375,13 @@ function DemographicForm({
         </Typography>
       </CheckList>
 
-      <CheckList label={"Audiencias"} selectAll>
+      <CheckList
+        label={"Audiencias"}
+        selectAll
+        values={values.audiences}
+        name={"audiences"}
+        onChange={(checked) => onFieldValueChange("audiences", checked)}
+      >
         <Typography value={"Estudiantes"}>Estudiantes</Typography>
         <Typography value={"Académicos"}>Académicos</Typography>
         <Typography value={"Personal administrativo"}>
@@ -379,13 +390,23 @@ function DemographicForm({
         <Typography value={"Público en general"}>Público en general</Typography>
       </CheckList>
 
-      <RadioList label={"Tipo de evento"} id={"radio-list-event-type"}>
-        <Typography value={"Académico"}>Académico</Typography>
-        <Typography value={"Cultural"}>Cultural</Typography>
-        <Typography value={"Deportivo"}>Deportivo</Typography>
-        <Typography value={"Mixto"}>Mixto</Typography>
+      <RadioList
+        label={"Tipo de evento"}
+        id={"radio-list-event-type"}
+        value={values.idTipo}
+        onChange={(e) => onFieldValueChange("idTipo", e.target.value)}
+      >
+        <Typography value={1}>Académico</Typography>
+        <Typography value={2}>Cultural</Typography>
+        <Typography value={3}>Deportivo</Typography>
+        <Typography value={4}>Mixto</Typography>
       </RadioList>
-      <RadioList label={"Ámbito"} id={"radio-list-scope"}>
+      <RadioList
+        label={"Ámbito"}
+        id={"radio-list-scope"}
+        value={values.scope}
+        onChange={(e) => onFieldValueChange("scope", e.target.value)}
+      >
         <Typography value={"Local/Regional"}>Local/Regional</Typography>
         <Typography value={"Estatal"}>Estatal</Typography>
         <Typography value={"Nacional"}>Nacional</Typography>
@@ -395,6 +416,8 @@ function DemographicForm({
       <RadioList
         label={"Éje del Programa de Trabajo al que impacta"}
         id={"radio-list-axis"}
+        value={values.axis}
+        onChange={(e) => onFieldValueChange("axis", e.target.value)}
       >
         <Typography value={"Derechos Humanos"}>Derechos Humanos</Typography>
         <Typography value={"Sustentabilidad"}>Sustentabilidad</Typography>
@@ -411,7 +434,13 @@ function DemographicForm({
         </Typography>
       </RadioList>
 
-      <CheckList label={"Temáticas principales (mínimo 1, máximo 3)"} max={3}>
+      <CheckList
+        label={"Temáticas principales (mínimo 1, máximo 3)"}
+        max={3}
+        values={values.themes}
+        name={"themes"}
+        onChange={(checked) => onFieldValueChange("themes", checked)}
+      >
         <Typography value={"Biodiversidad e integridad ecosistémica"}>
           Biodiversidad e integridad ecosistémica
         </Typography>
@@ -440,52 +469,6 @@ function DemographicForm({
         <Typography value={"Salud y deporte"}>Salud y deporte</Typography>
       </CheckList>
     </Stack>
-  );
-}
-
-function GeneralForm({
-  values,
-  userReservations,
-  onFieldValueChange,
-  onSelectUserReservations,
-}) {
-  return (
-    <Form>
-      <Stack gap={"var(--field-gap)"}>
-        <TextField
-          name="name"
-          value={values.name}
-          onChange={(e) => onFieldValueChange("name", e.target.value)}
-          variant="standard"
-          label="Nombre del evento"
-        />
-        <TextField variant="standard" label="Descripción del evento" />
-
-        <FormControl>
-          <FormLabel>
-            Cuenta con las siguientes reservaciones aprobadas por la
-            administración de la facultad. Seleccione la(s) que utilizará para
-            su evento:
-          </FormLabel>
-          <CheckList
-            name={"reservations"}
-            values={values.reservations}
-            onChange={(checked) => {
-              onFieldValueChange("reservations", checked);
-            }}
-          >
-            {userReservations.map((reservation, index) => (
-              <CardReservation
-                value={reservation.id}
-                key={index}
-                reservation={reservation}
-                activitySchedule={false}
-              ></CardReservation>
-            ))}
-          </CheckList>
-        </FormControl>
-      </Stack>
-    </Form>
   );
 }
 

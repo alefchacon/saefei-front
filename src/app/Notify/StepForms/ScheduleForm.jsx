@@ -38,6 +38,20 @@ export default function ScheduleForm({
           variant="standard"
         ></TextField>
         <TimePicker
+          minTime={moment(
+            values.activities.find(
+              (activity) =>
+                activity.idReservacion === idReservacion && activity.start
+            ).time,
+            "HH:mm"
+          )}
+          maxTime={moment(
+            values.activities.find(
+              (activity) =>
+                activity.idReservacion === idReservacion && activity.end
+            ).time,
+            "HH:mm"
+          )}
           inputRef={newActivityTimeRef}
           slotProps={{ textField: { variant: "standard" } }}
         ></TimePicker>
@@ -48,7 +62,7 @@ export default function ScheduleForm({
             idFrontend: uuidv4(),
             idReservacion: idReservacion,
             name: newActivityNameRef.current.value,
-            time: newActivityTimeRef.current.value,
+            time: moment(newActivityTimeRef.current.value, "HH:mm"),
           };
           onFieldValueChange("activities", [...values.activities, newActivity]);
         }}
@@ -59,47 +73,6 @@ export default function ScheduleForm({
       true
     );
   };
-
-  useEffect(() => {
-    for (let i = 0; i < selectedUserReservations.length; i++) {
-      const startActivity = values.activities.find(
-        (activity) =>
-          activity.idReservacion === selectedUserReservations[i].id &&
-          activity.start
-      );
-      const endActivity = values.activities.find(
-        (activity) =>
-          activity.idReservacion === selectedUserReservations[i].id &&
-          activity.end
-      );
-      if (!Boolean(startActivity)) {
-        const newActivity = {
-          idFrontend: uuidv4(),
-          idReservacion: selectedUserReservations[i].id,
-          name: "Inicio",
-          time: moment(selectedUserReservations[i].start, "HH:mm:ss").add(
-            30,
-            "minutes"
-          ),
-          start: true,
-        };
-        onFieldValueChange("activities", [...values.activities, newActivity]);
-      }
-      if (!Boolean(endActivity)) {
-        const newActivity = {
-          idFrontend: uuidv4(),
-          idReservacion: selectedUserReservations[i].id,
-          name: "Fin",
-          time: moment(selectedUserReservations[i].end, "HH:mm:ss").subtract(
-            30,
-            "minutes"
-          ),
-          end: true,
-        };
-        onFieldValueChange("activities", [...values.activities, newActivity]);
-      }
-    }
-  }, []);
 
   const handleDeleteActivity = (activityToDelete) => {
     const newActivities = values.activities.filter(
@@ -115,7 +88,7 @@ export default function ScheduleForm({
         su evento en los horarios de las reservaciones seleccionadas.
         <br />
         <br />
-        Como mínimo, le pedimos que nos diga la hora de inicio y fin de su
+        Como mínimo, le pedimos que nos comparta la hora de inicio y fin de su
         evento. Se han asignado las siguientes por defecto, mismas que usted
         puede modificar:
       </FormLabel>
@@ -136,7 +109,12 @@ export default function ScheduleForm({
                   reservation={reservation}
                   activitySchedule={false}
                 />
-                <Button onClick={() => openAddActivityModal(reservation.id)}>
+                <Button
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    openAddActivityModal(reservation.id);
+                  }}
+                >
                   Agregar actividad
                 </Button>
               </Stack>

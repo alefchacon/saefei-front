@@ -2,12 +2,14 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import ListItemButton from "@mui/material/ListItemButton";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ChipCustom from "./Chip";
 
 export default function SectionButton({
   name = "Section name",
   description = "description",
   icon,
   onClick,
+  configured = false,
 }) {
   return (
     <ListItemButton
@@ -28,9 +30,18 @@ export default function SectionButton({
       <Stack direction={"row"} gap={4} alignItems={"center"}>
         {icon}
         <Stack>
-          <Typography>
-            <b>{name}</b>
-          </Typography>
+          <Stack direction={"row"} alignContent={"center"} gap={1}>
+            <Typography>
+              <b>{name}</b>
+            </Typography>
+            {configured && (
+              <ChipCustom
+                color={"primary"}
+                size="small"
+                label={"Configurado"}
+              ></ChipCustom>
+            )}
+          </Stack>
           <Typography>{description}</Typography>
         </Stack>
       </Stack>

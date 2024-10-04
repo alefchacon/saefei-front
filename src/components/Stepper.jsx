@@ -78,7 +78,7 @@ export default function StepperCustom({ children, step = 0, onStepChange }) {
             {children[step].props.children}
           </Stack>
 
-          <Stack direction={"row"}>
+          <Stack direction={"row"} justifyContent={"end"}>
             <Button
               color="inherit"
               disabled={step === 0}

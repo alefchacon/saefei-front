@@ -37,7 +37,7 @@ import CardActivity from "../../../features/events/components/CardActivity";
 
 import { Formik, Form } from "formik";
 
-export default function ExternalParticipantsForm({
+export default function DecorationForm({
   values,
   userReservations,
   onFieldValueChange,
@@ -48,37 +48,18 @@ export default function ExternalParticipantsForm({
     <Stack gap={"var(--field-gap)"}>
       <Stack>
         <FormLabel>
-          ¿Se prevé la presencia de un presidium durante el evento? Por favor,
-          proporcione los nombres, cargos y direcciones de correo electrónico de
-          los invitados especiales.
+          Solicite material de decoración o señalización. Ejemplo: mantelería,
+          personificadores, banderas, etcétera.
         </FormLabel>
         <TextField
-          variant="standard"
           placeholder="Escriba su respuesta"
+          variant="standard"
+          value={values.decoration}
+          onChange={(e) => onFieldValueChange("decoration", e.target.value)}
           multiline
-          rows={3}
+          rows={10}
         ></TextField>
       </Stack>
-      <Stack>
-        <FormLabel>
-          ¿Cuántas personas externas estiman recibir en el evento?
-        </FormLabel>
-        <TextField variant="standard" type="number"></TextField>
-      </Stack>
-      <RadioList
-        label={
-          "¿Se requiere autorización para que público externo ingrese al estacionamiento durante el evento?"
-        }
-      >
-        <Typography value="true">Sí</Typography>
-        <Typography value="false">No</Typography>
-      </RadioList>
-      <RadioList
-        label={"¿Necesita autorización para el ingreso en fin de semana?"}
-      >
-        <Typography value="true">Sí</Typography>
-        <Typography value="false">No</Typography>
-      </RadioList>
     </Stack>
   );
 }
