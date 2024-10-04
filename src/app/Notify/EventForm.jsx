@@ -1,34 +1,39 @@
 import { useEffect, useState, useRef } from "react";
+import { Formik, useFormikContext } from "formik";
+import { v4 as uuidv4, validate } from "uuid";
+import moment from "moment";
+
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import StepperCustom from "../../components/Stepper";
-import CampaignIcon from "@mui/icons-material/Campaign";
-import Page from "../../components/Page";
-import moment from "moment";
 import FormLabel from "@mui/material/FormLabel";
+import HailIcon from "@mui/icons-material/Hail";
+import Slide from "@mui/material/Slide";
+
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import SettingsIcon from "@mui/icons-material/Settings";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import CampaignIcon from "@mui/icons-material/Campaign";
+
+import StepperCustom from "../../components/Stepper";
+import Page from "../../components/Page";
+import SectionButton from "../../components/SectionButton";
 import { useReservations } from "../../features/reservations/businessLogic/useReservations";
 import useAuth from "../businessLogic/useAuth";
 import { useModal } from "../../components/hooks/useModal";
-import SectionButton from "../../components/SectionButton";
-import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
-import SettingsIcon from "@mui/icons-material/Settings";
-import HailIcon from "@mui/icons-material/Hail";
-import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
-import Slide from "@mui/material/Slide";
+import { eventSchema } from "../../features/events/validation/eventSchema";
+
+import GeneralForm from "./StepForms/GeneralForm";
+import ScheduleForm from "./StepForms/ScheduleForm";
+import DemographicForm from "./StepForms/DemographicForm";
+
 import BroadcastForm from "./OptionalForms/BroadcastForm";
-import { Formik, Form } from "formik";
+import RecordsForm from "./OptionalForms/RecordsForm";
+import DecorationForm from "./OptionalForms/DecorationForm";
 import TechRequirementsForm from "./OptionalForms/TechRequirementsForm";
 import ExternalParticipantsForm from "./OptionalForms/ExternalParticipantsForm";
 import AdditionalForm from "./OptionalForms/AdditionalForm";
-import { useFormikContext } from "formik";
-import { v4 as uuidv4, validate } from "uuid";
-import GeneralForm from "./StepForms/GeneralForm";
-import ScheduleForm from "./StepForms/ScheduleForm";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
-import DecorationForm from "./OptionalForms/DecorationForm";
-import { eventSchema } from "../../features/events/validation/eventSchema";
-import DemographicForm from "./StepForms/DemographicForm";
 
 export default function EventForm({}) {
   const { getReservationsAvailableToUser } = useReservations();
@@ -51,15 +56,34 @@ export default function EventForm({}) {
         description: "",
         reservations: [],
         activities: [],
-        platforms: [],
         programs: [],
         audiences: [],
         idTipo: "",
         scope: "",
         axis: "",
         themes: [],
-        rechnicalRequirements: "",
+
+        //BroadcastForm
+        platforms: [],
+        files: [],
+
+        //RecordsForm
+        records: "",
+
+        //DecorationForm
+        decoration: "",
+
+        //TechRequirementsForm
+        technicalRequirements: "",
         needsLivestream: "",
+
+        //ExternalParticipantsForm
+        numParticipantsExternal: 0,
+        needsParking: "",
+        needsWeekend: "",
+
+        //Additional
+        additional: "",
       }}
     >
       <StepForm userReservations={userReservations} />
@@ -186,11 +210,11 @@ function StepForm({ userReservations }) {
           ></BroadcastForm>
         </Stack>
       </Slide>
-      <Stack className="section" id={"requisitos-tecnicos"}>
-        <BroadcastForm
+      <Stack className="section" id={"constancias"}>
+        <RecordsForm
           values={values}
           onFieldValueChange={setFieldValue}
-        ></BroadcastForm>
+        ></RecordsForm>
       </Stack>
       <Stack className="section" id={"requisitos-tecnicos"}>
         <DecorationForm
@@ -199,22 +223,13 @@ function StepForm({ userReservations }) {
         ></DecorationForm>
       </Stack>
       <Stack className="section" id={"requisitos-tecnicos"}>
-        <TechRequirementsForm
-          values={values}
-          onFieldValueChange={setFieldValue}
-        ></TechRequirementsForm>
+        <TechRequirementsForm />
       </Stack>
       <Stack className="section" id={"requisitos-tecnicos"}>
-        <ExternalParticipantsForm
-          values={values}
-          onFieldValueChange={setFieldValue}
-        ></ExternalParticipantsForm>
+        <ExternalParticipantsForm />
       </Stack>
       <Stack className="section" id={"requisitos-tecnicos"}>
-        <AdditionalForm
-          values={values}
-          onFieldValueChange={setFieldValue}
-        ></AdditionalForm>
+        <AdditionalForm />
       </Stack>
     </Page>
   );
@@ -243,6 +258,7 @@ function EndStep({ values, onSectionChange }) {
       <SectionButton
         onClick={() => onSectionChange(2)}
         icon={<ReceiptLongIcon sx={iconSX} />}
+        configured={Boolean(values.records)}
         name="Constancias"
         description="Solicite constancias para los participantes de su evento."
       ></SectionButton>
@@ -256,17 +272,26 @@ function EndStep({ values, onSectionChange }) {
       <SectionButton
         onClick={() => onSectionChange(4)}
         icon={<SettingsIcon sx={iconSX} />}
+        configured={Boolean(
+          values.technicalRequirements || values.needsLivestream
+        )}
         name="Requisitos técnicos"
         description="Solicite asistencia del Centro de Cómputo (equipo de cómputo, transmisión en vivo...) "
       ></SectionButton>
       <SectionButton
         onClick={() => onSectionChange(5)}
+        configured={Boolean(
+          values.numParticipantsExternal > 0 ||
+            values.needsParking ||
+            values.needsWeekend
+        )}
         icon={<HailIcon sx={iconSX} />}
         name="Público externo"
         description="¿Asistirán personas ajenas a la FEI? Cuéntenos aquí."
       ></SectionButton>
       <SectionButton
         onClick={() => onSectionChange(6)}
+        configured={Boolean(values.additional)}
         icon={<QuestionMarkIcon sx={iconSX} />}
         name="Requisitos adicionales"
         description="¿Nos faltó pedirle algo? Pídalo aquí."
