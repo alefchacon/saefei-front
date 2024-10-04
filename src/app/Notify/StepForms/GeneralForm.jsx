@@ -57,8 +57,10 @@ export default function GeneralForm({ userReservations }) {
             setFieldTouched("reservations", checked);
             setFieldValue("reservations", checked);
             /*
-              Aquí estaría bien pedir confirmación antes de borrar las actividades.
-              Eso es para la v2 xD.
+              The following deletes activities when their reservation
+              gets unchecked. It'd be nice to ask for confirmation here.
+              
+              Emphasis on "nice" xD.
               */
             const remainingActivities = values.activities.filter((activity) =>
               checked.some(

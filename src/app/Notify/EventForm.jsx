@@ -164,8 +164,24 @@ function StepForm({ userReservations }) {
       id={"notificar-evento"}
       activeSectionIndex={activeSectionIndex}
     >
-      <StepperCustom onStepChange={handleStepChange} step={activeStep}>
-        <Stack title="Datos generales" id={"datos-generales"}>
+      <StepperCustom
+        onStepChange={handleStepChange}
+        step={activeStep}
+        endButton={
+          <Button disableElevation variant="contained">
+            Notificar evento
+          </Button>
+        }
+      >
+        <Stack
+          title="Datos generales"
+          id={"datos-generales"}
+          /*
+            StepperCustom uses these to validate whether a step has errors.
+            Check StepperCustom.handleStepChange()d
+          */
+          fields={["name", "description", "reservations"]}
+        >
           <Button
             onClick={() => {
               validateForm();
@@ -182,7 +198,18 @@ function StepForm({ userReservations }) {
             selectedUserReservations={selectedUserReservations}
           ></ScheduleForm>
         </Stack>
-        <Stack title="Info. demográfica" id={"info-demografica"}>
+        <Stack
+          title="Info. demográfica"
+          id={"info-demografica"}
+          fields={[
+            "programs",
+            "audiences",
+            "idTipo",
+            "scope",
+            "axis",
+            "themes",
+          ]}
+        >
           <DemographicForm></DemographicForm>
         </Stack>
         <Stack title="Adicional" id={"adicional"}>
