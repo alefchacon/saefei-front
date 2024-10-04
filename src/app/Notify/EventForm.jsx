@@ -39,11 +39,12 @@ import TechRequirementsForm from "./OptionalForms/TechRequirementsForm";
 import ExternalParticipantsForm from "./OptionalForms/ExternalParticipantsForm";
 import AdditionalForm from "./OptionalForms/AdditionalForm";
 import { useFormikContext } from "formik";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4, validate } from "uuid";
 import GeneralForm from "./StepForms/GeneralForm";
 import ScheduleForm from "./StepForms/ScheduleForm";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import DecorationForm from "./OptionalForms/DecorationForm";
+import { eventSchema } from "../../features/events/validation/eventSchema";
 
 export default function EventForm({}) {
   const { getReservationsAvailableToUser } = useReservations();
@@ -64,6 +65,7 @@ export default function EventForm({}) {
 
   return (
     <Formik
+      validationSchema={eventSchema}
       className="section"
       initialValues={{
         name: "",
@@ -81,9 +83,11 @@ export default function EventForm({}) {
         needsLivestream: "",
       }}
     >
-      {({ values, errors, setFieldValue, handleChange, touched }) => (
+      {({ values, errors, setFieldValue, handleChange, touched, validate }) => (
         <StepForm
           values={values}
+          errors={errors}
+          touched={touched}
           onFieldValueChange={setFieldValue}
           userReservations={userReservations}
         />
@@ -184,9 +188,19 @@ function StepForm({
     >
       <StepperCustom onStepChange={handleStepChange} step={activeStep}>
         <Stack title="Datos generales" id={"datos-generales"}>
-          <Button onClick={() => console.log(values)}>testin</Button>
+          <Button
+            onClick={() => {
+              validate();
+              console.log(values);
+              console.log(errors);
+            }}
+          >
+            testin
+          </Button>
           <GeneralForm
             values={values}
+            errors={errors}
+            touched={touched}
             userReservations={userReservations}
             onFieldValueChange={onFieldValueChange}
           ></GeneralForm>

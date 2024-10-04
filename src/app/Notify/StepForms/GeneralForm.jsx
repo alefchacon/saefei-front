@@ -8,6 +8,8 @@ import { Formik, Form } from "formik";
 
 export default function GeneralForm({
   values,
+  errors,
+  touched,
   userReservations,
   onFieldValueChange,
   onSelectUserReservations,
@@ -18,6 +20,8 @@ export default function GeneralForm({
         <TextField
           name="name"
           value={values.name}
+          error={Boolean(errors.name && touched.name)}
+          helperText={errors.name}
           onChange={(e) => onFieldValueChange("name", e.target.value)}
           variant="standard"
           label="Nombre del evento"
@@ -54,12 +58,19 @@ export default function GeneralForm({
             }}
           >
             {userReservations.map((reservation, index) => (
-              <CardReservation
-                value={reservation.id}
+              <Stack
                 key={index}
-                reservation={reservation}
-                activitySchedule={false}
-              ></CardReservation>
+                className="reservation-wrapper"
+                value={reservation.id}
+                padding={"10px 0"}
+              >
+                <CardReservation
+                  value={reservation.id}
+                  key={index}
+                  reservation={reservation}
+                  activitySchedule={false}
+                ></CardReservation>
+              </Stack>
             ))}
           </CheckList>
         </FormControl>

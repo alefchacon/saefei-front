@@ -28,6 +28,7 @@ export default function ScheduleForm({
 
   const newActivityNameRef = useRef(null);
   const newActivityTimeRef = useRef(null);
+
   const openAddActivityModal = (idReservacion = 0) => {
     openModal(
       "Agregar actividad",
@@ -69,6 +70,63 @@ export default function ScheduleForm({
         variant="contained"
       >
         Agregar actividad
+      </Button>,
+      true
+    );
+  };
+  const openEditActivityModal = (activityToEdit) => {
+    openModal(
+      "Editar actividad",
+      <Stack minWidth={"500px"} gap={"var(--field-gap)"}>
+        <TextField
+          disabled={activityToEdit.start || activityToEdit.end}
+          defaultValue={activityToEdit.name}
+          onChange={(e) => (newActivityNameRef.current.value = e.target.value)}
+          inputRef={newActivityNameRef}
+          label={"Nombre de la actividad"}
+          variant="standard"
+        ></TextField>
+        <TimePicker
+          defaultValue={activityToEdit.time}
+          minTime={moment(
+            values.activities.find(
+              (activity) =>
+                activity.idReservacion === activityToEdit.idReservacion &&
+                activity.start
+            ).time,
+            "HH:mm"
+          )}
+          maxTime={moment(
+            values.activities.find(
+              (activity) =>
+                activity.idReservacion === activityToEdit.idReservacion &&
+                activity.end
+            ).time,
+            "HH:mm"
+          )}
+          inputRef={newActivityTimeRef}
+          slotProps={{ textField: { variant: "standard" } }}
+        ></TimePicker>
+      </Stack>,
+      <Button
+        onClick={() => {
+          const newActivity = {
+            idFrontend: activityToEdit.idFrontend,
+            idReservacion: activityToEdit.idReservacion,
+            name: newActivityNameRef.current.value,
+            time: moment(newActivityTimeRef.current.value, "HH:mm"),
+          };
+          const activitiesWithoutEditedOne = values.activities.filter(
+            (activity) => activity.idFrontend !== activityToEdit.idFrontend
+          );
+          onFieldValueChange("activities", [
+            ...activitiesWithoutEditedOne,
+            newActivity,
+          ]);
+        }}
+        variant="contained"
+      >
+        Editar actividad
       </Button>,
       true
     );
@@ -128,6 +186,7 @@ export default function ScheduleForm({
                   key={index}
                   required={activity.start || activity.end}
                   onDelete={handleDeleteActivity}
+                  onEdit={() => openEditActivityModal(activity)}
                 ></CardActivity>
               ))}
           </AccordionCustom>

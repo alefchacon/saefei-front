@@ -21,7 +21,7 @@ import ChipSpace from "../features/reservations/components/ChipSpace";
 import { useReservations } from "../features/reservations/businessLogic/useReservations";
 import FormControl from "@mui/material/FormControl";
 import * as yup from "yup";
-import { MESSAGES_FIELD } from "../stores/MESSAGGES";
+import { MESSAGES_FIELD } from "../stores/MESSAGES";
 import { useModal } from "../components/hooks/useModal";
 import ButtonResponsive from "../components/ButtonResponsive";
 import Select from "../components/Select";
