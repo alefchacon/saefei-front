@@ -43,8 +43,11 @@ export default function CheckList({
   const handleSelectAll = () => {
     if (selectedAll) {
       setChecked([]);
+      onChange([]);
     } else {
-      setChecked(children.map((child) => child.props.value));
+      const all = children.map((child) => child.props.value);
+      setChecked(all);
+      onChange(all);
     }
     setSelectedAll(!selectedAll);
   };
