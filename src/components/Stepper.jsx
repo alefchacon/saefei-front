@@ -11,10 +11,16 @@ import StepLabel from "@mui/material/StepLabel";
 import { useFormikContext } from "formik";
 import Alert from "@mui/material/Alert";
 
-export default function StepperCustom({ children, step = 0, onStepChange }) {
+export default function StepperCustom({
+  children,
+  step = 0,
+  onStepChange,
+  endButton,
+}) {
   const [activeStep, setActiveStep] = React.useState(step);
   const [completed, setCompleted] = React.useState({});
-  const { validate, validateForm, dirty } = useFormikContext();
+  const { validate, validateForm, dirty, validateField, errors } =
+    useFormikContext();
   const [triedNextWithErrors, setTriedNextWithErrors] = React.useState(false);
 
   const totalSteps = () => {
@@ -34,19 +40,21 @@ export default function StepperCustom({ children, step = 0, onStepChange }) {
   };
 
   const handleStepChange = async (newActiveStep = 0) => {
-    /*
-    const errors = await validateForm();
-    if (Object.keys(errors).length === 0) {
+    let stepHasErrors = false;
+
+    if (children[step].props.fields) {
+      stepHasErrors = Object.entries(errors).some(([key, value]) =>
+        children[step].props.fields.includes(key)
+      );
+    }
+
+    if (stepHasErrors) {
+      setTriedNextWithErrors(true);
+    } else {
       setTriedNextWithErrors(false);
       setActiveStep(newActiveStep);
       onStepChange(newActiveStep);
-    } else {
-      setTriedNextWithErrors(true);
-  }
-  */
-
-    setActiveStep(newActiveStep);
-    onStepChange(newActiveStep);
+    }
   };
 
   const handleNext = () => {
@@ -109,9 +117,13 @@ export default function StepperCustom({ children, step = 0, onStepChange }) {
             >
               Regresar
             </Button>
-            <Button onClick={handleNext} sx={{ mr: 1 }}>
-              Siguiente
-            </Button>
+            {activeStep === children.length - 1 ? (
+              endButton
+            ) : (
+              <Button onClick={handleNext} sx={{ mr: 1 }}>
+                Siguiente
+              </Button>
+            )}
           </Stack>
         </React.Fragment>
       </div>
