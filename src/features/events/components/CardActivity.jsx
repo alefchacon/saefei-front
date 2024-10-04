@@ -12,9 +12,14 @@ export default function CardActivity({
   activity = { name: "activity", time: "12:00:00" },
   required,
   onDelete,
+  onEdit,
 }) {
   const handleDeleteActivity = () => {
     onDelete(activity);
+  };
+
+  const handleEditActivity = () => {
+    onEdit(activity);
   };
 
   return (
@@ -32,7 +37,7 @@ export default function CardActivity({
 
       <Stack direction={"row"}>
         <Tooltip title="Editar actividad" placement="top-start">
-          <IconButton color="primary">
+          <IconButton color="primary" onClick={handleEditActivity}>
             <EditIcon></EditIcon>
           </IconButton>
         </Tooltip>

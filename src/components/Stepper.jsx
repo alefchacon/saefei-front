@@ -6,6 +6,8 @@ import StepButton from "@mui/material/StepButton";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Stack } from "@mui/material";
+import Slide from "@mui/material/Slide";
+import StepLabel from "@mui/material/StepLabel";
 
 export default function StepperCustom({ children, step = 0, onStepChange }) {
   const [activeStep, setActiveStep] = React.useState(step);
@@ -60,14 +62,14 @@ export default function StepperCustom({ children, step = 0, onStepChange }) {
     setActiveStep(0);
     setCompleted({});
   };
-
+  console.log(children.indexOf(children[step]) === step);
   return (
     <Box sx={{ width: "100%" }}>
       <Stepper nonLinear activeStep={step}>
         {children.map((label, index) => (
           <Step key={label.props.title} completed={completed[index]}>
             <StepButton color="inherit" onClick={handleStep(index)}>
-              {label.props.title}
+              <StepLabel>{label.props.title}</StepLabel>
             </StepButton>
           </Step>
         ))}
