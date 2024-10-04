@@ -178,7 +178,7 @@ function StepForm({ userReservations }) {
           id={"datos-generales"}
           /*
             StepperCustom uses these to validate whether a step has errors.
-            Check StepperCustom.handleStepChange()
+            Check StepperCustom.handleStepChange()d
           */
           fields={["name", "description", "reservations"]}
         >
