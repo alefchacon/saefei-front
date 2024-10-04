@@ -70,11 +70,6 @@ export default function BroadcastForm({
         </CheckList>
         <TextField variant="standard" label="Otra(s)"></TextField>
       </Stack>
-
-      {/*
-        Mucho ojo con utilizar valores booleanos en el 
-      */}
-
       <RadioList
         label={"¿Se proporcionará material promocional?"}
         onChange={(e) => setShowUpload(e.target.value === "true")}

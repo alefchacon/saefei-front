@@ -120,6 +120,7 @@ export default function ScheduleForm({ selectedUserReservations }) {
             ...activitiesWithoutEditedOne,
             newActivity,
           ]);
+          closeModal();
         }}
         variant="contained"
       >
