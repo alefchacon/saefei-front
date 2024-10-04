@@ -5,6 +5,8 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Checkbox from "@mui/material/Checkbox";
 import FormLabel from "@mui/material/FormLabel";
+import FormHelperText from "@mui/material/FormHelperText";
+import FormControl from "@mui/material/FormControl";
 
 export default function CheckList({
   children,
@@ -15,6 +17,9 @@ export default function CheckList({
   selectAll = false,
   min,
   max,
+  error,
+  required,
+  helperText,
 }) {
   const [checked, setChecked] = useState(values);
   const [selectedAll, setSelectedAll] = useState(false);
@@ -53,53 +58,60 @@ export default function CheckList({
   };
 
   return (
-    <List
-      sx={{
-        width: "100%",
-      }}
-    >
-      <FormLabel>{label}</FormLabel>
+    <FormControl error={error}>
+      <List
+        sx={{
+          width: "100%",
+        }}
+      >
+        <FormLabel error={error} required={required}>
+          {label}
+        </FormLabel>
 
-      {selectAll && (
-        <ListItem sx={{ padding: 0 }} disablePadding divider>
-          <ListItemButton onClick={handleSelectAll} role={undefined} dense>
-            <Checkbox
-              edge="start"
-              tabIndex={-1}
-              disableRipple
-              indeterminate={
-                checked.length > 0 && checked.length < children.length
-              }
-              checked={checked.length === children.length}
-            />
-            <b>Seleccionar todas</b>
-          </ListItemButton>
-        </ListItem>
-      )}
-
-      {children.map((child, index) => {
-        const labelId = `checkbox-list-label-${child.props.value}`;
-
-        return (
-          <ListItem key={index} disablePadding divider>
-            <ListItemButton
-              role={undefined}
-              onClick={handleToggle(child.props.value)}
-              dense
-            >
+        {selectAll && (
+          <ListItem sx={{ padding: 0 }} disablePadding divider>
+            <ListItemButton onClick={handleSelectAll} role={undefined} dense>
               <Checkbox
-                sx={{ paddingLeft: selectAll ? 5 : 0 }}
                 edge="start"
-                checked={checked.includes(child.props.value)}
                 tabIndex={-1}
                 disableRipple
-                inputProps={{ "aria-labelledby": labelId }}
+                indeterminate={
+                  checked.length > 0 && checked.length < children.length
+                }
+                checked={checked.length === children.length}
               />
-              {child}
+              <b>Seleccionar todas</b>
             </ListItemButton>
           </ListItem>
-        );
-      })}
-    </List>
+        )}
+
+        {children.map((child, index) => {
+          const labelId = `checkbox-list-label-${child.props.value}`;
+
+          return (
+            <ListItem key={index} disablePadding divider>
+              <ListItemButton
+                role={undefined}
+                onClick={handleToggle(child.props.value)}
+                dense
+              >
+                <Checkbox
+                  sx={{ paddingLeft: selectAll ? 5 : 0 }}
+                  edge="start"
+                  checked={checked.includes(child.props.value)}
+                  tabIndex={-1}
+                  disableRipple
+                  inputProps={{ "aria-labelledby": labelId }}
+                />
+                {child}
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
+        <FormHelperText color="red" variant="error">
+          {helperText}
+        </FormHelperText>
+      </List>
+    </FormControl>
   );
 }

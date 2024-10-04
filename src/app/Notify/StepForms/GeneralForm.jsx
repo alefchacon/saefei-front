@@ -5,75 +5,85 @@ import FormLabel from "@mui/material/FormLabel";
 import CardReservation from "../../../features/reservations/components/CardReservation";
 import CheckList from "../../../components/CheckList";
 import { Formik, Form } from "formik";
+import { useFormikContext } from "formik";
 
-export default function GeneralForm({
-  values,
-  errors,
-  touched,
-  userReservations,
-  onFieldValueChange,
-  onSelectUserReservations,
-}) {
+export default function GeneralForm({ userReservations }) {
+  const {
+    values,
+    touched,
+    errors,
+    handleBlur,
+    setFieldValue,
+    setFieldTouched,
+  } = useFormikContext();
+
   return (
     <Form>
       <Stack gap={"var(--field-gap)"}>
         <TextField
+          required
           name="name"
+          onBlur={handleBlur}
           value={values.name}
           error={Boolean(errors.name && touched.name)}
-          helperText={errors.name}
-          onChange={(e) => onFieldValueChange("name", e.target.value)}
+          helperText={touched.name && errors.name}
+          onChange={(e) => setFieldValue("name", e.target.value)}
           variant="standard"
           label="Nombre del evento"
         />
         <TextField
+          required
           variant="standard"
           label="Descripción del evento"
           name="description"
           value={values.description}
-          onChange={(e) => onFieldValueChange("description", e.target.value)}
+          onChange={(e) => setFieldValue("description", e.target.value)}
+          onBlur={handleBlur}
+          error={Boolean(errors.description && touched.description)}
+          helperText={touched.description && errors.description}
         />
 
-        <FormControl>
-          <FormLabel>
-            Cuenta con las siguientes reservaciones aprobadas por la
-            administración de la facultad. Seleccione la(s) que utilizará para
-            su evento:
-          </FormLabel>
-          <CheckList
-            name={"reservations"}
-            values={values.reservations}
-            onChange={(checked) => {
-              onFieldValueChange("reservations", checked);
-              /*
+        <CheckList
+          label={
+            "Cuenta con las siguientes reservaciones aprobadas por la administración de la facultad. Seleccione la(s) que utilizará para su evento"
+          }
+          name={"reservations"}
+          values={values.reservations}
+          required
+          onBlur={handleBlur}
+          error={Boolean(errors.reservations && touched.reservations)}
+          helperText={touched.reservations && errors.reservations}
+          onChange={(checked) => {
+            setFieldTouched("reservations", checked);
+            setFieldValue("reservations", checked);
+            /*
               Aquí estaría bien pedir confirmación antes de borrar las actividades.
               Eso es para la v2 xD.
               */
-              const remainingActivities = values.activities.filter((activity) =>
-                checked.some(
-                  (idReservacion) => idReservacion === activity.idReservacion
-                )
-              );
-              onFieldValueChange("activities", remainingActivities);
-            }}
-          >
-            {userReservations.map((reservation, index) => (
-              <Stack
-                key={index}
-                className="reservation-wrapper"
+            const remainingActivities = values.activities.filter((activity) =>
+              checked.some(
+                (idReservacion) => idReservacion === activity.idReservacion
+              )
+            );
+            setFieldValue("activities", remainingActivities);
+          }}
+        >
+          {userReservations.map((reservation, index) => (
+            <Stack
+              key={index}
+              className="reservation-wrapper"
+              value={reservation.id}
+              padding={"10px 0"}
+            >
+              <CardReservation
                 value={reservation.id}
-                padding={"10px 0"}
-              >
-                <CardReservation
-                  value={reservation.id}
-                  key={index}
-                  reservation={reservation}
-                  activitySchedule={false}
-                ></CardReservation>
-              </Stack>
-            ))}
-          </CheckList>
-        </FormControl>
+                key={index}
+                reservation={reservation}
+                activitySchedule={false}
+              ></CardReservation>
+            </Stack>
+          ))}
+        </CheckList>
       </Stack>
     </Form>
   );

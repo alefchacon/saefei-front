@@ -8,10 +8,14 @@ import Typography from "@mui/material/Typography";
 import { Stack } from "@mui/material";
 import Slide from "@mui/material/Slide";
 import StepLabel from "@mui/material/StepLabel";
+import { useFormikContext } from "formik";
+import Alert from "@mui/material/Alert";
 
 export default function StepperCustom({ children, step = 0, onStepChange }) {
   const [activeStep, setActiveStep] = React.useState(step);
   const [completed, setCompleted] = React.useState({});
+  const { validate, validateForm, dirty } = useFormikContext();
+  const [triedNextWithErrors, setTriedNextWithErrors] = React.useState(false);
 
   const totalSteps = () => {
     return children.length;
@@ -29,7 +33,18 @@ export default function StepperCustom({ children, step = 0, onStepChange }) {
     return completedSteps() === totalSteps();
   };
 
-  const handleStepChange = (newActiveStep = 0) => {
+  const handleStepChange = async (newActiveStep = 0) => {
+    /*
+    const errors = await validateForm();
+    if (Object.keys(errors).length === 0) {
+      setTriedNextWithErrors(false);
+      setActiveStep(newActiveStep);
+      onStepChange(newActiveStep);
+    } else {
+      setTriedNextWithErrors(true);
+  }
+  */
+
     setActiveStep(newActiveStep);
     onStepChange(newActiveStep);
   };
@@ -62,7 +77,6 @@ export default function StepperCustom({ children, step = 0, onStepChange }) {
     setActiveStep(0);
     setCompleted({});
   };
-  console.log(children.indexOf(children[step]) === step);
   return (
     <Box sx={{ width: "100%" }}>
       <Stepper nonLinear activeStep={step}>
@@ -78,6 +92,12 @@ export default function StepperCustom({ children, step = 0, onStepChange }) {
         <React.Fragment>
           <Stack paddingTop={5} paddingBottom={5}>
             {children[step].props.children}
+
+            {triedNextWithErrors && (
+              <Alert severity="error">
+                Por favor, llene los campos requeridos antes de continuar.
+              </Alert>
+            )}
           </Stack>
 
           <Stack direction={"row"} justifyContent={"end"}>

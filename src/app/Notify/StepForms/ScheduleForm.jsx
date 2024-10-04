@@ -17,14 +17,11 @@ import CardActivity from "../../../features/events/components/CardActivity";
 
 import { v4 as uuidv4 } from "uuid";
 
-export default function ScheduleForm({
-  values,
-  userReservations,
-  selectedUserReservations,
-  onFieldValueChange,
-  onSelectUserReservations,
-}) {
+import { useFormikContext } from "formik";
+
+export default function ScheduleForm({ selectedUserReservations }) {
   const { openModal, closeModal, Modal } = useModal();
+  const { values, setFieldValue, setFieldTouched } = useFormikContext();
 
   const newActivityNameRef = useRef(null);
   const newActivityTimeRef = useRef(null);
@@ -65,7 +62,7 @@ export default function ScheduleForm({
             name: newActivityNameRef.current.value,
             time: moment(newActivityTimeRef.current.value, "HH:mm"),
           };
-          onFieldValueChange("activities", [...values.activities, newActivity]);
+          setFieldValue("activities", [...values.activities, newActivity]);
         }}
         variant="contained"
       >
@@ -119,7 +116,7 @@ export default function ScheduleForm({
           const activitiesWithoutEditedOne = values.activities.filter(
             (activity) => activity.idFrontend !== activityToEdit.idFrontend
           );
-          onFieldValueChange("activities", [
+          setFieldValue("activities", [
             ...activitiesWithoutEditedOne,
             newActivity,
           ]);
@@ -136,7 +133,7 @@ export default function ScheduleForm({
     const newActivities = values.activities.filter(
       (activity) => activity.idFrontend !== activityToDelete.idFrontend
     );
-    onFieldValueChange("activities", newActivities);
+    setFieldValue("activities", newActivities);
   };
 
   return (
