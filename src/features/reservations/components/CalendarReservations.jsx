@@ -130,11 +130,12 @@ export default function CalendarReservations({
 
   return (
     <Stack
-      height={"100%"}
       width={"100%"}
+      maxHeight={"100%"}
       display={"flex"}
       flex={2}
       flexGrow={2}
+      className="calendar"
     >
       <Calendar
         titleAccessor={forEvents ? "name" : (item) => item.space.name}

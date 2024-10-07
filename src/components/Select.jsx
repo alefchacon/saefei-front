@@ -27,7 +27,7 @@ export default function SelectCustom({
 
   return (
     <div>
-      <FormControl variant="standard" fullWidth error={error}>
+      <FormControl variant="filled" fullWidth error={error}>
         <InputLabel id={id.concat("-label")}>{label}</InputLabel>
         <Select
           labelId={id.concat("-label")}

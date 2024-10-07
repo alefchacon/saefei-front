@@ -28,6 +28,25 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { Routes, Route } from "react-router-dom";
 import * as ROUTES from "../stores/ROUTES";
 import EventForm from "./Notify/EventForm";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+const theme = createTheme({
+  palette: {},
+  components: {
+    MuiFilledInput: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#f5f7ff",
+          "&:hover": {
+            backgroundColor: "#ebefff", // Background color on hover
+          },
+          "&.Mui-focused": {
+            backgroundColor: "#dedfff", // Background color when focused
+          },
+        },
+      },
+    },
+  },
+});
 
 function App() {
   moment.locale("es-mx");
@@ -36,57 +55,60 @@ function App() {
 
   return (
     <>
-      <Stack
-        role={"main"}
-        sx={{ backgroundColor: "var(--bg)" }}
-        display={"flex"}
-        flexDirection={{ md: "row", xs: "column" }}
-        height={"100%"}
-        width={"100%"}
-        position={"relative"}
-      >
+      <ThemeProvider theme={theme}>
         <Stack
-          position={"absolute"}
-          right={0}
-          bgcolor={"var(--dark)"}
-          padding={"0.2px 20px 0.2px 50px"}
-          borderRadius={"0 10px 0 20px"}
-          display={{ md: "block", xs: "none" }}
-          sx={{ opacity: 0.5 }}
+          role={"main"}
+          sx={{ backgroundColor: "var(--bg)" }}
+          display={"flex"}
+          flexDirection={{ md: "row", xs: "column" }}
+          height={"100%"}
+          width={"100%"}
+          position={"relative"}
         >
-          <Typography color="white">Universidad Veracruzana</Typography>
-        </Stack>
+          <Stack
+            position={"absolute"}
+            right={0}
+            bgcolor={"var(--dark)"}
+            padding={"0.2px 20px 0.2px 50px"}
+            borderRadius={"0 10px 0 20px"}
+            display={{ md: "block", xs: "none" }}
+            sx={{ opacity: 0.5 }}
+          >
+            <Typography color="white">Universidad Veracruzana</Typography>
+          </Stack>
 
-        <Sidebar />
+          <Sidebar />
 
-        <Stack
-          id="content"
-          className="flex-2"
-          sx={{
-            backgroundColor: "transparent",
-            padding: { md: "2rem", xs: "0" },
-          }}
-        >
-          <Routes>
-            <Route
-              path={ROUTES.ROUTE_RESERVE}
-              element={<ReservationForm></ReservationForm>}
-            ></Route>
-            <Route
-              path={ROUTES.ROUTE_CALENDAR_RESERVATIONS}
-              element={<Reservations></Reservations>}
-            ></Route>
-            <Route
-              path={`${ROUTES.ROUTE_SEARCH_EVENTS}/:idEvento?`}
-              element={<EventView></EventView>}
-            ></Route>
-            <Route
-              path={`${ROUTES.ROUTE_NOTIFY}`}
-              element={<EventForm />}
-            ></Route>
-          </Routes>
+          <Stack
+            id="content"
+            className="flex-2"
+            sx={{
+              position: "relative",
+              backgroundColor: "transparent",
+              padding: { md: "2rem", xs: "0" },
+            }}
+          >
+            <Routes>
+              <Route
+                path={ROUTES.ROUTE_RESERVE}
+                element={<ReservationForm></ReservationForm>}
+              ></Route>
+              <Route
+                path={ROUTES.ROUTE_CALENDAR_RESERVATIONS}
+                element={<Reservations></Reservations>}
+              ></Route>
+              <Route
+                path={`${ROUTES.ROUTE_SEARCH_EVENTS}/:idEvento?`}
+                element={<EventView></EventView>}
+              ></Route>
+              <Route
+                path={`${ROUTES.ROUTE_NOTIFY}`}
+                element={<EventForm />}
+              ></Route>
+            </Routes>
+          </Stack>
         </Stack>
-      </Stack>
+      </ThemeProvider>
     </>
   );
 }

@@ -36,6 +36,8 @@ import ExternalParticipantsForm from "./OptionalForms/ExternalParticipantsForm";
 import AdditionalForm from "./OptionalForms/AdditionalForm";
 import { sortAsc } from "../../util/moments";
 import { useEvents } from "../../features/events/businessLogic/useEvents";
+import { useLoading } from "../../components/providers/LoadingProvider";
+import EventFormSkeleton from "./StepForms/EventFormSkeleton";
 
 export default function EventForm({}) {
   const { getReservationsAvailableToUser } = useReservations();
@@ -43,6 +45,7 @@ export default function EventForm({}) {
   const [userReservations, setUserReservations] = useState([]);
   const { storeEvent } = useEvents();
   const user = getUser();
+  const { loading } = useLoading();
 
   useEffect(() => {
     getReservationsAvailableToUser(getUser().id).then((response) => {
@@ -56,51 +59,57 @@ export default function EventForm({}) {
   };
 
   return (
-    <Formik
-      onSubmit={handleSubmit}
-      validationSchema={eventSchema}
-      validateOnBlur={true}
-      className="section"
-      initialValues={{
-        idUsuario: user.id,
-        name: "",
-        description: "",
-        numParticipants: "",
-        reservations: [],
-        activities: [],
-        chronogram: "",
-        programs: [],
-        audiences: [],
-        idTipo: "",
-        scope: "",
-        axis: "",
-        themes: [],
+    <>
+      {false ? (
+        <EventFormSkeleton />
+      ) : (
+        <Formik
+          onSubmit={handleSubmit}
+          validationSchema={eventSchema}
+          validateOnBlur={true}
+          className="section"
+          initialValues={{
+            idUsuario: user.id,
+            name: "",
+            description: "",
+            numParticipants: "",
+            reservations: [],
+            activities: [],
+            chronogram: "",
+            programs: [],
+            audiences: [],
+            idTipo: "",
+            scope: "",
+            axis: "",
+            themes: [],
 
-        //BroadcastForm
-        media: [],
-        publicity: [],
+            //BroadcastForm
+            media: [],
+            publicity: [],
 
-        //RecordsForm
-        records: "",
+            //RecordsForm
+            records: "",
 
-        //DecorationForm
-        decoration: "",
+            //DecorationForm
+            decoration: "",
 
-        //TechRequirementsForm
-        technicalRequirements: "",
-        needsLivestream: "",
+            //TechRequirementsForm
+            technicalRequirements: "",
+            needsLivestream: "",
 
-        //ExternalParticipantsForm
-        numParticipantsExternal: 0,
-        needsParking: "",
-        needsWeekend: "",
+            //ExternalParticipantsForm
+            numParticipantsExternal: 0,
+            needsParking: "",
+            needsWeekend: "",
 
-        //Additional
-        additional: "",
-      }}
-    >
-      <StepForm userReservations={userReservations} />
-    </Formik>
+            //Additional
+            additional: "",
+          }}
+        >
+          <StepForm userReservations={userReservations} />
+        </Formik>
+      )}
+    </>
   );
 }
 
@@ -177,6 +186,7 @@ function StepForm({ userReservations }) {
       className={"section"}
       id={"notificar-evento"}
       activeSectionIndex={activeSectionIndex}
+      skeleton={<EventFormSkeleton />}
     >
       <StepperCustom
         onStepChange={handleStepChange}

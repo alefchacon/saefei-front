@@ -1,7 +1,8 @@
 import Stack from "@mui/material/Stack";
 import Header from "./Header";
 import Slide from "@mui/material/Slide";
-
+import { useLoading } from "./providers/LoadingProvider";
+import Fade from "@mui/material/Fade";
 export default function Page({
   title,
   children,
@@ -10,7 +11,10 @@ export default function Page({
   activeSectionIndex = 0,
   onSectionChange,
   className,
+  skeleton,
 }) {
+  const { loading } = useLoading();
+
   const handleReturnToFirstSection = () => {
     onSectionChange(0);
   };
@@ -29,9 +33,13 @@ export default function Page({
           title={title}
         ></Header>
       )}
-      <Stack id={"content"} className="body side-padding" height={"100%"}>
-        {children[activeSectionIndex]}
-      </Stack>
+      {loading && skeleton ? (
+        skeleton
+      ) : (
+        <Stack id={"content"} className="body side-padding" height={"100%"}>
+          {children[activeSectionIndex]}
+        </Stack>
+      )}
     </Stack>
   );
 }

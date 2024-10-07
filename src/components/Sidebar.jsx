@@ -33,7 +33,7 @@ export default function Sidebar() {
 
   const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
     borderRadius: "10px",
-
+    color: "inherit",
     "&.Mui-selected": {
       backgroundColor: "white",
       color: "var(--blue)",
@@ -45,9 +45,9 @@ export default function Sidebar() {
     <Stack
       id="sidebar"
       sx={{
-        backgroundColor: "transparent",
+        backgroundColor: "var(--blue)",
         maxWidth: "20vw",
-        color: "var(--dark)",
+        color: "white",
         flex: 1,
       }}
       display={{ xs: "none", md: "flex" }}

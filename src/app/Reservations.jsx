@@ -26,7 +26,7 @@ function ReservationGroup({ space = {}, reservations = [] }) {
         direction={"row"}
         justifyContent={"space-between"}
         alignItems={"center"}
-        padding={1}
+        padding={"10px 20px"}
       >
         <ChipSpace space={space} />{" "}
         {reservations.length > 0 && (
@@ -90,14 +90,12 @@ export default function Reservations() {
       <Stack flex={2} className="page">
         <Header title="Reservaciones de espacios"></Header>
         <br />
-        <Stack height={"100%"}>
-          <CalendarReservations
-            forEvents={false}
-            onDateSelect={handleDateSelect}
-            onMonthChange={handleMonthChange}
-            items={reservations}
-          ></CalendarReservations>
-        </Stack>
+        <CalendarReservations
+          forEvents={false}
+          onDateSelect={handleDateSelect}
+          onMonthChange={handleMonthChange}
+          items={reservations}
+        ></CalendarReservations>
       </Stack>
       <Stack
         id="reservation-list"

@@ -6,6 +6,7 @@ import CardReservation from "../../../features/reservations/components/CardReser
 import CheckList from "../../../components/CheckList";
 import { Formik, Form } from "formik";
 import { useFormikContext } from "formik";
+import Skeleton from "@mui/material/Skeleton";
 
 export default function GeneralForm({ userReservations }) {
   const {
@@ -28,12 +29,12 @@ export default function GeneralForm({ userReservations }) {
           error={Boolean(errors.name && touched.name)}
           helperText={touched.name && errors.name}
           onChange={(e) => setFieldValue("name", e.target.value)}
-          variant="standard"
+          variant="filled"
           label="Nombre del evento"
         />
         <TextField
           required
-          variant="standard"
+          variant="filled"
           label="Descripción del evento"
           name="description"
           value={values.description}
@@ -44,7 +45,7 @@ export default function GeneralForm({ userReservations }) {
         />
         <TextField
           required
-          variant="standard"
+          variant="filled"
           label="Número estimado de participantes"
           name="numParticipants"
           value={values.numParticipants}

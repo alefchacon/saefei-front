@@ -160,7 +160,7 @@ export default function ReservationForm() {
                 minDate={moment()}
                 slotProps={{
                   textField: {
-                    variant: "standard",
+                    variant: "filled",
                     fullWidth: true,
                     error: Boolean(errors.date && touched.date),
                     helperText: Boolean(errors.date && touched.date)
@@ -279,7 +279,7 @@ const ProposedScheduleForm = ({}) => {
                 slotProps={{
                   textField: {
                     fullWidth: true,
-                    variant: "standard",
+                    variant: "filled",
                     "aria-labelledby": "asdf",
                     error: Boolean(errors.start && touched.start),
                     helperText: Boolean(errors.start && touched.start)
@@ -297,7 +297,7 @@ const ProposedScheduleForm = ({}) => {
                 slotProps={{
                   textField: {
                     fullWidth: true,
-                    variant: "standard",
+                    variant: "filled",
                     "aria-labelledby": "time-pickers-label",
                     error: Boolean(errors.end && touched.end),
                     helperText: Boolean(errors.end && touched.end)
@@ -318,7 +318,7 @@ const ProposedScheduleForm = ({}) => {
             Ejemplo: "17mo Seminario de Investigación en Ingeniería de Software"
           </FormLabel>
           <TextField
-            variant="standard"
+            variant="filled"
             name="motive"
             value={values.motive}
             onChange={handleChange}
