@@ -42,6 +42,18 @@ export default function GeneralForm({ userReservations }) {
           error={Boolean(errors.description && touched.description)}
           helperText={touched.description && errors.description}
         />
+        <TextField
+          required
+          variant="standard"
+          label="Número estimado de participantes"
+          name="numParticipants"
+          value={values.numParticipants}
+          onChange={(e) => setFieldValue("numParticipants", e.target.value)}
+          onBlur={handleBlur}
+          error={Boolean(errors.numParticipants && touched.description)}
+          helperText={touched.numParticipants && errors.numParticipants}
+          type="number"
+        />
 
         <CheckList
           label={
@@ -55,6 +67,7 @@ export default function GeneralForm({ userReservations }) {
           helperText={touched.reservations && errors.reservations}
           onChange={(checked) => {
             setFieldTouched("reservations", checked);
+
             setFieldValue("reservations", checked);
             /*
               The following deletes activities when their reservation

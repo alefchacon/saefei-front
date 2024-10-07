@@ -20,11 +20,11 @@ import moment from "moment";
 import CardReservation from "../features/reservations/components/CardReservation";
 
 export default function EventView() {
-  const [UVEvent, setUVEvent] = useState({});
+  const [eventUV, setEventUV] = useState({});
   const { getEvent } = useEvents();
   const { idEvento } = useParams();
   useEffect(() => {
-    getEvent(idEvento).then((response) => setUVEvent(response.data.data));
+    getEvent(idEvento).then((response) => setEventUV(response.data.data));
   }, []);
 
   const fetchEvent = async () => {};
@@ -50,12 +50,12 @@ export default function EventView() {
       </Stack>
       */}
 
-      <Header title={UVEvent.name} padding={false}>
+      <Header title={eventUV.name} padding={false}>
         <Stack>
           <Typography fontSize={18}>
             por{" "}
             <b>
-              {`${UVEvent.user?.names} ${UVEvent.user?.paternalName} ${UVEvent.user?.maternalName}`}
+              {`${eventUV.user?.names} ${eventUV.user?.paternalName} ${eventUV.user?.maternalName}`}
             </b>
           </Typography>
           <Stack direction={"row"} gap={3}>
@@ -67,28 +67,28 @@ export default function EventView() {
       <br />
       <Stack gap={3}>
         <Stack gap={3} direction={{ md: "row", xs: "column" }}>
-          <CardEventSection title={"General"} event={UVEvent} flex={3}>
+          <CardEventSection title={"General"} event={eventUV} flex={3}>
             <Typography variant="paragraph" fontSize={16}>
-              <b>Descripción:</b> {UVEvent.description}
+              <b>Descripción:</b> {eventUV.description}
             </Typography>
             <Stack direction={"row"} gap={1}>
               <Typography>
                 <b>Programas educativos:</b>
               </Typography>{" "}
-              {UVEvent.programs?.map((program, index) => (
+              {eventUV.programs?.map((program, index) => (
                 <ChipCustom label={program.name} />
               ))}
             </Stack>
           </CardEventSection>
-          <CardEventSection title={"Agenda"} event={UVEvent} flex={1}>
+          <CardEventSection title={"Agenda"} event={eventUV} flex={1}>
             <Stack gap={3}>
-              {UVEvent.reservations?.map((reservation, index) => (
+              {eventUV.reservations?.map((reservation, index) => (
                 <CardReservation reservation={reservation}></CardReservation>
               ))}
             </Stack>
           </CardEventSection>
         </Stack>
-        <CardEventSection title={"Logistica"} event={UVEvent} flex={3}>
+        <CardEventSection title={"Logistica"} event={eventUV} flex={3}>
           <Stack
             direction={"row"}
             flexWrap={"wrap"}
@@ -100,56 +100,56 @@ export default function EventView() {
             </Typography>{" "}
             <ChipCustom
               label={"Apoyo del CC"}
-              display={UVEvent.computerCenterRequirements ? "flex" : "none"}
+              display={eventUV.computerCenterRequirements ? "flex" : "none"}
             />
             <ChipCustom
               label={"Livestream"}
-              display={UVEvent.needsLivestream > 0 ? "flex" : "none"}
+              display={eventUV.needsLivestream > 0 ? "flex" : "none"}
             />
-            <ChipCustom label={`${UVEvent.numParticipants} asistentes`} />
-            <ChipCustom label={`${UVEvent.numExternalParticipants} externos`} />
+            <ChipCustom label={`${eventUV.numParticipants} asistentes`} />
+            <ChipCustom label={`${eventUV.numExternalParticipants} externos`} />
             <ChipCustom
               label={"Estacionamiento para externos"}
-              display={UVEvent.needsParking > 0 ? "flex" : "none"}
+              display={eventUV.needsParking > 0 ? "flex" : "none"}
             />
             <ChipCustom
               label={"Fin de semana"}
-              display={UVEvent.needsWeekend > 0 ? "flex" : "none"}
+              display={eventUV.needsWeekend > 0 ? "flex" : "none"}
             />
           </Stack>
           <Typography>
             <b>Requisitos del CC: </b>
-            {UVEvent.computerCenterRequirements}
+            {eventUV.computerCenterRequirements}
           </Typography>
           <Typography>
             <b>Decoracion: </b>
-            {UVEvent.decoration}
+            {eventUV.decoration}
           </Typography>
           <Typography>
             <b>Presidium: </b>
-            {UVEvent.presidium}
+            {eventUV.presidium}
           </Typography>
           <Typography>
             <b>Constancias: </b>
-            {UVEvent.speakers}
+            {eventUV.speakers}
           </Typography>
         </CardEventSection>
 
         <Stack gap={3} direction={"row"}>
-          <CardEventSection title={"Difusión"} event={UVEvent} flex={3}>
+          <CardEventSection title={"Difusión"} event={eventUV} flex={3}>
             <Stack direction={"row"} gap={1}>
               <Typography>
                 <b>Medios:</b>
               </Typography>{" "}
               <ChipCustom
                 label={"Apoyo del CC"}
-                display={UVEvent.computerCenterRequirements ? "flex" : "none"}
+                display={eventUV.computerCenterRequirements ? "flex" : "none"}
               />
             </Stack>
           </CardEventSection>
-          {UVEvent.additional && (
-            <CardEventSection title={"Adicional"} event={UVEvent} flex={3}>
-              <Typography>{UVEvent.additional}</Typography>
+          {eventUV.additional && (
+            <CardEventSection title={"Adicional"} event={eventUV} flex={3}>
+              <Typography>{eventUV.additional}</Typography>
             </CardEventSection>
           )}
         </Stack>

@@ -34,11 +34,15 @@ import DecorationForm from "./OptionalForms/DecorationForm";
 import TechRequirementsForm from "./OptionalForms/TechRequirementsForm";
 import ExternalParticipantsForm from "./OptionalForms/ExternalParticipantsForm";
 import AdditionalForm from "./OptionalForms/AdditionalForm";
+import { sortAsc } from "../../util/moments";
+import { useEvents } from "../../features/events/businessLogic/useEvents";
 
 export default function EventForm({}) {
   const { getReservationsAvailableToUser } = useReservations();
   const { getUser } = useAuth();
   const [userReservations, setUserReservations] = useState([]);
+  const { storeEvent } = useEvents();
+  const user = getUser();
 
   useEffect(() => {
     getReservationsAvailableToUser(getUser().id).then((response) => {
@@ -46,16 +50,25 @@ export default function EventForm({}) {
     });
   }, []);
 
+  const handleSubmit = (values, actions) => {
+    console.log("hola");
+    storeEvent(values);
+  };
+
   return (
     <Formik
+      onSubmit={handleSubmit}
       validationSchema={eventSchema}
       validateOnBlur={true}
       className="section"
       initialValues={{
+        idUsuario: user.id,
         name: "",
         description: "",
+        numParticipants: "",
         reservations: [],
         activities: [],
+        chronogram: "",
         programs: [],
         audiences: [],
         idTipo: "",
@@ -64,8 +77,8 @@ export default function EventForm({}) {
         themes: [],
 
         //BroadcastForm
-        platforms: [],
-        files: [],
+        media: [],
+        publicity: [],
 
         //RecordsForm
         records: "",
@@ -94,7 +107,8 @@ export default function EventForm({}) {
 function StepForm({ userReservations }) {
   const [activeStep, setActiveStep] = useState(0);
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
-  const { values, errors, setFieldValue, validateForm } = useFormikContext();
+  const { values, errors, setFieldValue, validateForm, submitForm } =
+    useFormikContext();
 
   const handleSectionChange = (newSectionIndex) => {
     setActiveSectionIndex(newSectionIndex);
@@ -153,7 +167,7 @@ function StepForm({ userReservations }) {
   }, [values.reservations]);
 
   values.activities.sort((activityA, activityB) =>
-    moment(activityA.time).diff(moment(activityB.time))
+    sortAsc(activityA.time, activityB.time)
   );
 
   return (
@@ -168,7 +182,12 @@ function StepForm({ userReservations }) {
         onStepChange={handleStepChange}
         step={activeStep}
         endButton={
-          <Button disableElevation variant="contained">
+          <Button
+            disableElevation
+            variant="contained"
+            type="submit"
+            onClick={submitForm}
+          >
             Notificar evento
           </Button>
         }
@@ -231,10 +250,7 @@ function StepForm({ userReservations }) {
         unmountOnExit
       >
         <Stack className="section" id={"difusion"}>
-          <BroadcastForm
-            values={values}
-            onFieldValueChange={setFieldValue}
-          ></BroadcastForm>
+          <BroadcastForm></BroadcastForm>
         </Stack>
       </Slide>
       <Stack className="section" id={"constancias"}>
@@ -277,7 +293,7 @@ function EndStep({ values, onSectionChange }) {
 
       <SectionButton
         onClick={() => onSectionChange(1)}
-        configured={values.platforms.length > 0}
+        configured={values.media.length > 0 || values.publicity.length > 0}
         icon={<CampaignIcon sx={iconSX} />}
         name="Difusión"
         description="Suba material promocional del evento (flyers) y la forma en que debe difundirse."
