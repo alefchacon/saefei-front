@@ -8,6 +8,10 @@ export const eventSchema = yup.object().shape({
   description: yup
     .string()
     .required(MESSAGES_FIELD.REQUIRED),
+    numParticipants: yup
+    .number()
+    .min(0)
+    .required(MESSAGES_FIELD.REQUIRED),
   reservations: yup
     .array()
     .min(1, MESSAGES_FIELD.REQUIRED) 

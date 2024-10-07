@@ -16,7 +16,7 @@ import EventIcon from "@mui/icons-material/Event";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import moment from "moment";
-import { getScheduleString } from "../../../util/times";
+import { getScheduleString } from "../../../util/moments";
 export default function CardReservation({
   reservation,
   activitySchedule = true,
@@ -28,7 +28,7 @@ export default function CardReservation({
         <Stack direction={"row"} gap={1}>
           <EventIcon></EventIcon>
           <Typography>
-            {moment(reservation.space.date).format("DD/MM/YYYY")}
+            {moment(reservation.date).format("DD/MM/YYYY")}
           </Typography>
         </Stack>
         <Stack direction={"row"} gap={1}>

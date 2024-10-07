@@ -8,6 +8,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import FormLabel from "@mui/material/FormLabel";
 import CardReservation from "../../../features/reservations/components/CardReservation";
+import UploadButton from "../../../components/UploadButton";
 
 import { useModal } from "../../../components/hooks/useModal";
 
@@ -112,6 +113,8 @@ export default function ScheduleForm({ selectedUserReservations }) {
             idReservacion: activityToEdit.idReservacion,
             name: newActivityNameRef.current.value,
             time: moment(newActivityTimeRef.current.value, "HH:mm"),
+            start: activityToEdit.start,
+            end: activityToEdit.end,
           };
           const activitiesWithoutEditedOne = values.activities.filter(
             (activity) => activity.idFrontend !== activityToEdit.idFrontend
@@ -139,56 +142,73 @@ export default function ScheduleForm({ selectedUserReservations }) {
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
-      <FormLabel>
-        A continuación, ingrese las actividades que se llevarán a cabo durante
-        su evento en los horarios de las reservaciones seleccionadas.
-        <br />
-        <br />
-        Como mínimo, le pedimos que nos comparta la hora de inicio y fin de su
-        evento. Se han asignado las siguientes por defecto, mismas que usted
-        puede modificar:
-      </FormLabel>
-      <br />
-      <Stack>
-        {selectedUserReservations.map((reservation, index) => (
-          <AccordionCustom
-            key={index}
-            header={
-              <Stack
-                direction={"row"}
-                width={"100%"}
-                justifyContent={"space-between"}
-                alignItems={"center"}
+      <Stack gap={5}>
+        <Stack>
+          <FormLabel>
+            A continuación, ingrese las actividades que se llevarán a cabo
+            durante su evento en los horarios de las reservaciones
+            seleccionadas.
+            <br />
+            <br />
+            Como mínimo, le pedimos que nos comparta la hora de inicio y fin de
+            su evento. Se han asignado las siguientes por defecto, mismas que
+            usted puede modificar:
+          </FormLabel>
+          <br />
+          <Stack>
+            {selectedUserReservations.map((reservation, index) => (
+              <AccordionCustom
+                key={index}
+                header={
+                  <Stack
+                    direction={"row"}
+                    width={"100%"}
+                    justifyContent={"space-between"}
+                    alignItems={"center"}
+                  >
+                    <CardReservation
+                      key={index}
+                      reservation={reservation}
+                      activitySchedule={false}
+                    />
+                    <Button
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        openAddActivityModal(reservation.id);
+                      }}
+                    >
+                      Agregar actividad
+                    </Button>
+                  </Stack>
+                }
               >
-                <CardReservation
-                  key={index}
-                  reservation={reservation}
-                  activitySchedule={false}
-                />
-                <Button
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    openAddActivityModal(reservation.id);
-                  }}
-                >
-                  Agregar actividad
-                </Button>
-              </Stack>
-            }
-          >
-            {values.activities
-              .filter((activity) => activity.idReservacion === reservation.id)
-              .map((activity, index) => (
-                <CardActivity
-                  activity={activity}
-                  key={index}
-                  required={activity.start || activity.end}
-                  onDelete={handleDeleteActivity}
-                  onEdit={() => openEditActivityModal(activity)}
-                ></CardActivity>
-              ))}
-          </AccordionCustom>
-        ))}
+                {values.activities
+                  .filter(
+                    (activity) => activity.idReservacion === reservation.id
+                  )
+                  .map((activity, index) => (
+                    <CardActivity
+                      activity={activity}
+                      key={index}
+                      required={activity.start || activity.end}
+                      onDelete={handleDeleteActivity}
+                      onEdit={() => openEditActivityModal(activity)}
+                    ></CardActivity>
+                  ))}
+              </AccordionCustom>
+            ))}
+          </Stack>
+        </Stack>
+        <Stack>
+          <FormLabel>
+            Si cuenta con un cronograma más detallado, puede compartirlo a
+            continuación:
+          </FormLabel>
+          <UploadButton
+            values={values.chronogram}
+            onChange={(files) => setFieldValue("chronogram", files)}
+          ></UploadButton>
+        </Stack>
       </Stack>
       <Modal></Modal>
     </LocalizationProvider>

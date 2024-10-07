@@ -6,7 +6,7 @@ import Tooltip from "@mui/material/Tooltip";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
-import { getHHssString } from "../../../util/times";
+import { getHHssString } from "../../../util/moments";
 
 export default function CardActivity({
   activity = { name: "activity", time: "12:00:00" },

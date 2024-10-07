@@ -28,7 +28,6 @@ export default function useApi() {
         return response;
       } catch (error) {
         handleApiError(error);
-        throw error;
       }
     },
 

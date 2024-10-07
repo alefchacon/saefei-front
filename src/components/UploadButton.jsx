@@ -1,6 +1,8 @@
-import * as React from "react";
+import { useState } from "react";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 const VisuallyHiddenInput = styled("input")({
@@ -15,21 +17,36 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-export default function UploadButton() {
+export default function UploadButton({
+  values = [],
+  onChange,
+  multiple = false,
+}) {
+  const [files, setFiles] = useState(values);
+  const handleSetFiles = (event) => {
+    const newFiles = event.target.files;
+    setFiles(newFiles);
+    onChange(newFiles);
+  };
   return (
-    <Button
-      component="label"
-      role={undefined}
-      variant="outlined"
-      tabIndex={-1}
-      startIcon={<CloudUploadIcon />}
-    >
-      Subir archivos
-      <VisuallyHiddenInput
-        type="file"
-        onChange={(event) => console.log(event.target.files)}
-        multiple
-      />
-    </Button>
+    <Stack>
+      <Button
+        component="label"
+        role={undefined}
+        variant="outlined"
+        tabIndex={-1}
+        startIcon={<CloudUploadIcon />}
+      >
+        Subir archivos
+        <VisuallyHiddenInput
+          type="file"
+          onChange={handleSetFiles}
+          multiple={multiple}
+        />
+      </Button>
+      <Typography variant="caption">
+        {files.length} archivos cargados
+      </Typography>
+    </Stack>
   );
 }
