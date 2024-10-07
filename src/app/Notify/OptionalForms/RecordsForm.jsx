@@ -13,7 +13,7 @@ export default function RecordsForm({ values, onFieldValueChange }) {
         </FormLabel>
         <TextField
           placeholder="Escriba su respuesta"
-          variant="standard"
+          variant="filled"
           value={values.records}
           onChange={(e) => onFieldValueChange("records", e.target.value)}
           multiline

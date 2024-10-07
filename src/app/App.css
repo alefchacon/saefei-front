@@ -6,6 +6,7 @@
   flex-direction: column;
 
   --bg: #f5f7ff;
+  --bg-hover: #ebefff;
   --blue: #18529D;
   --blue-dark: #1c5aaa;
   --light-green: #e6f7e2;
@@ -151,4 +152,11 @@ body{
     position: sticky;
     top: 0;
   }
+}
+
+.step{
+  padding: 40px 0px;
+}
+.step-optional{
+  padding-bottom: 40px;
 }

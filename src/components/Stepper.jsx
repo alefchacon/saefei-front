@@ -11,7 +11,7 @@ import StepLabel from "@mui/material/StepLabel";
 import { useFormikContext } from "formik";
 import Alert from "@mui/material/Alert";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import ButtonResponsive from "./ButtonResponsive";
 export default function StepperCustom({
   children,
   currentStep = 0,
@@ -21,25 +21,6 @@ export default function StepperCustom({
   const { validate, validateForm, dirty, validateField, errors } =
     useFormikContext();
   const [triedNextWithErrors, setTriedNextWithErrors] = React.useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  React.useEffect(() => {
-    //navigate(`?paso=${currentStep}`, { replace: true });
-  }, [currentStep, navigate]);
-
-  /*
-  React.useEffect(() => {
-    const urlStep = parseInt(
-      new URLSearchParams(location.search).get("paso") || currentStep,
-      10
-    );
-    console.log(`${urlStep}, ${currentStep}`);
-
-    if (urlStep !== currentStep) {
-      onStepChange(urlStep);
-    }
-  }, [location.search]);*/
 
   const handleStepChange = async (newActiveStep = 0) => {
     let stepHasErrors = false;
@@ -74,50 +55,80 @@ export default function StepperCustom({
   const handleStepSelect = (stepIndex) => () => {
     handleStepChange(stepIndex);
   };
+  const mandatoryStepsNum = children.filter(
+    (child) => !child.props.optional
+  ).length;
+
+  const handleReturnToMandatory = () => {
+    handleStepChange(mandatoryStepsNum - 1);
+  };
+
+  const userIsInMandatoryStep = () => {
+    return currentStep > 0 && currentStep < mandatoryStepsNum;
+  };
+
+  const mandatoryButtons = (
+    <Stack direction={"row"} justifyContent={"end"}>
+      <Button
+        color="inherit"
+        disabled={currentStep === 0}
+        onClick={handleBack}
+        sx={{ mr: 1 }}
+      >
+        Regresar
+      </Button>
+      {currentStep === mandatoryStepsNum - 1 ? (
+        endButton
+      ) : (
+        <Button onClick={handleNext} sx={{ mr: 1 }}>
+          Siguiente
+        </Button>
+      )}
+    </Stack>
+  );
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Stepper nonLinear activeStep={currentStep}>
-        {children.map((child, index) => (
-          <Step key={child.props.title}>
-            {!child.props.optional && (
-              <StepButton color="inherit" onClick={handleStepSelect(index)}>
-                <StepLabel>{child.props.title}</StepLabel>
-              </StepButton>
-            )}
-          </Step>
-        ))}
-      </Stepper>
+      {currentStep <= mandatoryStepsNum - 1 && (
+        <Stepper nonLinear activeStep={currentStep}>
+          {children.map((child, index) => {
+            if (!child.props.optional) {
+              return (
+                <Step key={child.props.title}>
+                  {!child.props.optional && (
+                    <StepButton
+                      color="inherit"
+                      onClick={handleStepSelect(index)}
+                    >
+                      <StepLabel>{child.props.title}</StepLabel>
+                    </StepButton>
+                  )}
+                </Step>
+              );
+            }
+          })}
+        </Stepper>
+      )}
       <div>
-        <>
-          <Stack paddingTop={5} paddingBottom={5}>
-            {children[currentStep].props.children}
+        <Stack className={children[currentStep].props.className}>
+          {children[currentStep].props.children}
 
-            {triedNextWithErrors && (
-              <Alert severity="error">
-                Por favor, llene los campos requeridos antes de continuar.
-              </Alert>
-            )}
-          </Stack>
+          {triedNextWithErrors && (
+            <Alert severity="error">
+              Por favor, llene los campos requeridos antes de continuar.
+            </Alert>
+          )}
+        </Stack>
 
-          <Stack direction={"row"} justifyContent={"end"}>
-            <Button
-              color="inherit"
-              disabled={currentStep === 0}
-              onClick={handleBack}
-              sx={{ mr: 1 }}
-            >
-              Regresar
-            </Button>
-            {currentStep === children.length - 1 ? (
-              endButton
-            ) : (
-              <Button onClick={handleNext} sx={{ mr: 1 }}>
-                Siguiente
-              </Button>
-            )}
+        {userIsInMandatoryStep() ? (
+          mandatoryButtons
+        ) : (
+          <Stack alignItems={"end"}>
+            <ButtonResponsive variant="text" onClick={handleReturnToMandatory}>
+              Guardar
+            </ButtonResponsive>
           </Stack>
-        </>
+        )}
       </div>
     </Box>
   );

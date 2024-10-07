@@ -17,7 +17,7 @@ export default function AdditionalForm({}) {
           value={values.additional}
           onChange={(e) => setFieldValue("additional", e.target.value)}
           placeholder="Escriba su respuesta"
-          variant="standard"
+          variant="filled"
           multiline
           rows={10}
         ></TextField>

@@ -113,7 +113,6 @@ export default function EventForm({}) {
 import { useNavigate, useLocation } from "react-router-dom";
 
 function StepForm({ userReservations }) {
-  //const [currentStep, setCurrentStep] = useState(0);
   const [activeSectionId, setActiveSectionId] = useState("welcome");
   const navigate = useNavigate();
   const location = useLocation();
@@ -126,9 +125,7 @@ function StepForm({ userReservations }) {
   };
 
   const handleStepChange = (newCurrentStep = 0) => {
-    console.log(newCurrentStep);
     navigate(`?paso=${newCurrentStep}`);
-    //setCurrentStep(newCurrentStep);
   };
 
   const currentStep = parseInt(
@@ -188,6 +185,10 @@ function StepForm({ userReservations }) {
     sortAsc(activityA.time, activityB.time)
   );
 
+  const handleReturnToMandatory = () => {
+    handleStepChange(3);
+  };
+
   return (
     <Page
       onSectionChange={handleSectionChange}
@@ -196,6 +197,7 @@ function StepForm({ userReservations }) {
       activeSectionId={activeSectionId}
       skeleton={<EventFormSkeleton />}
       header={activeSectionId !== 0}
+      onGoBack={currentStep > 3 && handleReturnToMandatory}
     >
       {userReservations.length < 1 ? (
         <NoReservationsPage />
@@ -221,12 +223,17 @@ function StepForm({ userReservations }) {
           </Button>
         }
       >
+        {/*
+        ----MANDATORY-STEPS----------------------------
+        These are the steps the user *must* for the notification to be valid.
+        */}
         <Stack
           title="Datos generales"
           id={"datos-generales"}
+          className="step"
           /*
             StepperCustom uses these to validate whether a step has errors.
-            Check StepperCustom.handleStepChange()d
+            Check StepperCustom.handleStepChange()
           */
           fields={["name", "description", "reservations"]}
         >
@@ -241,12 +248,13 @@ function StepForm({ userReservations }) {
           </Button>
           <GeneralForm userReservations={userReservations}></GeneralForm>
         </Stack>
-        <Stack title="Agenda" id={"agenda"}>
+        <Stack className="step" title="Agenda" id={"agenda"}>
           <ScheduleForm
             selectedUserReservations={selectedUserReservations}
           ></ScheduleForm>
         </Stack>
         <Stack
+          className="step"
           title="Info. demográfica"
           id={"info-demografica"}
           fields={[
@@ -260,7 +268,7 @@ function StepForm({ userReservations }) {
         >
           <DemographicForm></DemographicForm>
         </Stack>
-        <Stack title="Adicional" id={"adicional"}>
+        <Stack className="step" title="Adicional" id={"adicional"}>
           <EndStep
             values={values}
             userReservations={userReservations}
@@ -268,44 +276,65 @@ function StepForm({ userReservations }) {
             onStepChange={handleStepChange}
           ></EndStep>
         </Stack>
-        <Stack optional className="section" id={"difusion"} title={"Difusión"}>
+        {/*
+        ----OPTIONAL-STEPS----------------------------
+        */}
+        <Stack
+          optional // add this if you don't want the step to show in the stepper's "header"
+          className="step-optional" // add this for some sick ass bottom padding
+          id={"difusion"}
+          title={"Difusión"}
+        >
           <BroadcastForm></BroadcastForm>
+        </Stack>
+        <Stack
+          optional
+          className="step-optional"
+          id={"constancias"}
+          title={"Constancias"}
+        >
+          <RecordsForm
+            values={values}
+            onFieldValueChange={setFieldValue}
+          ></RecordsForm>
+        </Stack>
+        <Stack
+          optional
+          className="step-optional"
+          id={"decoracion"}
+          title={"Decoración"}
+        >
+          <DecorationForm
+            values={values}
+            onFieldValueChange={setFieldValue}
+          ></DecorationForm>
+        </Stack>
+        <Stack
+          optional
+          className="step-optional"
+          id={"requisitos-tecnicos"}
+          title={"Requisitos técnicos"}
+        >
+          <TechRequirementsForm />
+        </Stack>
+        <Stack
+          optional
+          className="step-optional"
+          id={"participantes-externos"}
+          title={"Participantes externos"}
+        >
+          <ExternalParticipantsForm />
+        </Stack>
+        <Stack
+          optional
+          className="step-optional"
+          id={"adicional"}
+          title={"Adicional"}
+        >
+          <AdditionalForm />
         </Stack>
       </StepperCustom>
       {/*---- ADDITIONAL FORMS ----*/}
-
-      <Stack className="section" id={"difusion"} title={"Difusión"}>
-        <BroadcastForm></BroadcastForm>
-      </Stack>
-      <Stack className="section" id={"constancias"} title={"Constancias"}>
-        <RecordsForm
-          values={values}
-          onFieldValueChange={setFieldValue}
-        ></RecordsForm>
-      </Stack>
-      <Stack className="section" id={"decoracion"} title={"Decoración"}>
-        <DecorationForm
-          values={values}
-          onFieldValueChange={setFieldValue}
-        ></DecorationForm>
-      </Stack>
-      <Stack
-        className="section"
-        id={"requisitos-tecnicos"}
-        title={"Requisitos técnicos"}
-      >
-        <TechRequirementsForm />
-      </Stack>
-      <Stack
-        className="section"
-        id={"participantes-externos"}
-        title={"Participantes externos"}
-      >
-        <ExternalParticipantsForm />
-      </Stack>
-      <Stack className="section" id={"adicional"} title={"Adicional"}>
-        <AdditionalForm />
-      </Stack>
     </Page>
   );
 }
@@ -334,21 +363,21 @@ function EndStep({ values, onStepChange }) {
         description="Suba material promocional del evento (flyers) y la forma en que debe difundirse."
       ></SectionButton>
       <SectionButton
-        onClick={() => onStepChange("constancias")}
+        onClick={() => onStepChange(5)}
         icon={<ReceiptLongIcon sx={iconSX} />}
         configured={Boolean(values.records)}
         name="Constancias"
         description="Solicite constancias para los participantes de su evento."
       ></SectionButton>
       <SectionButton
-        onClick={() => onStepChange("decoracion")}
+        onClick={() => onStepChange(6)}
         configured={values.decoration}
         icon={<AutoAwesomeIcon sx={iconSX} />}
         name="Decoración"
         description="Pida sus personificadores, banderas y demás."
       ></SectionButton>
       <SectionButton
-        onClick={() => onStepChange("requisitos-tecnicos")}
+        onClick={() => onStepChange(7)}
         icon={<SettingsIcon sx={iconSX} />}
         configured={Boolean(
           values.technicalRequirements || values.needsLivestream
@@ -357,7 +386,7 @@ function EndStep({ values, onStepChange }) {
         description="Solicite asistencia del Centro de Cómputo (equipo de cómputo, transmisión en vivo...) "
       ></SectionButton>
       <SectionButton
-        onClick={() => onStepChange("participantes-externos")}
+        onClick={() => onStepChange(8)}
         configured={Boolean(
           values.numParticipantsExternal > 0 ||
             values.needsParking ||
@@ -368,7 +397,7 @@ function EndStep({ values, onStepChange }) {
         description="¿Asistirán personas ajenas a la FEI? Cuéntenos aquí."
       ></SectionButton>
       <SectionButton
-        onClick={() => onStepChange("adicional")}
+        onClick={() => onStepChange(9)}
         configured={Boolean(values.additional)}
         icon={<QuestionMarkIcon sx={iconSX} />}
         name="Requisitos adicionales"

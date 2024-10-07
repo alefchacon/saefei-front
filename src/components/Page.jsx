@@ -14,6 +14,7 @@ export default function Page({
   onSectionChange,
   className,
   skeleton,
+  onGoBack,
 }) {
   const { loading } = useLoading();
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ export default function Page({
     >
       {header && (
         <Header
+          onGoBack={onGoBack}
           onSectionChange={handleReturnToFirstSection}
           sectionedPage={activeSectionId !== "principal"}
           title={title ?? currentSection?.props.title}

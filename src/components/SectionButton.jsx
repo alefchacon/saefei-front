@@ -23,7 +23,7 @@ export default function SectionButton({
         alignItems: "center",
         gap: 3,
         "&:hover": {
-          backgroundColor: "#e6eafa",
+          backgroundColor: "var(--bg-hover)",
         },
       }}
     >
