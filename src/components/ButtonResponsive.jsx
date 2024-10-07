@@ -3,7 +3,13 @@ import CircularProgress from "@mui/material/CircularProgress";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 
-export default function ButtonResponsive({ children, loading = false }) {
+export default function ButtonResponsive({
+  children,
+  variant = "contained",
+  loading = false,
+  onClick,
+  type = "button",
+}) {
   const theme = useTheme();
   const responsive = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -23,8 +29,9 @@ export default function ButtonResponsive({ children, loading = false }) {
   return (
     <Button
       disableElevation
-      variant="contained"
-      type="submit"
+      variant={variant}
+      type={type}
+      onClick={onClick}
       disabled={loading}
       sx={config}
     >

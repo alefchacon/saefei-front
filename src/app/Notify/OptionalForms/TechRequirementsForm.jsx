@@ -21,7 +21,7 @@ export default function TechRequirementsForm({}) {
             setFieldValue("technicalRequirements", e.target.value)
           }
           placeholder="Escriba su respuesta"
-          variant="standard"
+          variant="filled"
           multiline
           rows={10}
         ></TextField>

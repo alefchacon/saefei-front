@@ -14,30 +14,28 @@ export default function BroadcastForm() {
 
   const [showUpload, setShowUpload] = useState(false);
   return (
-    <Stack gap={"var(--field-gap)"}>
-      {values.name}
-      <Stack>
-        <CheckList
-          label={
-            "Seleccione los medios donde se requiere hacer difusión del evento"
-          }
-          values={values.media}
-          name={"media"}
-          onChange={(checked) => setFieldValue("media", checked)}
-        >
-          <Typography value={"Página Web Institucional de la Facultad"}>
-            Página Web Institucional de la Facultad
-          </Typography>
-          <Typography value={"Correo Institucional de la Facultad"}>
-            Correo Institucional de la Facultad
-          </Typography>
-          <Typography value={"Redes sociales (Facebook, Instagram, Twitter/X)"}>
-            Redes sociales (Facebook, Instagram, Twitter/X)
-          </Typography>
-          <Typography value={"Comunicación UV"}>Comunicación UV</Typography>
-          <Typography value={"Radio UV"}>Radio UV</Typography>
-        </CheckList>
-      </Stack>
+    <Stack gap={"var(--field-gap)"} className="optional-form">
+      <CheckList
+        label={
+          "Seleccione los medios donde se requiere hacer difusión del evento"
+        }
+        values={values.media}
+        name={"media"}
+        onChange={(checked) => setFieldValue("media", checked)}
+      >
+        <Typography value={"Página Web Institucional de la Facultad"}>
+          Página Web Institucional de la Facultad
+        </Typography>
+        <Typography value={"Correo Institucional de la Facultad"}>
+          Correo Institucional de la Facultad
+        </Typography>
+        <Typography value={"Redes sociales (Facebook, Instagram, Twitter/X)"}>
+          Redes sociales (Facebook, Instagram, Twitter/X)
+        </Typography>
+        <Typography value={"Comunicación UV"}>Comunicación UV</Typography>
+        <Typography value={"Radio UV"}>Radio UV</Typography>
+      </CheckList>
+
       <RadioList
         label={"¿Se proporcionará material promocional?"}
         onChange={(e) => setShowUpload(e.target.value === "true")}

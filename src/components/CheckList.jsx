@@ -58,7 +58,7 @@ export default function CheckList({
   };
 
   return (
-    <FormControl error={error}>
+    <FormControl error={error} className="checklist">
       <List
         sx={{
           width: "100%",

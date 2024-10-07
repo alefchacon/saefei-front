@@ -20,7 +20,7 @@ export default function EternalParticipantsForm({}) {
           onChange={(e) =>
             setFieldValue("numParticipantsExternal", e.target.value)
           }
-          variant="standard"
+          variant="filled"
           type="number"
           slotProps={{ htmlInput: { min: 0 } }}
         ></TextField>

@@ -14,12 +14,13 @@ export default function Header({
   children,
   padding = true,
   sectionedPage = false,
+  onGoBack,
   onSectionChange,
 }) {
   const location = useLocation();
   const { loading } = useLoading();
-  const canGoBack = location.pathname.split("/").length > 2 || sectionedPage;
-
+  const canGoBack =
+    location.pathname.split("/").length > 2 || Boolean(onGoBack);
   return (
     <>
       <Stack
@@ -49,7 +50,7 @@ export default function Header({
           */}
         <Stack direction={"row"} gap={2}>
           {canGoBack && (
-            <IconButton id="go-back-button" onClick={onSectionChange}>
+            <IconButton id="go-back-button" onClick={onGoBack}>
               <ArrowBackIcon></ArrowBackIcon>
             </IconButton>
           )}

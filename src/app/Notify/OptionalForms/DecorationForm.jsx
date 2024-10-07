@@ -12,7 +12,7 @@ export default function DecorationForm({ values, onFieldValueChange }) {
         </FormLabel>
         <TextField
           placeholder="Escriba su respuesta"
-          variant="standard"
+          variant="filled"
           value={values.decoration}
           onChange={(e) => onFieldValueChange("decoration", e.target.value)}
           multiline
