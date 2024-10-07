@@ -106,8 +106,9 @@ export default function ReservationForm() {
   };
 
   return (
-    <Page title={"Reservar un espacio"}>
+    <Page title={"Reservar un espacio"} activeSectionId="principal">
       <Formik
+        id={"principal"}
         onSubmit={handleSubmit}
         validationSchema={yup.object().shape({
           idEspacio: yup.number().min(1).required(MESSAGES_FIELD.REQUIRED),

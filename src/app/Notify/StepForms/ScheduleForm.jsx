@@ -34,7 +34,7 @@ export default function ScheduleForm({ selectedUserReservations }) {
         <TextField
           inputRef={newActivityNameRef}
           label={"Nombre de la actividad"}
-          variant="standard"
+          variant="filled"
         ></TextField>
         <TimePicker
           minTime={moment(
@@ -52,7 +52,7 @@ export default function ScheduleForm({ selectedUserReservations }) {
             "HH:mm"
           )}
           inputRef={newActivityTimeRef}
-          slotProps={{ textField: { variant: "standard" } }}
+          slotProps={{ textField: { variant: "filled" } }}
         ></TimePicker>
       </Stack>,
       <Button
@@ -82,7 +82,7 @@ export default function ScheduleForm({ selectedUserReservations }) {
           onChange={(e) => (newActivityNameRef.current.value = e.target.value)}
           inputRef={newActivityNameRef}
           label={"Nombre de la actividad"}
-          variant="standard"
+          variant="filled"
         ></TextField>
         <TimePicker
           defaultValue={activityToEdit.time}
@@ -103,7 +103,7 @@ export default function ScheduleForm({ selectedUserReservations }) {
             "HH:mm"
           )}
           inputRef={newActivityTimeRef}
-          slotProps={{ textField: { variant: "standard" } }}
+          slotProps={{ textField: { variant: "filled" } }}
         ></TimePicker>
       </Stack>,
       <Button

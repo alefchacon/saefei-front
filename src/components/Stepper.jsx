@@ -10,96 +10,88 @@ import Slide from "@mui/material/Slide";
 import StepLabel from "@mui/material/StepLabel";
 import { useFormikContext } from "formik";
 import Alert from "@mui/material/Alert";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function StepperCustom({
   children,
-  step = 0,
+  currentStep = 0,
   onStepChange,
   endButton,
 }) {
-  const [activeStep, setActiveStep] = React.useState(step);
-  const [completed, setCompleted] = React.useState({});
   const { validate, validateForm, dirty, validateField, errors } =
     useFormikContext();
   const [triedNextWithErrors, setTriedNextWithErrors] = React.useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const totalSteps = () => {
-    return children.length;
-  };
+  React.useEffect(() => {
+    //navigate(`?paso=${currentStep}`, { replace: true });
+  }, [currentStep, navigate]);
 
-  const completedSteps = () => {
-    return Object.keys(completed).length;
-  };
+  /*
+  React.useEffect(() => {
+    const urlStep = parseInt(
+      new URLSearchParams(location.search).get("paso") || currentStep,
+      10
+    );
+    console.log(`${urlStep}, ${currentStep}`);
 
-  const isLastStep = () => {
-    return step === totalSteps() - 1;
-  };
-
-  const allStepsCompleted = () => {
-    return completedSteps() === totalSteps();
-  };
+    if (urlStep !== currentStep) {
+      onStepChange(urlStep);
+    }
+  }, [location.search]);*/
 
   const handleStepChange = async (newActiveStep = 0) => {
     let stepHasErrors = false;
 
-    if (children[step].props.fields) {
+    if (children[currentStep].props.fields) {
       stepHasErrors = Object.entries(errors).some(([key, value]) =>
-        children[step].props.fields.includes(key)
+        children[currentStep].props.fields.includes(key)
       );
     }
 
+    /*
     if (stepHasErrors) {
       setTriedNextWithErrors(true);
     } else {
       setTriedNextWithErrors(false);
       setActiveStep(newActiveStep);
       onStepChange(newActiveStep);
+      navigate(`?paso=${newActiveStep}`);
     }
+      */
+    onStepChange(newActiveStep);
   };
 
   const handleNext = () => {
-    const newActiveStep =
-      isLastStep() && !allStepsCompleted()
-        ? children.findIndex((step, i) => !(i in completed))
-        : step + 1;
-    handleStepChange(newActiveStep);
+    handleStepChange(currentStep + 1);
   };
 
   const handleBack = () => {
-    handleStepChange((prevActiveStep) => prevActiveStep - 1);
+    handleStepChange(currentStep - 1);
   };
 
-  const handleStep = (stepIndex) => () => {
+  const handleStepSelect = (stepIndex) => () => {
     handleStepChange(stepIndex);
   };
 
-  const handleComplete = () => {
-    setCompleted({
-      ...completed,
-      [step]: true,
-    });
-    handleNext();
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-    setCompleted({});
-  };
   return (
     <Box sx={{ width: "100%" }}>
-      <Stepper nonLinear activeStep={step}>
-        {children.map((label, index) => (
-          <Step key={label.props.title} completed={completed[index]}>
-            <StepButton color="inherit" onClick={handleStep(index)}>
-              <StepLabel>{label.props.title}</StepLabel>
-            </StepButton>
+      <Stepper nonLinear activeStep={currentStep}>
+        {children.map((child, index) => (
+          <Step key={child.props.title}>
+            {!child.props.optional && (
+              <StepButton color="inherit" onClick={handleStepSelect(index)}>
+                <StepLabel>{child.props.title}</StepLabel>
+              </StepButton>
+            )}
           </Step>
         ))}
       </Stepper>
       <div>
-        <React.Fragment>
+        <>
           <Stack paddingTop={5} paddingBottom={5}>
-            {children[step].props.children}
+            {children[currentStep].props.children}
 
             {triedNextWithErrors && (
               <Alert severity="error">
@@ -111,13 +103,13 @@ export default function StepperCustom({
           <Stack direction={"row"} justifyContent={"end"}>
             <Button
               color="inherit"
-              disabled={step === 0}
+              disabled={currentStep === 0}
               onClick={handleBack}
               sx={{ mr: 1 }}
             >
               Regresar
             </Button>
-            {activeStep === children.length - 1 ? (
+            {currentStep === children.length - 1 ? (
               endButton
             ) : (
               <Button onClick={handleNext} sx={{ mr: 1 }}>
@@ -125,7 +117,7 @@ export default function StepperCustom({
               </Button>
             )}
           </Stack>
-        </React.Fragment>
+        </>
       </div>
     </Box>
   );

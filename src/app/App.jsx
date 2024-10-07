@@ -3,7 +3,7 @@ import reactLogo from "../assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 
-import { Card } from "@mui/material";
+import { Card, dividerClasses } from "@mui/material";
 import { Box } from "@mui/material";
 import { Typography } from "@mui/material";
 import { IconButton } from "@mui/material";
@@ -102,9 +102,10 @@ function App() {
                 element={<EventView></EventView>}
               ></Route>
               <Route
-                path={`${ROUTES.ROUTE_NOTIFY}`}
+                path={`${ROUTES.ROUTE_NOTIFY}/:paso?`}
                 element={<EventForm />}
               ></Route>
+              ¡{" "}
             </Routes>
           </Stack>
         </Stack>

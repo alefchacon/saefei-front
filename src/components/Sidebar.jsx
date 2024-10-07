@@ -139,7 +139,7 @@ export default function Sidebar() {
         <CustomListItemButton
           selected={selectedIndex === 5}
           onClick={(event) =>
-            handleListItemClick(event, 5, ROUTES.ROUTE_NOTIFY)
+            handleListItemClick(event, 5, `${ROUTES.ROUTE_NOTIFY}?paso=0`)
           }
         >
           <ListItemIcon sx={{ color: "inherit" }}>

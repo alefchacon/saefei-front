@@ -38,14 +38,17 @@ import { sortAsc } from "../../util/moments";
 import { useEvents } from "../../features/events/businessLogic/useEvents";
 import { useLoading } from "../../components/providers/LoadingProvider";
 import EventFormSkeleton from "./StepForms/EventFormSkeleton";
+import DomainIcon from "@mui/icons-material/Domain";
+import { Routes, Route } from "react-router-dom";
 
 export default function EventForm({}) {
   const { getReservationsAvailableToUser } = useReservations();
   const { getUser } = useAuth();
-  const [userReservations, setUserReservations] = useState([]);
   const { storeEvent } = useEvents();
   const user = getUser();
   const { loading } = useLoading();
+  const [userReservations, setUserReservations] = useState([]);
+  const [showWelcome, setShowWelcome] = useState(true);
 
   useEffect(() => {
     getReservationsAvailableToUser(getUser().id).then((response) => {
@@ -54,78 +57,84 @@ export default function EventForm({}) {
   }, []);
 
   const handleSubmit = (values, actions) => {
-    console.log("hola");
     storeEvent(values);
   };
 
   return (
     <>
-      {false ? (
-        <EventFormSkeleton />
-      ) : (
-        <Formik
-          onSubmit={handleSubmit}
-          validationSchema={eventSchema}
-          validateOnBlur={true}
-          className="section"
-          initialValues={{
-            idUsuario: user.id,
-            name: "",
-            description: "",
-            numParticipants: "",
-            reservations: [],
-            activities: [],
-            chronogram: "",
-            programs: [],
-            audiences: [],
-            idTipo: "",
-            scope: "",
-            axis: "",
-            themes: [],
+      <Formik
+        onSubmit={handleSubmit}
+        validationSchema={eventSchema}
+        validateOnBlur={true}
+        className="section"
+        initialValues={{
+          idUsuario: user.id,
+          name: "",
+          description: "",
+          numParticipants: "",
+          reservations: [],
+          activities: [],
+          chronogram: "",
+          programs: [],
+          audiences: [],
+          idTipo: "",
+          scope: "",
+          axis: "",
+          themes: [],
 
-            //BroadcastForm
-            media: [],
-            publicity: [],
+          //BroadcastForm
+          media: [],
+          publicity: [],
 
-            //RecordsForm
-            records: "",
+          //RecordsForm
+          records: "",
 
-            //DecorationForm
-            decoration: "",
+          //DecorationForm
+          decoration: "",
 
-            //TechRequirementsForm
-            technicalRequirements: "",
-            needsLivestream: "",
+          //TechRequirementsForm
+          technicalRequirements: "",
+          needsLivestream: "",
 
-            //ExternalParticipantsForm
-            numParticipantsExternal: 0,
-            needsParking: "",
-            needsWeekend: "",
+          //ExternalParticipantsForm
+          numParticipantsExternal: 0,
+          needsParking: "",
+          needsWeekend: "",
 
-            //Additional
-            additional: "",
-          }}
-        >
-          <StepForm userReservations={userReservations} />
-        </Formik>
-      )}
+          //Additional
+          additional: "",
+        }}
+      >
+        <StepForm userReservations={userReservations} />
+      </Formik>
     </>
   );
 }
+import { useNavigate, useLocation } from "react-router-dom";
 
 function StepForm({ userReservations }) {
-  const [activeStep, setActiveStep] = useState(0);
-  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+  //const [currentStep, setCurrentStep] = useState(0);
+  const [activeSectionId, setActiveSectionId] = useState("welcome");
+  const navigate = useNavigate();
+  const location = useLocation();
   const { values, errors, setFieldValue, validateForm, submitForm } =
     useFormikContext();
 
-  const handleSectionChange = (newSectionIndex) => {
-    setActiveSectionIndex(newSectionIndex);
+  const handleSectionChange = (newSectionId) => {
+    setActiveSectionId(newSectionId);
+    //navigate(`?paso=${newSectionId}`);
   };
 
-  const handleStepChange = (newActiveStep = 0) => {
-    setActiveStep(newActiveStep);
+  const handleStepChange = (newCurrentStep = 0) => {
+    console.log(newCurrentStep);
+    navigate(`?paso=${newCurrentStep}`);
+    //setCurrentStep(newCurrentStep);
   };
+
+  const currentStep = parseInt(
+    new URLSearchParams(location.search).get("paso") || "1",
+    10
+  );
 
   const selectedUserReservations = userReservations.filter((reservation) =>
     values.reservations.includes(reservation.id)
@@ -182,15 +191,25 @@ function StepForm({ userReservations }) {
   return (
     <Page
       onSectionChange={handleSectionChange}
-      title={"Notificar evento"}
       className={"section"}
       id={"notificar-evento"}
-      activeSectionIndex={activeSectionIndex}
+      activeSectionId={activeSectionId}
       skeleton={<EventFormSkeleton />}
+      header={activeSectionId !== 0}
     >
+      {userReservations.length < 1 ? (
+        <NoReservationsPage />
+      ) : (
+        <WelcomePage
+          id="welcome"
+          onSectionChange={() => handleSectionChange("principal")}
+        />
+      )}
       <StepperCustom
+        id={"principal"}
+        title="Notificar evento"
         onStepChange={handleStepChange}
-        step={activeStep}
+        currentStep={currentStep}
         endButton={
           <Button
             disableElevation
@@ -246,84 +265,90 @@ function StepForm({ userReservations }) {
             values={values}
             userReservations={userReservations}
             onFieldValueChange={setFieldValue}
-            onSectionChange={handleSectionChange}
+            onStepChange={handleStepChange}
           ></EndStep>
         </Stack>
-      </StepperCustom>
-
-      {/*---- ADDITIONAL FORMS ----*/}
-
-      <Slide
-        direction="left"
-        in={activeSectionIndex === 1}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Stack className="section" id={"difusion"}>
+        <Stack optional className="section" id={"difusion"} title={"Difusión"}>
           <BroadcastForm></BroadcastForm>
         </Stack>
-      </Slide>
-      <Stack className="section" id={"constancias"}>
+      </StepperCustom>
+      {/*---- ADDITIONAL FORMS ----*/}
+
+      <Stack className="section" id={"difusion"} title={"Difusión"}>
+        <BroadcastForm></BroadcastForm>
+      </Stack>
+      <Stack className="section" id={"constancias"} title={"Constancias"}>
         <RecordsForm
           values={values}
           onFieldValueChange={setFieldValue}
         ></RecordsForm>
       </Stack>
-      <Stack className="section" id={"requisitos-tecnicos"}>
+      <Stack className="section" id={"decoracion"} title={"Decoración"}>
         <DecorationForm
           values={values}
           onFieldValueChange={setFieldValue}
         ></DecorationForm>
       </Stack>
-      <Stack className="section" id={"requisitos-tecnicos"}>
+      <Stack
+        className="section"
+        id={"requisitos-tecnicos"}
+        title={"Requisitos técnicos"}
+      >
         <TechRequirementsForm />
       </Stack>
-      <Stack className="section" id={"requisitos-tecnicos"}>
+      <Stack
+        className="section"
+        id={"participantes-externos"}
+        title={"Participantes externos"}
+      >
         <ExternalParticipantsForm />
       </Stack>
-      <Stack className="section" id={"requisitos-tecnicos"}>
+      <Stack className="section" id={"adicional"} title={"Adicional"}>
         <AdditionalForm />
       </Stack>
     </Page>
   );
 }
 
-function fuck() {}
+function Fuck() {}
 
-function EndStep({ values, onSectionChange }) {
+function EndStep({ values, onStepChange }) {
   const iconSX = { height: "1.2em !important", width: "1.2em !important" };
   const { Modal } = useModal();
 
   return (
     <Stack gap={2}>
+      <Routes>
+        <Route path="/notificar/asdf" element={<div>xD no mames</div>}></Route>
+      </Routes>
       <FormLabel>
         Podemos brindarle un servicio más completo si usted configura las
         siguientes opciones adicionales.
       </FormLabel>
 
       <SectionButton
-        onClick={() => onSectionChange(1)}
+        onClick={() => onStepChange(4)}
         configured={values.media.length > 0 || values.publicity.length > 0}
         icon={<CampaignIcon sx={iconSX} />}
         name="Difusión"
         description="Suba material promocional del evento (flyers) y la forma en que debe difundirse."
       ></SectionButton>
       <SectionButton
-        onClick={() => onSectionChange(2)}
+        onClick={() => onStepChange("constancias")}
         icon={<ReceiptLongIcon sx={iconSX} />}
         configured={Boolean(values.records)}
         name="Constancias"
         description="Solicite constancias para los participantes de su evento."
       ></SectionButton>
       <SectionButton
-        onClick={() => onSectionChange(3)}
+        onClick={() => onStepChange("decoracion")}
         configured={values.decoration}
         icon={<AutoAwesomeIcon sx={iconSX} />}
         name="Decoración"
         description="Pida sus personificadores, banderas y demás."
       ></SectionButton>
       <SectionButton
-        onClick={() => onSectionChange(4)}
+        onClick={() => onStepChange("requisitos-tecnicos")}
         icon={<SettingsIcon sx={iconSX} />}
         configured={Boolean(
           values.technicalRequirements || values.needsLivestream
@@ -332,7 +357,7 @@ function EndStep({ values, onSectionChange }) {
         description="Solicite asistencia del Centro de Cómputo (equipo de cómputo, transmisión en vivo...) "
       ></SectionButton>
       <SectionButton
-        onClick={() => onSectionChange(5)}
+        onClick={() => onStepChange("participantes-externos")}
         configured={Boolean(
           values.numParticipantsExternal > 0 ||
             values.needsParking ||
@@ -343,7 +368,7 @@ function EndStep({ values, onSectionChange }) {
         description="¿Asistirán personas ajenas a la FEI? Cuéntenos aquí."
       ></SectionButton>
       <SectionButton
-        onClick={() => onSectionChange(6)}
+        onClick={() => onStepChange("adicional")}
         configured={Boolean(values.additional)}
         icon={<QuestionMarkIcon sx={iconSX} />}
         name="Requisitos adicionales"
@@ -354,15 +379,34 @@ function EndStep({ values, onSectionChange }) {
   );
 }
 
-function WelcomePage() {
+function NoReservationsPage() {
   return (
-    <Page header={false}>
+    <>
       <br />
-      <Typography variant="h4">Bienvenidos...</Typography>
+      <Typography variant="h4">No ha reservado espacios</Typography>
       <br />
       <Typography>
-        ...al formulario de Notificación de Eventos Académicos de la Facultad de
-        Estadística e Informática de la Universidad Veracruzana.
+        Para notificar su evento, debe contar con reservaciones aprobadas por la
+        administración de la facultad.
+      </Typography>
+      <br />
+      <br />
+      <Button sx={{ maxWidth: "fit-content" }} startIcon={<DomainIcon />}>
+        Reservar un espacio
+      </Button>
+    </>
+  );
+}
+
+function WelcomePage({ onSectionChange }) {
+  return (
+    <>
+      <br />
+      <Typography variant="h4">Bienvenido</Typography>
+      <br />
+      <Typography>
+        Este es el formulario de Notificación de Eventos Académicos de la
+        Facultad de Estadística e Informática de la Universidad Veracruzana.
         <br />
         <br />
         Este formulario ha sido diseñado para facilitar el proceso de
@@ -383,7 +427,9 @@ function WelcomePage() {
       </Typography>
       <br />
       <br />
-      <Button sx={{ maxWidth: "fit-content" }}>Continuar</Button>
-    </Page>
+      <Button sx={{ maxWidth: "fit-content" }} onClick={onSectionChange}>
+        Continuar
+      </Button>
+    </>
   );
 }
