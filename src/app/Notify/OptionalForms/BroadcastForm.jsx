@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -7,6 +7,7 @@ import CheckList from "../../../components/CheckList";
 import RadioList from "../../../components/RadioList";
 import UploadButton from "../../../components/UploadButton";
 import { useFormikContext } from "formik";
+import { useSearchParams } from "react-router-dom";
 
 export default function BroadcastForm() {
   const { values, setFieldValue } = useFormikContext();
@@ -14,6 +15,7 @@ export default function BroadcastForm() {
   const [showUpload, setShowUpload] = useState(false);
   return (
     <Stack gap={"var(--field-gap)"}>
+      {values.name}
       <Stack>
         <CheckList
           label={
