@@ -68,6 +68,33 @@ body{
   position: relative;
 }
 
+.ellipsis{
+    width: 100%;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-4{
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+}
+.line-clamp-2{
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.card{
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 10px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 0 3px 0px rgba(0,0,0,0.1);
+  height: fit-content;
+  min-height: fit-content;
+}
+
 .button-row{
   display: flex;
   flex-direction: row;
