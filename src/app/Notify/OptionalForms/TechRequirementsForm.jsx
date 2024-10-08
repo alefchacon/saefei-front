@@ -31,8 +31,8 @@ export default function TechRequirementsForm({}) {
         value={values.needsLivestream}
         onChange={(e) => setFieldValue("needsLivestream", e.target.value)}
       >
-        <Typography value="true">Sí</Typography>
-        <Typography value="false">No</Typography>
+        <Typography value="1">Sí</Typography>
+        <Typography value="0">No</Typography>
       </RadioList>
     </Stack>
   );

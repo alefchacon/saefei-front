@@ -32,16 +32,16 @@ export default function EternalParticipantsForm({}) {
           "¿Se requiere autorización para que público externo ingrese al estacionamiento durante el evento?"
         }
       >
-        <Typography value="true">Sí</Typography>
-        <Typography value="false">No</Typography>
+        <Typography value="1">Sí</Typography>
+        <Typography value="0">No</Typography>
       </RadioList>
       <RadioList
         value={values.needsWeekend}
         onChange={(e) => setFieldValue("needsWeekend", e.target.value)}
         label={"¿Necesita autorización para el ingreso en fin de semana?"}
       >
-        <Typography value="true">Sí</Typography>
-        <Typography value="false">No</Typography>
+        <Typography value="1">Sí</Typography>
+        <Typography value="0">No</Typography>
       </RadioList>
     </Stack>
   );

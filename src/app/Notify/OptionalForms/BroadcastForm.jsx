@@ -12,7 +12,7 @@ import { useSearchParams } from "react-router-dom";
 export default function BroadcastForm() {
   const { values, setFieldValue } = useFormikContext();
 
-  const [showUpload, setShowUpload] = useState(false);
+  const [showUpload, setShowUpload] = useState(values.publicity.length > 0);
   return (
     <Stack gap={"var(--field-gap)"} className="optional-form">
       <CheckList
@@ -38,7 +38,13 @@ export default function BroadcastForm() {
 
       <RadioList
         label={"¿Se proporcionará material promocional?"}
-        onChange={(e) => setShowUpload(e.target.value === "true")}
+        onChange={(e) => {
+          const newValue = e.target.value;
+          if (newValue === "false") {
+            setFieldValue("publicity", []);
+          }
+          setShowUpload(newValue === "true");
+        }}
       >
         <Typography value={"true"}>Sí</Typography>
         <Typography value={"false"}>
@@ -53,6 +59,7 @@ export default function BroadcastForm() {
           </FormLabel>
           <UploadButton
             multiple
+            values={values.publicity}
             onChange={(files) => setFieldValue("publicity", files)}
           ></UploadButton>
         </Stack>
