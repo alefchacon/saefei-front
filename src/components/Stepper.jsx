@@ -4,13 +4,10 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepButton from "@mui/material/StepButton";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import { Stack } from "@mui/material";
-import Slide from "@mui/material/Slide";
 import StepLabel from "@mui/material/StepLabel";
 import { useFormikContext } from "formik";
 import Alert from "@mui/material/Alert";
-import { useNavigate, useLocation } from "react-router-dom";
 import ButtonResponsive from "./ButtonResponsive";
 export default function StepperCustom({
   children,
@@ -64,7 +61,7 @@ export default function StepperCustom({
   };
 
   const userIsInMandatoryStep = () => {
-    return currentStep > 0 && currentStep < mandatoryStepsNum;
+    return currentStep > -1 && currentStep < mandatoryStepsNum;
   };
 
   const mandatoryButtons = (
