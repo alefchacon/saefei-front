@@ -22,14 +22,20 @@ export const useModal = () => {
   const [title, setTitle] = useState(null);
   const [actions, setActions] = useState(null);
   const [isResponsive, setIsResponsive] = useState(false);
+  const [minWidth, setMinWidth] = useState("200px");
 
-  const openModal = useCallback((title, content, actions, responsive) => {
-    setTitle(title);
-    setContent(content);
-    setActions(actions);
-    setIsOpen(true);
-    setIsResponsive(responsive);
-  }, []);
+  const openModal = useCallback(
+    (title, content, actions, responsive, minWidth, onClose) => {
+      console.log(content);
+      setTitle(title);
+      setContent(content);
+      setActions(actions);
+      setIsOpen(true);
+      setIsResponsive(responsive);
+      setMinWidth(minWidth);
+    },
+    []
+  );
 
   const closeModal = useCallback(() => {
     setIsOpen(false);
@@ -74,7 +80,14 @@ export const useModal = () => {
 
     return (
       <>
-        <Dialog open={isOpen} fullScreen={goFullscreen}>
+        <Dialog
+          open={isOpen}
+          fullScreen={goFullscreen}
+          fullWidth
+          maxWidth={"md"}
+
+          //sx={{ "& .MuiDialog-paper": { height: "500px" } }} // Customize height here
+        >
           <DialogTitle>
             {goFullscreen ? (
               <MobileTitle>{title}</MobileTitle>

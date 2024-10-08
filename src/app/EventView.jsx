@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
@@ -16,11 +16,15 @@ import EventIcon from "@mui/icons-material/Event";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import moment from "moment";
-
+import { useModal } from "../components/hooks/useModal";
+import ExpandableText from "../features/events/components/ExpandableText";
+import ActivityViewer from "../features/events/components/ActivityViewer";
 import CardReservation from "../features/reservations/components/CardReservation";
 
 export default function EventView() {
   const [eventUV, setEventUV] = useState({});
+
+  const { Modal, openModal, closeModal } = useModal();
   const { getEvent } = useEvents();
   const { idEvento } = useParams();
   useEffect(() => {
@@ -28,6 +32,10 @@ export default function EventView() {
   }, []);
 
   const fetchEvent = async () => {};
+
+  const refs = {
+    description: useRef(null),
+  };
 
   return (
     <Stack
@@ -67,11 +75,18 @@ export default function EventView() {
       <br />
       <Stack gap={3}>
         <Stack gap={3} direction={{ md: "row", xs: "column" }}>
-          <CardEventSection title={"General"} event={eventUV} flex={3}>
-            <Typography variant="paragraph" fontSize={16}>
-              <b>Descripción:</b> {eventUV.description}
-            </Typography>
-            <Stack direction={"row"} gap={1}>
+          {/*
+           */}
+          <CardEventSection
+            title={"General"}
+            event={eventUV}
+            flex={2}
+            maxHeight={"100%"}
+          >
+            <ExpandableText name="Descripción" id={"description"}>
+              {eventUV.description}
+            </ExpandableText>
+            <Stack direction={"row"} gap={1} flexWrap={"wrap"}>
               <Typography>
                 <b>Programas educativos:</b>
               </Typography>{" "}
@@ -80,15 +95,21 @@ export default function EventView() {
               ))}
             </Stack>
           </CardEventSection>
-          <CardEventSection title={"Agenda"} event={eventUV} flex={1}>
-            <Stack gap={3}>
-              {eventUV.reservations?.map((reservation, index) => (
-                <CardReservation reservation={reservation}></CardReservation>
-              ))}
-            </Stack>
+          {/*
+           */}
+          <CardEventSection
+            title={"Agenda"}
+            event={eventUV}
+            flex={1}
+            maxHeight={"100%"}
+          >
+            <ActivityViewer
+              name="Agenda"
+              reservations={eventUV.reservations}
+            ></ActivityViewer>
           </CardEventSection>
         </Stack>
-        <CardEventSection title={"Logistica"} event={eventUV} flex={3}>
+        <CardEventSection title={"Logistica"} event={eventUV} flex={2}>
           <Stack
             direction={"row"}
             flexWrap={"wrap"}
@@ -117,25 +138,26 @@ export default function EventView() {
               display={eventUV.needsWeekend > 0 ? "flex" : "none"}
             />
           </Stack>
-          <Typography>
-            <b>Requisitos del CC: </b>
+
+          <ExpandableText
+            name="Requisitos del CC"
+            id={"computerCenterRequirements"}
+          >
             {eventUV.computerCenterRequirements}
-          </Typography>
-          <Typography>
-            <b>Decoracion: </b>
+          </ExpandableText>
+          <ExpandableText name="Decoracion" id={"decoration"}>
             {eventUV.decoration}
-          </Typography>
-          <Typography>
-            <b>Presidium: </b>
+          </ExpandableText>
+
+          <ExpandableText name="Presidium" id={"presidium"}>
             {eventUV.presidium}
-          </Typography>
-          <Typography>
-            <b>Constancias: </b>
+          </ExpandableText>
+          <ExpandableText name="Constancias" id={"speakers"}>
             {eventUV.speakers}
-          </Typography>
+          </ExpandableText>
         </CardEventSection>
 
-        <Stack gap={3} direction={"row"}>
+        <Stack gap={3} direction={{ md: "row", xs: "column" }}>
           <CardEventSection title={"Difusión"} event={eventUV} flex={3}>
             <Stack direction={"row"} gap={1}>
               <Typography>
@@ -154,39 +176,51 @@ export default function EventView() {
           )}
         </Stack>
       </Stack>
+      <Modal></Modal>
     </Stack>
   );
-}
 
-function CardEventSection({ event, title, children, flex, maxHeight = 320 }) {
-  return (
-    <Stack
-      height={"100%"}
-      maxHeight={maxHeight}
-      className="page"
-      flex={flex}
-      overflow={"hidden"}
-    >
-      <CardActionArea
-        sx={{
-          padding: 2,
-          height: "100%",
-          alignItems: "start",
-          justifyContent: "start",
-          display: "flex",
-          flexDirection: "column",
-        }}
+  function CardEventSection({ event, title, children, flex, maxHeight = 320 }) {
+    if (!Array.isArray(children)) {
+      children = [children];
+    }
+    const refsExpandable = children
+      .filter((child) => child.type === "p")
+      .map((expandable) => expandable.ref);
+    const toggleExpand = () => {
+      refsExpandable.map((ref) => ref.current.classList.toggle("line-clamp-4"));
+    };
+
+    const handleOpenModal = (title, content) => {
+      toggleExpand();
+      openModal(title, content, <Stack>buttons</Stack>, true);
+    };
+
+    return (
+      <Stack
+        height={"100%"}
+        maxHeight={maxHeight}
+        className="card"
+        flex={flex}
+        overflow={"hidden"}
+        justifyContent={"space-between"}
       >
-        <Typography variant="h5">{title}</Typography>
-        <br />
-        <Stack elevation={0} className="" gap={2}>
+        <Stack
+          sx={{
+            padding: 2,
+            height: "100%",
+            maxHeight: "fit-content",
+            alignItems: "start",
+            justifyContent: "start",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Typography variant="h5">{title}</Typography>
+          <br />
           {children}
         </Stack>
-      </CardActionArea>
-      <CardActions sx={{ height: "fit-content", bgcolor: "white" }}>
-        <Button>Ver más</Button>
-        <Button>Editar</Button>
-      </CardActions>
-    </Stack>
-  );
+      </Stack>
+    );
+  }
 }
