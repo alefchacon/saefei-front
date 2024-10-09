@@ -67,7 +67,10 @@ body{
   overflow: hidden;
   position: relative;
 }
-
+a{
+  text-decoration: none;
+  color: inherit;
+}
 .ellipsis{
     width: 100%;
     display: -webkit-box;
@@ -87,7 +90,6 @@ body{
 .card{
   display: flex;
   flex-direction: column;
-  padding-bottom: 10px;
   background-color: white;
   border-radius: 5px;
   box-shadow: 0 0 3px 0px rgba(0,0,0,0.1);

@@ -7,6 +7,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
 import { getHHssString } from "../../../util/moments";
+import ListItemButton from "@mui/material/ListItemButton";
+import { ListItem } from "@mui/material";
 
 export default function CardActivity({
   activity = { name: "activity", time: "12:00:00" },
@@ -23,10 +25,15 @@ export default function CardActivity({
   };
 
   return (
-    <Stack
-      direction={"row"}
-      justifyContent={"space-between"}
-      alignItems={"center"}
+    <ListItemButton
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        cursor: "default",
+      }}
+      divider
     >
       <Stack direction={"row"} gap={3}>
         <Typography>
@@ -49,6 +56,6 @@ export default function CardActivity({
           </Tooltip>
         )}
       </Stack>
-    </Stack>
+    </ListItemButton>
   );
 }

@@ -13,6 +13,7 @@ export const useEvents = () => {
 
   const storeEvent = async (eventUV) => {
     const data = new EventSerializer(eventUV);
+    console.log(data);
     const formData = new FormData();
 
     const { publicidad } = data;
