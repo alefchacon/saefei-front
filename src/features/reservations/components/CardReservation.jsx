@@ -15,28 +15,55 @@ import ChipSpace from "./ChipSpace";
 import EventIcon from "@mui/icons-material/Event";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CampaignIcon from "@mui/icons-material/Campaign";
+import DomainIcon from "@mui/icons-material/Domain";
+import Tooltip from "@mui/material/Tooltip";
 import moment from "moment";
+import SchoolIcon from "@mui/icons-material/School";
 import { getScheduleString } from "../../../util/moments";
 export default function CardReservation({
   reservation,
-  activitySchedule = true,
+  activitySchedule = false,
+  reservationSchedule = false,
+  row = false,
 }) {
   return (
-    <Stack gap={1} direction={"column"}>
+    <Stack
+      gap={1}
+      direction={row ? "row" : "column"}
+      alignItems={row ? "center" : "start"}
+    >
       <ChipSpace space={reservation.space}></ChipSpace>
-      <Stack direction={"row"} gap={5}>
+      <Stack direction={"column"} gap={1}>
         <Stack direction={"row"} gap={1}>
           <EventIcon></EventIcon>
           <Typography>
             {moment(reservation.date).format("DD/MM/YYYY")}
           </Typography>
         </Stack>
-        <Stack direction={"row"} gap={1}>
-          <AccessTimeIcon></AccessTimeIcon>
-          <Typography>
-            {activitySchedule ? "WIP" : getScheduleString(reservation)}
-          </Typography>
-        </Stack>
+        {reservationSchedule && (
+          <Stack direction={"row"} gap={1}>
+            <DomainIcon></DomainIcon>
+            <Typography>Reservación:</Typography>
+            <Typography>
+              {getScheduleString({
+                start: reservation.startEvent,
+                end: reservation.endEvent,
+              })}
+            </Typography>
+          </Stack>
+        )}
+        {activitySchedule && (
+          <Stack direction={"row"} gap={1}>
+            <SchoolIcon></SchoolIcon>
+            <Typography>Evento:</Typography>
+            <Typography>
+              {getScheduleString({
+                start: reservation.startEvent,
+                end: reservation.endEvent,
+              })}
+            </Typography>
+          </Stack>
+        )}
       </Stack>
     </Stack>
   );

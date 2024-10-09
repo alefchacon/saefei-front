@@ -20,6 +20,7 @@ import { useModal } from "../components/hooks/useModal";
 import ExpandableText from "../features/events/components/ExpandableText";
 import ActivityViewer from "../features/events/components/ActivityViewer";
 import CardReservation from "../features/reservations/components/CardReservation";
+import TabsCustom from "../components/Tabs";
 
 export default function EventView() {
   const [eventUV, setEventUV] = useState({});
@@ -107,6 +108,19 @@ export default function EventView() {
               name="Agenda"
               reservations={eventUV.reservations}
             ></ActivityViewer>
+            <br />
+            {eventUV.chronogram && (
+              <Button>
+                <a
+                  href={"http://localhost:8000/api/file/".concat(
+                    eventUV.chronogram.file
+                  )}
+                  target="_blank"
+                >
+                  Descargar cronograma
+                </a>
+              </Button>
+            )}
           </CardEventSection>
         </Stack>
         <CardEventSection title={"Logistica"} event={eventUV} flex={2}>
@@ -185,7 +199,7 @@ export default function EventView() {
       children = [children];
     }
     const refsExpandable = children
-      .filter((child) => child.type === "p")
+      .filter((child) => child?.type === "p")
       .map((expandable) => expandable.ref);
     const toggleExpand = () => {
       refsExpandable.map((ref) => ref.current.classList.toggle("line-clamp-4"));

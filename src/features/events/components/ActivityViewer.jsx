@@ -6,6 +6,8 @@ import { useModal } from "../../../components/hooks/useModal";
 import ExpandableArea from "../../../components/ExpandableArea";
 import AccordionCustom from "../../../components/Accordion";
 import CardReservation from "../../reservations/components/CardReservation";
+import TabsCustom from "../../../components/Tabs";
+import CardActivity from "./CardActivity";
 export default function ActivityViewer({
   name = "",
   expanded = false,
@@ -19,16 +21,24 @@ export default function ActivityViewer({
   const ellipsis = `ellipsis line-clamp-${maxLines}`;
 
   const modalContent = (
-    <>
+    <TabsCustom>
       {reservations?.map((reservation, index) => (
-        <AccordionCustom
+        <Stack
           key={index}
-          header={
-            <CardReservation reservation={reservation} activitySchedule />
+          label={
+            <CardReservation
+              row
+              reservation={reservation}
+              activitySchedule={false}
+            />
           }
-        ></AccordionCustom>
+        >
+          {reservation.activities.map((activity, index) => (
+            <CardActivity key={index} activity={activity} />
+          ))}
+        </Stack>
       ))}
-    </>
+    </TabsCustom>
   );
 
   const showModal = () => {

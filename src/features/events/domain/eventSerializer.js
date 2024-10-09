@@ -1,4 +1,5 @@
 import { sortAsc, getHHssString } from "../../../util/moments"
+import ActivitySerializer from "../../reservations/domain/activitySertializer";
 class EventSerializer{
   constructor(frontendEvent){
     this.nombre = frontendEvent.name,
@@ -7,7 +8,11 @@ class EventSerializer{
     this.ambito = frontendEvent.scope,
     this.programas = JSON.stringify(frontendEvent.programs),
     this.reservaciones = JSON.stringify(frontendEvent.reservations),
-    this.actividades = frontendEvent.activities,
+    this.actividades = JSON.stringify(
+      frontendEvent.activities.map(
+        activity => new ActivitySerializer(activity)
+      )
+    ),
     this.audiencias = frontendEvent.audiences.join(";"),
     this.eje = frontendEvent.axis,
     this.tematicas = frontendEvent.themes.join(";"),
