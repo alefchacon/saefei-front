@@ -30,7 +30,11 @@ import * as ROUTES from "../stores/ROUTES";
 import EventForm from "./Notify/EventForm";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 const theme = createTheme({
-  palette: {},
+  palette: {
+    primary: {
+      main: "#3471c1",
+    },
+  },
   components: {
     MuiFilledInput: {
       styleOverrides: {

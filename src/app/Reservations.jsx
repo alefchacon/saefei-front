@@ -14,27 +14,31 @@ import IconButton from "@mui/material/IconButton";
 import ExpandCircleDownIcon from "@mui/icons-material/ExpandCircleDown";
 import Collapse from "@mui/material/Collapse";
 import ChipReservation from "../features/reservations/components/ChipReservation";
-
+import ListItemButton from "@mui/material/ListItemButton";
 function ReservationGroup({ space = {}, reservations = [] }) {
   const [show, setShow] = useState(true);
 
   const toggleShow = () => setShow(!show);
 
+  const sx = {
+    direction: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "10px 20px",
+  };
+
   return (
     <Stack>
-      <Stack
-        direction={"row"}
-        justifyContent={"space-between"}
-        alignItems={"center"}
-        padding={"10px 20px"}
+      <ListItemButton
+        sx={sx}
+        onClick={toggleShow}
+        disableRipple={reservations.length < 1}
       >
         <ChipSpace space={space} />{" "}
         {reservations.length > 0 && (
-          <IconButton onClick={toggleShow}>
-            <ExpandCircleDownIcon></ExpandCircleDownIcon>
-          </IconButton>
+          <ExpandCircleDownIcon></ExpandCircleDownIcon>
         )}
-      </Stack>
+      </ListItemButton>
       <Divider></Divider>
       <Stack padding={1}>
         {reservations.length === 0 ? (
