@@ -21,6 +21,11 @@ import ExpandableText from "../features/events/components/ExpandableText";
 import ActivityViewer from "../features/events/components/ActivityViewer";
 import CardReservation from "../features/reservations/components/CardReservation";
 import TabsCustom from "../components/Tabs";
+import downloadAsZip from "../util/downloadAsZip";
+import Page from "../components/Page";
+
+//MOVE THIS TO SOME KIND OF ENV FILE!! >:D
+const FILE_URL = "http://localhost:8000/api/file/";
 
 export default function EventView() {
   const [eventUV, setEventUV] = useState({});
@@ -38,62 +43,99 @@ export default function EventView() {
     description: useRef(null),
   };
 
-  return (
-    <Stack
-      position={"relative"}
-      direction={"column"}
-      gap={0}
-      height={"fit-content"}
-    >
-      {/*
-      <Stack
-        className="page"
-        position={"fixed"}
-        bottom={0}
-        right={50}
-        width={800}
-        height={500}
-        zIndex={100}
-      >
-        asdf
-      </Stack>
-      */}
+  const handleDownloadAsZip = () => {
+    downloadAsZip(
+      eventUV.publicity,
+      `SAE_publicidad_${eventUV.name.split(" ").join("-")}`
+    );
+  };
 
-      <Header title={eventUV.name} padding={false}>
-        <Stack>
-          <Typography fontSize={18}>
-            por{" "}
-            <b>
-              {`${eventUV.user?.names} ${eventUV.user?.paternalName} ${eventUV.user?.maternalName}`}
-            </b>
-          </Typography>
-          <Stack direction={"row"} gap={3}>
-            <Button startIcon={<ReplyIcon />}>Responder notificación</Button>
-            <Button startIcon={<CampaignIcon />}>Notificar medios</Button>
+  return (
+    <Page
+      disablePadding
+      title={
+        <Stack
+          direction={"row"}
+          width={"100%"}
+          justifyContent={"space-between"}
+        >
+          <Stack width={"100%"}>
+            {eventUV.name}
+            <Stack gap={"20px"}>
+              <Typography fontSize={18}>
+                por{" "}
+                <b>
+                  {`${eventUV.user?.names} ${eventUV.user?.paternalName} ${eventUV.user?.maternalName}`}
+                </b>
+              </Typography>
+
+              <ExpandableText id={"description"} modalTitle="Descripción">
+                {eventUV.description}
+              </ExpandableText>
+              <Stack direction={"row"} gap={3}>
+                <Button startIcon={<ReplyIcon />}>
+                  Responder notificación
+                </Button>
+                <Button startIcon={<CampaignIcon />}>Notificar medios</Button>
+              </Stack>
+            </Stack>
           </Stack>
         </Stack>
-      </Header>
-      <br />
-      <Stack gap={3}>
+      }
+    >
+      <Stack gap={3} id={"principal"}>
         <Stack gap={3} direction={{ md: "row", xs: "column" }}>
           {/*
            */}
-          <CardEventSection
-            title={"General"}
-            event={eventUV}
-            flex={2}
-            maxHeight={"100%"}
-          >
-            <ExpandableText name="Descripción" id={"description"}>
-              {eventUV.description}
-            </ExpandableText>
-            <Stack direction={"row"} gap={1} flexWrap={"wrap"}>
+          <CardEventSection title={"Logistica"} event={eventUV} flex={2}>
+            <Stack
+              direction={"row"}
+              flexWrap={"wrap"}
+              gap={1}
+              alignItems={"center"}
+            >
               <Typography>
-                <b>Programas educativos:</b>
+                <b>Requiere:</b>
               </Typography>{" "}
-              {eventUV.programs?.map((program, index) => (
-                <ChipCustom label={program.name} />
-              ))}
+              <ChipCustom
+                label={"Apoyo del CC"}
+                display={eventUV.computerCenterRequirements ? "flex" : "none"}
+              />
+              <ChipCustom
+                label={"Livestream"}
+                display={eventUV.needsLivestream > 0 ? "flex" : "none"}
+              />
+              <ChipCustom label={`${eventUV.numParticipants} asistentes`} />
+              <ChipCustom
+                label={`${eventUV.numExternalParticipants} externos`}
+              />
+              <ChipCustom
+                label={"Estacionamiento para externos"}
+                display={eventUV.needsParking > 0 ? "flex" : "none"}
+              />
+              <ChipCustom
+                label={"Fin de semana"}
+                display={eventUV.needsWeekend > 0 ? "flex" : "none"}
+              />
+            </Stack>
+            <br />
+            <Stack gap={"10px"}>
+              <ExpandableText
+                name="Requisitos del CC"
+                id={"computerCenterRequirements"}
+              >
+                {eventUV.computerCenterRequirements}
+              </ExpandableText>
+              <ExpandableText name="Decoracion" id={"decoration"}>
+                {eventUV.decoration}
+              </ExpandableText>
+
+              <ExpandableText name="Presidium" id={"presidium"}>
+                {eventUV.presidium}
+              </ExpandableText>
+              <ExpandableText name="Constancias" id={"speakers"}>
+                {eventUV.speakers}
+              </ExpandableText>
             </Stack>
           </CardEventSection>
           {/*
@@ -112,9 +154,7 @@ export default function EventView() {
             {eventUV.chronogram && (
               <Button>
                 <a
-                  href={"http://localhost:8000/api/file/".concat(
-                    eventUV.chronogram.file
-                  )}
+                  href={FILE_URL.concat(eventUV.chronogram.file)}
                   target="_blank"
                 >
                   Descargar cronograma
@@ -123,78 +163,48 @@ export default function EventView() {
             )}
           </CardEventSection>
         </Stack>
-        <CardEventSection title={"Logistica"} event={eventUV} flex={2}>
-          <Stack
-            direction={"row"}
-            flexWrap={"wrap"}
-            gap={1}
-            alignItems={"center"}
-          >
-            <Typography>
-              <b>Requiere:</b>
-            </Typography>{" "}
-            <ChipCustom
-              label={"Apoyo del CC"}
-              display={eventUV.computerCenterRequirements ? "flex" : "none"}
-            />
-            <ChipCustom
-              label={"Livestream"}
-              display={eventUV.needsLivestream > 0 ? "flex" : "none"}
-            />
-            <ChipCustom label={`${eventUV.numParticipants} asistentes`} />
-            <ChipCustom label={`${eventUV.numExternalParticipants} externos`} />
-            <ChipCustom
-              label={"Estacionamiento para externos"}
-              display={eventUV.needsParking > 0 ? "flex" : "none"}
-            />
-            <ChipCustom
-              label={"Fin de semana"}
-              display={eventUV.needsWeekend > 0 ? "flex" : "none"}
-            />
-          </Stack>
-
-          <ExpandableText
-            name="Requisitos del CC"
-            id={"computerCenterRequirements"}
-          >
-            {eventUV.computerCenterRequirements}
-          </ExpandableText>
-          <ExpandableText name="Decoracion" id={"decoration"}>
-            {eventUV.decoration}
-          </ExpandableText>
-
-          <ExpandableText name="Presidium" id={"presidium"}>
-            {eventUV.presidium}
-          </ExpandableText>
-          <ExpandableText name="Constancias" id={"speakers"}>
-            {eventUV.speakers}
-          </ExpandableText>
-        </CardEventSection>
 
         <Stack gap={3} direction={{ md: "row", xs: "column" }}>
           <CardEventSection title={"Difusión"} event={eventUV} flex={3}>
-            <Stack direction={"row"} gap={1}>
+            <Stack direction={"row"} gap={1} flexWrap={"wrap"}>
               <Typography>
                 <b>Medios:</b>
               </Typography>{" "}
-              <ChipCustom
-                label={"Apoyo del CC"}
-                display={eventUV.computerCenterRequirements ? "flex" : "none"}
-              />
+              {eventUV.media?.split(",").map((medium, index) => (
+                <ChipCustom label={medium} key={index} />
+              ))}
             </Stack>
+            <br />
+            {eventUV.publicity?.length > 0 && (
+              <Button onClick={handleDownloadAsZip}>
+                Descargar material promocional
+              </Button>
+            )}
           </CardEventSection>
           {eventUV.additional && (
             <CardEventSection title={"Adicional"} event={eventUV} flex={3}>
-              <Typography>{eventUV.additional}</Typography>
+              <ExpandableText
+                modalTitle="Adicional"
+                id={"additional"}
+                maxLines={4}
+              >
+                {eventUV.additional}
+              </ExpandableText>
             </CardEventSection>
           )}
         </Stack>
       </Stack>
-      <Modal></Modal>
-    </Stack>
+      <Stack id="principal2">sadf</Stack>
+    </Page>
   );
 
-  function CardEventSection({ event, title, children, flex, maxHeight = 320 }) {
+  function CardEventSection({
+    event,
+    title,
+    children,
+    flex,
+    maxHeight = "100%",
+  }) {
     if (!Array.isArray(children)) {
       children = [children];
     }
@@ -218,6 +228,8 @@ export default function EventView() {
         flex={flex}
         overflow={"hidden"}
         justifyContent={"space-between"}
+        bgcolor={"white"}
+        border={"1px solid var(--light-gray)"}
       >
         <Stack
           sx={{

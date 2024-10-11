@@ -10,11 +10,13 @@ export default function Page({
   children,
   flex,
   header = true,
-  activeSectionId = "pricipal",
+  activeSectionId = "principal",
   onSectionChange,
   className,
   skeleton,
   onGoBack,
+  disablePadding = false,
+  bgcolor = "white",
 }) {
   const { loading } = useLoading();
   const navigate = useNavigate();
@@ -34,9 +36,11 @@ export default function Page({
       className={`page ${className}`}
       position={"relative"}
       flex={flex}
+      bgcolor={bgcolor}
     >
       {header && (
         <Header
+          disablePadding={disablePadding}
           onGoBack={onGoBack}
           onSectionChange={handleReturnToFirstSection}
           sectionedPage={activeSectionId !== "principal"}
@@ -46,7 +50,12 @@ export default function Page({
       {loading && skeleton ? (
         skeleton
       ) : (
-        <Stack id={"content"} className="body side-padding" height={"100%"}>
+        <Stack
+          id={"content"}
+          className={`body ${disablePadding ? "" : "side-padding"}`}
+          padding={disablePadding ? "40px 40px" : ""}
+          height={"100%"}
+        >
           {currentSection}
         </Stack>
       )}

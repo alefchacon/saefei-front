@@ -54,6 +54,8 @@ export default function ActivityViewer({
             <CardReservation
               key={index}
               reservation={reservation}
+              activitySchedule
+              reservationSchedule
             ></CardReservation>
           ))}
         </Stack>

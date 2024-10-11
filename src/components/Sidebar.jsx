@@ -51,21 +51,23 @@ export default function Sidebar() {
         flex: 1,
       }}
       display={{ xs: "none", md: "flex" }}
-      padding={"50px 20px 50px 70px"}
+      padding={"10px 20px 50px 30px"}
       borderRadius={"0 10px 10px 0"}
     >
-      <Typography
-        style={{ fontWeight: 800, fontSize: 35 }}
-        alignItems={"center"}
-        display={"flex"}
-        gap={2}
-      >
-        <SchoolIcon fontSize="50" /> SAEFEI
-      </Typography>
-      <Typography variant="caption" sx={{ opacity: 0.5 }}>
-        Sistema de Administración de Eventos de la Facultad de Estadística e
-        Informática
-      </Typography>
+      <Stack direction={"row"} alignItems={"center"} gap={2}>
+        <Typography
+          style={{ fontWeight: 800, fontSize: 35 }}
+          alignItems={"center"}
+          display={"flex"}
+          gap={2}
+        >
+          <SchoolIcon fontSize="50" /> SEA
+        </Typography>
+        <Typography variant="caption" sx={{ opacity: 0.5 }} lineHeight={1.3}>
+          Sistema de <br />
+          Eventos Académicos
+        </Typography>
+      </Stack>
       <br />
       <List component="nav" aria-label="main mailbox folders">
         <Stack id="user" sx={{ opacity: 0.8 }}>

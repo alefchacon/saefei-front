@@ -12,7 +12,7 @@ export default function Header({
   title = "Título",
   description = "",
   children,
-  padding = true,
+  disablePadding = false,
   sectionedPage = false,
   onGoBack,
   onSectionChange,
@@ -29,32 +29,28 @@ export default function Header({
         display={"flex"}
         flexDirection={"column"}
         zIndex={5}
-        className={padding ? `side-padding` : ""}
+        className={disablePadding ? "" : `side-padding`}
         justifyContent={"space-between"}
         paddingTop={{ md: "20px", xs: "20px" }}
+        paddingLeft={"40px"}
+        paddingRight={"40px"}
         paddingBottom={{ md: "20px", xs: "10px" }}
         borderBottom={{ xs: "1px solid var(--bg)", md: "none" }}
+        position={"sticky"}
+        top={"0"}
+        bgcolor={"white"}
       >
-        {/*
-        <Stack
-        sx={{ opacity: 0.7 }}
-          direction={"row"}
-          display={"flex"}
-          alignItems={"center"}
-          gap={2}
-        >
-          Reservaciones de espacios{" "}
-          <ChevronRightIcon fontSize="50"></ChevronRightIcon> Reservar un
-          espacio
-          </Stack>
-          */}
-        <Stack direction={"row"} gap={2}>
+        <Stack direction={"row"} gap={2} minWidth={"100%"}>
           {canGoBack && (
-            <IconButton id="go-back-button" onClick={onGoBack}>
+            <IconButton
+              id="go-back-button"
+              onClick={onGoBack}
+              sx={{ maxHeight: "fit-content" }}
+            >
               <ArrowBackIcon></ArrowBackIcon>
             </IconButton>
           )}
-          <Stack direction={"column"}>
+          <Stack direction={"column"} width={"100%"}>
             <Typography
               id="title"
               variant="h5"
@@ -63,6 +59,7 @@ export default function Header({
               alignItems={"center"}
               display={"flex"}
               fontSize={{ md: 28, xs: 20 }}
+              width={"100%"}
             >
               {title}
             </Typography>
