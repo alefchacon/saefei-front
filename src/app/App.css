@@ -104,7 +104,10 @@ p{
 
 .button-row{
   display: flex;
-  flex-direction: row;
+  flex-direction: row !important;
+  justify-content: end;
+  gap: 20px;
+  align-items: end;
 }
 
 #content{
@@ -146,7 +149,7 @@ p{
 }
 
 .shadow{
-  box-shadow: 0 0 2px 0px rgba(0,0,0,0.2);
+  box-shadow: 0 0 3px 0px rgba(0,0,0,0.2);
 }
 
 .side-padding{
