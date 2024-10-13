@@ -31,7 +31,7 @@ export default function ExpandableText({
 
   return (
     <>
-      <ExpandableArea onClick={mobile ? showModal : asdf}>
+      <ExpandableArea expanded={isExpanded} onClick={mobile ? showModal : asdf}>
         <Typography
           color="gray"
           className={isExpanded ? "" : ellipsis}

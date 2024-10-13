@@ -62,7 +62,7 @@ export default function EventView() {
   };
 
   return (
-    <Stack gap={"40px"}>
+    <>
       <Page
         disablePadding
         title={
@@ -84,18 +84,13 @@ export default function EventView() {
                 <ExpandableText id={"description"} modalTitle="Descripción">
                   {eventUV.description}
                 </ExpandableText>
-                <Stack direction={"row"} gap={3}>
-                  <Button startIcon={<ReplyIcon />} onClick={showReplyModal}>
-                    Responder notificación
-                  </Button>
-                  <Button startIcon={<CampaignIcon />}>Notificar medios</Button>
-                </Stack>
               </Stack>
             </Stack>
           </Stack>
         }
       >
         <Stack gap={3} id={"principal"}>
+          <br />
           <Stack gap={3} direction={{ md: "row", xs: "column" }}>
             {/*
              */}
@@ -205,14 +200,13 @@ export default function EventView() {
               </CardEventSection>
             )}
           </Stack>
+          {!isMobile && <ResponsePanel></ResponsePanel>}
         </Stack>
         <Stack id="principal2">sadf</Stack>
       </Page>
 
-      {!isMobile && <ResponsePanel></ResponsePanel>}
-
       <Modal></Modal>
-    </Stack>
+    </>
   );
 
   function ResponsePanel() {

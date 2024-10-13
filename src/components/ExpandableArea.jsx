@@ -1,13 +1,14 @@
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 import CardActionArea from "@mui/material/CardActionArea";
 
-export default function ExpandableArea({ children, onClick }) {
+export default function ExpandableArea({ children, onClick, expanded }) {
   return (
-    <CardActionArea onClick={onClick} position={"relative"}>
+    <Stack position={"relative"} justifyContent={"start"} alignItems={"start"}>
       {children}
-      <Button variant="text" size="small">
-        Ver más
+      <Button variant="text" size="small" onClick={onClick}>
+        Ver {expanded ? "menos" : "más"}
       </Button>
-    </CardActionArea>
+    </Stack>
   );
 }
