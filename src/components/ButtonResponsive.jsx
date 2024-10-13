@@ -1,19 +1,18 @@
 import { Button } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { useTheme } from "@mui/material/styles";
 
+import useIsMobile from "./hooks/useIsMobile";
 export default function ButtonResponsive({
   children,
   variant = "contained",
   loading = false,
   onClick,
   type = "button",
+  responsive,
 }) {
-  const theme = useTheme();
-  const responsive = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useIsMobile();
 
-  const config = responsive
+  const config = isMobile
     ? {
         position: "absolute !important",
         top: 10,
@@ -33,7 +32,7 @@ export default function ButtonResponsive({
       type={type}
       onClick={onClick}
       disabled={loading}
-      sx={config}
+      sx={responsive ? config : ""}
     >
       {children}
       {loading && <CircularProgress size={"20px"} />}

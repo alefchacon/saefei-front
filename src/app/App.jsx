@@ -15,6 +15,7 @@ import Stack from "@mui/material/Stack";
 import CardHeader from "@mui/material/CardHeader";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ReservationForm from "./ReservationForm";
+import SchoolIcon from "@mui/icons-material/School";
 
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
@@ -89,9 +90,27 @@ function App() {
             sx={{
               position: "relative",
               backgroundColor: "transparent",
-              padding: { md: "2rem", xs: "0" },
+              padding: { md: "1rem", xs: "0" },
             }}
           >
+            <Stack direction={"row"} alignItems={"center"} gap={"20px"}>
+              <Typography
+                style={{ fontWeight: 800, fontSize: 35 }}
+                alignItems={"center"}
+                display={"flex"}
+                gap={2}
+              >
+                <SchoolIcon fontSize="50" /> SEA
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{ opacity: 0.5 }}
+                lineHeight={1.3}
+              >
+                Sistema de Eventos Académicos <br />
+                de la Facultad de Estadística e Informática
+              </Typography>
+            </Stack>
             <Routes>
               <Route
                 path={ROUTES.ROUTE_RESERVE}
@@ -102,7 +121,7 @@ function App() {
                 element={<Reservations></Reservations>}
               ></Route>
               <Route
-                path={`${ROUTES.ROUTE_SEARCH_EVENTS}/:idEvento?`}
+                path={`${ROUTES.ROUTE_EVENT}/:idEvento?`}
                 element={<EventView></EventView>}
               ></Route>
               <Route

@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import ChipCustom from "../components/Chip";
 import Header from "../components/Header";
-
+import ChipTabs from "../components/ChipTabs";
 import { useEvents } from "../features/events/businessLogic/useEvents";
 import ReplyIcon from "@mui/icons-material/Reply";
 import { useParams } from "react-router-dom";
@@ -26,22 +26,22 @@ import Page from "../components/Page";
 import TextField from "@mui/material/TextField";
 //MOVE THIS TO SOME KIND OF ENV FILE!! >:D
 const FILE_URL = "http://localhost:8000/api/file/";
+import useIsMobile from "../components/hooks/useIsMobile";
+import ButtonResponsive from "../components/ButtonResponsive";
 
 export default function EventView() {
   const [eventUV, setEventUV] = useState({});
+  const isMobile = useIsMobile();
 
   const { Modal, openModal, closeModal } = useModal();
   const { getEvent } = useEvents();
   const { idEvento } = useParams();
   useEffect(() => {
     getEvent(idEvento).then((response) => setEventUV(response.data.data));
+    if (isMobile) {
+      closeModal();
+    }
   }, []);
-
-  const fetchEvent = async () => {};
-
-  const refs = {
-    description: useRef(null),
-  };
 
   const handleDownloadAsZip = () => {
     downloadAsZip(
@@ -51,11 +51,18 @@ export default function EventView() {
   };
 
   const showReplyModal = () => {
-    openModal("Responder notificación", <div>safd</div>, "", true, "", true);
+    openModal(
+      "Responder notificación",
+      <ResponsePanel></ResponsePanel>,
+      "",
+      true,
+      "",
+      false
+    );
   };
 
   return (
-    <Stack gap={2}>
+    <Stack gap={"40px"}>
       <Page
         disablePadding
         title={
@@ -202,19 +209,69 @@ export default function EventView() {
         <Stack id="principal2">sadf</Stack>
       </Page>
 
-      <Stack className="card" padding={"40px"} gap={"20px"}>
-        <Typography variant="h5" fontWeight={500}>
-          Respuesta
-        </Typography>
-        <TextField multiline rows={10} variant="filled"></TextField>
-        <Stack className="button-row">
-          <Button variant="contained">Responder notificación</Button>
-        </Stack>
-      </Stack>
+      {!isMobile && <ResponsePanel></ResponsePanel>}
 
       <Modal></Modal>
     </Stack>
   );
+
+  function ResponsePanel() {
+    return (
+      <Stack className="card" padding={"0px"} gap={"20px"}>
+        <TabsCustom>
+          <Stack label="Respuesta al organizador">
+            <ReplyForm></ReplyForm>
+          </Stack>
+          <Stack label="Notificación a medios">
+            <ChipTabs>
+              <Stack label="Página institucional">
+                <MediaNotificationForm></MediaNotificationForm>
+              </Stack>
+              <Stack label="Correo institucional">
+                <MediaNotificationForm></MediaNotificationForm>
+              </Stack>
+              <Stack label="Redes sociales">
+                <MediaNotificationForm></MediaNotificationForm>
+              </Stack>
+              <Stack label="Comunicación UV">
+                <MediaNotificationForm></MediaNotificationForm>
+              </Stack>
+              <Stack label="Radio UV">
+                <MediaNotificationForm></MediaNotificationForm>
+              </Stack>
+            </ChipTabs>
+          </Stack>
+        </TabsCustom>
+      </Stack>
+    );
+  }
+
+  function ReplyForm() {
+    return (
+      <Stack gap={"20px"}>
+        <TextField multiline rows={10} variant="filled"></TextField>
+        <Stack className="button-row">
+          <ButtonResponsive>Responder</ButtonResponsive>
+        </Stack>
+      </Stack>
+    );
+  }
+
+  function MediaNotificationForm() {
+    return (
+      <Stack gap={"20px"}>
+        <TextField
+          variant="filled"
+          label={"Para"}
+          sx={{ maxWidth: "300px" }}
+        ></TextField>
+        <TextField multiline rows={10} variant="filled"></TextField>
+        <Stack className="button-row">
+          <ButtonResponsive>Notificar</ButtonResponsive>
+        </Stack>
+      </Stack>
+    );
+  }
 
   function CardEventSection({
     event,
