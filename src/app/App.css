@@ -104,7 +104,11 @@ p{
 
 .button-row{
   display: flex;
-  flex-direction: row;
+  flex-direction: row !important;
+  justify-content: end;
+  gap: 20px;
+  align-items: end;
+  padding-top: 20px;
 }
 
 #content{
@@ -146,7 +150,7 @@ p{
 }
 
 .shadow{
-  box-shadow: 0 0 2px 0px rgba(0,0,0,0.2);
+  box-shadow: 0 0 3px 0px rgba(0,0,0,0.2);
 }
 
 .side-padding{
@@ -154,6 +158,17 @@ p{
   padding-bottom: 2rem;
   padding-left: clamp(5px,5%, 100px);
   padding-right: clamp(10px, 45%, 800px) 
+}
+
+.grow{
+  max-width: 20vw;
+  transition: max-width 200ms ease-in-out;
+}
+
+.shrink{
+  max-width: 3vw;
+  transition: max-width 200ms ease-in-out;
+  
 }
 
 .body{

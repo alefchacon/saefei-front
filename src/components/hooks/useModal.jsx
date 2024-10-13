@@ -21,18 +21,20 @@ export const useModal = () => {
   const [content, setContent] = useState(null);
   const [title, setTitle] = useState(null);
   const [actions, setActions] = useState(null);
+  const [noBackdrop, setNoBackdrop] = useState(true);
   const [isResponsive, setIsResponsive] = useState(false);
   const [minWidth, setMinWidth] = useState("200px");
 
   const openModal = useCallback(
-    (title, content, actions, responsive, minWidth, onClose) => {
-      console.log(content);
+    (title, content, actions, responsive, minWidth, noBackdrop = false) => {
+      console.log(title);
       setTitle(title);
       setContent(content);
       setActions(actions);
       setIsOpen(true);
       setIsResponsive(responsive);
       setMinWidth(minWidth);
+      setNoBackdrop(noBackdrop);
     },
     []
   );
@@ -85,6 +87,12 @@ export const useModal = () => {
           fullScreen={goFullscreen}
           fullWidth
           maxWidth={"md"}
+          slotProps={{
+            backdrop: {
+              style: { backgroundColor: noBackdrop ? "transparent" : "" },
+            },
+          }}
+          //BackdropProps={{ style: { backgroundColor: "transparent" } }} // Disable background
 
           //sx={{ "& .MuiDialog-paper": { height: "500px" } }} // Customize height here
         >

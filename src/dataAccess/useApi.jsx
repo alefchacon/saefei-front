@@ -1,14 +1,17 @@
 import axios from "axios";
 import { useSnackbar } from "../components/providers/SnackbarProvider";
 import { useLoading } from "../components/providers/LoadingProvider";
+import { TOKEN_KEY } from "../stores/CREDENTIAL_KEYS";
 export default function useApi() {
   const { openSnackbar } = useSnackbar();
   const { setLoading } = useLoading();
+  const token = localStorage.getItem(TOKEN_KEY);
 
   const api = axios.create({
     baseURL: "http://localhost:8000/api/",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
   });
 

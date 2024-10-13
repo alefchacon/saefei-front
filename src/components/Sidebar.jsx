@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useLayoutEffect } from "react";
 
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -18,11 +18,20 @@ import FolderSharedIcon from "@mui/icons-material/FolderShared";
 import { styled } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import * as ROUTES from "../stores/ROUTES";
-
+import MenuIcon from "@mui/icons-material/Menu";
 import Badge from "@mui/material/Badge";
+import IconButton from "@mui/material/IconButton";
+import { useModal } from "./hooks/useModal";
+import LoginIcon from "@mui/icons-material/Login";
+import LogInForm from "../features/auth/components/LogInForm";
+import useAuth from "../features/auth/businessLogic/useAuth";
+import useNotices from "../features/notices/businessLogic/useNotices";
 
 export default function Sidebar() {
   const [selectedIndex, setSelectedIndex] = useState(1);
+  const { Modal, openModal, closeModal } = useModal();
+  const user = useAuth().getUser();
+  const { getNoticeCount, noticeAmount } = useNotices();
 
   const navigate = useNavigate();
 
@@ -41,20 +50,37 @@ export default function Sidebar() {
     },
   }));
 
+  const showLoginModal = () => {
+    openModal("Entrar", <LogInForm onLogin={handleLogin} />, "", true);
+  };
+
+  const handleLogin = () => {
+    closeModal();
+  };
+  useLayoutEffect(() => {
+    getNoticeCount();
+  }, []);
+
+  const toggleGrow = () => setGrown(!grown);
+  const [grown, setGrown] = useState(true);
+
   return (
-    <Stack
-      id="sidebar"
-      sx={{
-        backgroundColor: "var(--blue)",
-        maxWidth: "20vw",
-        color: "white",
-        flex: 1,
-      }}
-      display={{ xs: "none", md: "flex" }}
-      padding={"10px 20px 50px 30px"}
-      borderRadius={"0 10px 10px 0"}
-    >
-      <Stack direction={"row"} alignItems={"center"} gap={2}>
+    <>
+      <Stack
+        id="sidebar"
+        sx={{
+          backgroundColor: "var(--blue)",
+          overflow: "hidden",
+          color: "white",
+          flex: 1,
+        }}
+        className={grown ? `grow` : "shrink"}
+        display={{ xs: "none", md: "flex" }}
+        padding={"10px 20px 50px 30px"}
+        borderRadius={"0 10px 10px 0"}
+      >
+        <Stack direction={"row"} alignItems={"center"} gap={2}>
+          {/*
         <Typography
           style={{ fontWeight: 800, fontSize: 35 }}
           alignItems={"center"}
@@ -67,89 +93,107 @@ export default function Sidebar() {
           Sistema de <br />
           Eventos Académicos
         </Typography>
-      </Stack>
-      <br />
-      <List component="nav" aria-label="main mailbox folders">
-        <Stack id="user" sx={{ opacity: 0.8 }}>
-          <Typography>Alejandro Chacón Fernández</Typography>
-          <Typography
-            fontFamily={"roboto condensed"}
-            fontWeight={500}
-            sx={{ textTransform: "uppercase" }}
-          >
-            Desarrollador
-          </Typography>
+          */}
         </Stack>
-        <CustomListItemButton
-          selected={selectedIndex === 0}
-          onClick={(event) => handleListItemClick(event, 0, ROUTES.ROUTE_INBOX)}
+        <IconButton
+          sx={{ color: "inherit", width: "fit-content" }}
+          onClick={toggleGrow}
         >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <InboxIcon />
-          </ListItemIcon>
-          <ListItemText primary="Bandeja" />
-          <Badge badgeContent={12} color="error"></Badge>
-        </CustomListItemButton>
-        <CustomListItemButton
-          selected={selectedIndex === 1}
-          onClick={(event) =>
-            handleListItemClick(event, 1, ROUTES.ROUTE_MY_EVENTS)
-          }
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <FolderSharedIcon></FolderSharedIcon>
-          </ListItemIcon>
-          <ListItemText primary="Mis eventos" />
-        </CustomListItemButton>
-      </List>
-      <Divider />
-      <List component="nav" aria-label="secondary mailbox folder">
-        <CustomListItemButton
-          selected={selectedIndex === 2}
-          onClick={(event) =>
-            handleListItemClick(event, 2, ROUTES.ROUTE_SEARCH_EVENTS)
-          }
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <SearchIcon />
-          </ListItemIcon>
-          <ListItemText primary="Buscar eventos" />
-        </CustomListItemButton>
-        <CustomListItemButton
-          selected={selectedIndex === 3}
-          onClick={(event) =>
-            handleListItemClick(event, 3, ROUTES.ROUTE_CALENDAR_EVENTS)
-          }
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <CalendarMonthIcon />
-          </ListItemIcon>
-          <ListItemText primary="Calendario de eventos" />
-        </CustomListItemButton>
-        <CustomListItemButton
-          selected={selectedIndex === 4}
-          onClick={(event) =>
-            handleListItemClick(event, 4, ROUTES.ROUTE_CALENDAR_RESERVATIONS)
-          }
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <DomainIcon />
-          </ListItemIcon>
+          <MenuIcon></MenuIcon>
+        </IconButton>
+        <br />
+        <List component="nav" aria-label="main mailbox folders">
+          <Stack id="user" sx={{ opacity: 0.8 }}>
+            <Typography>{user.fullname}</Typography>
+            <Typography
+              fontFamily={"roboto condensed"}
+              fontWeight={500}
+              sx={{ textTransform: "uppercase" }}
+            >
+              {user.job}
+            </Typography>
+          </Stack>
 
-          <ListItemText primary="Reservaciones de espacios" />
-        </CustomListItemButton>
-        <CustomListItemButton
-          selected={selectedIndex === 5}
-          onClick={(event) =>
-            handleListItemClick(event, 5, `${ROUTES.ROUTE_NOTIFY}?paso=0`)
-          }
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <AddAlertIcon />
-          </ListItemIcon>
-          <ListItemText primary="Notificar evento" />
-        </CustomListItemButton>
-      </List>
-    </Stack>
+          <CustomListItemButton onClick={showLoginModal}>
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <LoginIcon></LoginIcon>
+            </ListItemIcon>
+            <ListItemText primary="Entrar" />
+          </CustomListItemButton>
+          <CustomListItemButton
+            selected={selectedIndex === 0}
+            onClick={(event) =>
+              handleListItemClick(event, 0, ROUTES.ROUTE_INBOX)
+            }
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary="Bandeja" />
+            {grown && <Badge badgeContent={noticeAmount} color="error"></Badge>}
+          </CustomListItemButton>
+          <CustomListItemButton
+            selected={selectedIndex === 1}
+            onClick={(event) =>
+              handleListItemClick(event, 1, ROUTES.ROUTE_MY_EVENTS)
+            }
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <FolderSharedIcon></FolderSharedIcon>
+            </ListItemIcon>
+            <ListItemText primary="Mis eventos" />
+          </CustomListItemButton>
+        </List>
+        <Divider />
+        <List component="nav" aria-label="secondary mailbox folder">
+          <CustomListItemButton
+            selected={selectedIndex === 2}
+            onClick={(event) =>
+              handleListItemClick(event, 2, ROUTES.ROUTE_SEARCH_EVENTS)
+            }
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <SearchIcon />
+            </ListItemIcon>
+            <ListItemText primary="Buscar eventos" />
+          </CustomListItemButton>
+          <CustomListItemButton
+            selected={selectedIndex === 3}
+            onClick={(event) =>
+              handleListItemClick(event, 3, ROUTES.ROUTE_CALENDAR_EVENTS)
+            }
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <CalendarMonthIcon />
+            </ListItemIcon>
+            <ListItemText primary="Calendario de eventos" />
+          </CustomListItemButton>
+          <CustomListItemButton
+            selected={selectedIndex === 4}
+            onClick={(event) =>
+              handleListItemClick(event, 4, ROUTES.ROUTE_CALENDAR_RESERVATIONS)
+            }
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <DomainIcon />
+            </ListItemIcon>
+
+            <ListItemText primary="Reservaciones de espacios" />
+          </CustomListItemButton>
+          <CustomListItemButton
+            selected={selectedIndex === 5}
+            onClick={(event) =>
+              handleListItemClick(event, 5, `${ROUTES.ROUTE_NOTIFY}?paso=0`)
+            }
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <AddAlertIcon />
+            </ListItemIcon>
+            <ListItemText primary="Notificar evento" />
+          </CustomListItemButton>
+        </List>
+      </Stack>
+      <Modal></Modal>
+    </>
   );
 }

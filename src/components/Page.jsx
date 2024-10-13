@@ -30,6 +30,9 @@ export default function Page({
     (child) => child.props.id === activeSectionId
   );
 
+  const conditionalPadding = () =>
+    disablePadding ? { md: "40px 40px", sx: "0" } : "";
+
   return (
     <Stack
       id="page"
@@ -53,7 +56,7 @@ export default function Page({
         <Stack
           id={"content"}
           className={`body ${disablePadding ? "" : "side-padding"}`}
-          padding={disablePadding ? "40px 40px" : ""}
+          padding={conditionalPadding}
           height={"100%"}
         >
           {currentSection}

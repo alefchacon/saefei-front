@@ -20,7 +20,7 @@ import StepperCustom from "../../components/Stepper";
 import Page from "../../components/Page";
 import SectionButton from "../../components/SectionButton";
 import { useReservations } from "../../features/reservations/businessLogic/useReservations";
-import useAuth from "../businessLogic/useAuth";
+import useAuth from "../../features/auth/businessLogic/useAuth";
 import { useModal } from "../../components/hooks/useModal";
 import { eventSchema } from "../../features/events/validation/eventSchema";
 
