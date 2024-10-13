@@ -4,6 +4,7 @@ import Slide from "@mui/material/Slide";
 import { useLoading } from "./providers/LoadingProvider";
 import Fade from "@mui/material/Fade";
 import { useNavigate, useLocation } from "react-router-dom";
+import * as SCROLL_DIRECTIONS from "../stores/SCROLL_DIRECTIONS";
 
 import { useState, useEffect, useRef, useCallback } from "react";
 export default function Page({
@@ -19,10 +20,15 @@ export default function Page({
   disablePadding = false,
   bgcolor = "white",
   onBottomReached,
+  onScroll,
+  onScrollUp,
+  onScrollDown,
 }) {
   const { loading } = useLoading();
   const navigate = useNavigate();
   const location = useLocation();
+  const [scrolled, setScrolled] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   const handleReturnToFirstSection = () => {
     onSectionChange("principal");
@@ -39,10 +45,25 @@ export default function Page({
 
   const handleScroll = useCallback(async () => {
     const { scrollTop, scrollHeight, clientHeight } = divRef.current;
+    //console.log(scrollTop);
+
+    const userScrolledAtAll = scrollTop !== 0;
+    setScrolled(userScrolledAtAll);
+
+    const currentScrollPosition = scrollTop + clientHeight;
+
+    let scrollDirection = SCROLL_DIRECTIONS.SCROLL_DOWN;
+    if (currentScrollPosition < scrollPosition) {
+      scrollDirection = SCROLL_DIRECTIONS.SCROLL_UP;
+    }
+    setScrollPosition(currentScrollPosition);
+    if (onScroll) {
+      onScroll(scrollDirection);
+    }
 
     // I have to subtract 1 from scrollHeight because otherwise it won't work
     // I've no idea why :(
-    const userReachedBottom = scrollTop + clientHeight >= scrollHeight - 1;
+    const userReachedBottom = currentScrollPosition >= scrollHeight - 1;
     if (userReachedBottom && onBottomReached) {
       onBottomReached();
     }
@@ -71,6 +92,7 @@ export default function Page({
           onSectionChange={handleReturnToFirstSection}
           sectionedPage={activeSectionId !== "principal"}
           title={title ?? currentSection?.props.title}
+          scrolled={scrolled}
         ></Header>
       )}
       {loading && skeleton ? (

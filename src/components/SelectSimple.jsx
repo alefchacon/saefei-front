@@ -5,7 +5,6 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
 import { FormHelperText } from "@mui/material";
-import useAuth from "../features/auth/businessLogic/useAuth";
 
 import { styled } from "@mui/material/styles";
 
@@ -17,8 +16,6 @@ export default function SelectCustom({
   value,
   helperText,
   error,
-  variant = "filled",
-  minWidth,
 }) {
   const [selectedObject, setSelectedObject] = React.useState(value);
 
@@ -30,12 +27,7 @@ export default function SelectCustom({
 
   return (
     <div>
-      <FormControl
-        variant={variant}
-        fullWidth
-        error={error}
-        sx={{ minWidth: minWidth }}
-      >
+      <FormControl variant="standard" fullWidth error={error}>
         <InputLabel id={id.concat("-label")}>{label}</InputLabel>
         <Select
           labelId={id.concat("-label")}

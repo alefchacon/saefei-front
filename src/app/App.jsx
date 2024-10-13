@@ -30,6 +30,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { Routes, Route } from "react-router-dom";
 import * as ROUTES from "../stores/ROUTES";
 import EventForm from "./Notify/EventForm";
+import Events from "./Events";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme({
@@ -80,6 +81,7 @@ function App() {
             borderRadius={"0 10px 0 20px"}
             display={{ md: "block", xs: "none" }}
             sx={{ opacity: 0.5 }}
+            zIndex={1000}
           >
             <Typography color="white">Universidad Veracruzana</Typography>
           </Stack>
@@ -110,8 +112,11 @@ function App() {
               <Route
                 path={`${ROUTES.ROUTE_NOTIFY}/:paso?`}
                 element={<EventForm />}
-              ></Route>
-              ¡{" "}
+              ></Route>{" "}
+              <Route
+                path={`${ROUTES.ROUTE_SEARCH_EVENTS}`}
+                element={<Events />}
+              ></Route>{" "}
             </Routes>
           </Stack>
         </Stack>

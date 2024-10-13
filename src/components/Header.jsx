@@ -16,11 +16,16 @@ export default function Header({
   sectionedPage = false,
   onGoBack,
   onSectionChange,
+  scrolled = true,
 }) {
   const location = useLocation();
   const { loading } = useLoading();
   const canGoBack =
     location.pathname.split("/").length > 2 || Boolean(onGoBack);
+
+  const conditionalPadding = disablePadding ? "base-padding" : `side-padding`;
+  const scrollState = scrolled ? "shadow" : ``;
+
   return (
     <>
       <Stack
@@ -29,10 +34,10 @@ export default function Header({
         display={"flex"}
         flexDirection={"column"}
         zIndex={5}
-        className={disablePadding ? "base-padding" : `side-padding`}
+        className={`${conditionalPadding} ${scrollState}`}
         justifyContent={"space-between"}
         paddingTop={{ md: "2rem", xs: "0.5rem" }}
-        paddingBottom={{ md: "20px", xs: "10px" }}
+        paddingBottom={{ md: "10px", xs: "10px" }}
         borderBottom={{ xs: "1px solid var(--bg)", md: "none" }}
         position={"sticky"}
         top={"0"}
