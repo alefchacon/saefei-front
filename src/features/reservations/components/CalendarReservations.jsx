@@ -111,6 +111,7 @@ export default function CalendarReservations({
               value={moment(date)}
               onChange={(e) => handleSelectMonth(moment(e))}
               views={["month", "year"]}
+              slotProps={{ textField: { variant: "filled" } }}
             />
           </LocalizationProvider>
           <IconButton color="primary" onClick={handleNavigateBack}>

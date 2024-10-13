@@ -28,6 +28,8 @@ import TextField from "@mui/material/TextField";
 const FILE_URL = "http://localhost:8000/api/file/";
 import useIsMobile from "../components/hooks/useIsMobile";
 import ButtonResponsive from "../components/ButtonResponsive";
+import { SCROLL_UP } from "../stores/SCROLL_DIRECTIONS";
+import Collapse from "@mui/material/Collapse";
 
 export default function EventView() {
   const [eventUV, setEventUV] = useState({});
@@ -36,6 +38,9 @@ export default function EventView() {
   const { Modal, openModal, closeModal } = useModal();
   const { getEvent } = useEvents();
   const { idEvento } = useParams();
+
+  const [scrollDirection, setScrollDirection] = useState(SCROLL_UP);
+
   useEffect(() => {
     getEvent(idEvento).then((response) => setEventUV(response.data.data));
     if (isMobile) {
@@ -61,9 +66,14 @@ export default function EventView() {
     );
   };
 
+  const handleScroll = (direction) => {
+    setScrollDirection(direction);
+  };
+
   return (
     <>
       <Page
+        onScroll={handleScroll}
         disablePadding
         title={
           <Stack
@@ -81,9 +91,11 @@ export default function EventView() {
                   </b>
                 </Typography>
 
-                <ExpandableText id={"description"} modalTitle="Descripción">
-                  {eventUV.description}
-                </ExpandableText>
+                <Collapse in={scrollDirection === SCROLL_UP}>
+                  <ExpandableText id={"description"} modalTitle="Descripción">
+                    {eventUV.description}
+                  </ExpandableText>
+                </Collapse>
               </Stack>
             </Stack>
           </Stack>

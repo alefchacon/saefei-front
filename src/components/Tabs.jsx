@@ -37,9 +37,10 @@ export default function TabsCustom({ children }) {
   };
 
   return (
-    <Box sx={{ width: "100%" }} className={"sticky"}>
+    <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
+          className={"sticky"}
           value={value}
           onChange={handleChange}
           aria-label="tabs"
