@@ -32,12 +32,12 @@ export default function CardReservation({
       direction={row ? "row" : "column"}
       alignItems={row ? "center" : "start"}
     >
-      <ChipSpace space={reservation.space}></ChipSpace>
+      <ChipSpace space={reservation?.space}></ChipSpace>
       <Stack direction={"column"} gap={1}>
         <Stack direction={"row"} gap={1}>
           <EventIcon></EventIcon>
           <Typography>
-            {moment(reservation.date).format("DD/MM/YYYY")}
+            {moment(reservation?.date).format("DD/MM/YYYY")}
           </Typography>
         </Stack>
         {reservationSchedule && (

@@ -14,18 +14,13 @@ function CustomTabPanel(props) {
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
-      padding={"20px"}
+      padding={{ md: "20px", xs: "0px" }}
+      overflow={"hidden"}
     >
       {children}
     </Stack>
   );
 }
-
-CustomTabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
 
 function a11yProps(index) {
   return {
@@ -38,14 +33,11 @@ export default function TabsCustom({ children }) {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
-    console.log(newValue);
     setValue(newValue);
   };
 
-  console.log(children[value]);
-
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%" }} className={"sticky"}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={value}

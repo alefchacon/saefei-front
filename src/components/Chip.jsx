@@ -1,4 +1,6 @@
 import Chip from "@mui/material/Chip";
+import Tooltip from "@mui/material/Tooltip";
+import { useSnackbar } from "./providers/SnackbarProvider";
 
 export default function ChipCustom({
   label,
@@ -6,18 +8,29 @@ export default function ChipCustom({
   size = "small",
   display,
   onClick,
+  title,
 }) {
+  const { openSnackbar } = useSnackbar();
+
+  const handleSnackbar = () => {
+    openSnackbar(title);
+  };
+
   return (
-    <Chip
-      color={color}
-      label={label}
-      onClick={onClick}
-      sx={{
-        maxWidth: "fit-content",
-        fontFamily: "roboto condensed",
-        display: display,
-      }}
-      size={size}
-    />
+    <Tooltip title={title} placement="top">
+      <Chip
+        color={color}
+        label={label}
+        onClick={onClick || handleSnackbar}
+        sx={{
+          maxWidth: "fit-content",
+          fontFamily: "roboto condensed",
+          display: display,
+          fontWeight: 500,
+          color: color,
+        }}
+        size={size}
+      />
+    </Tooltip>
   );
 }

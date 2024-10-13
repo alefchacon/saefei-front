@@ -26,7 +26,8 @@ import LoginIcon from "@mui/icons-material/Login";
 import LogInForm from "../features/auth/components/LogInForm";
 import useAuth from "../features/auth/businessLogic/useAuth";
 import useNotices from "../features/notices/businessLogic/useNotices";
-
+import Logo from "../components/Logo";
+import ChipCustom from "./Chip";
 export default function Sidebar() {
   const [selectedIndex, setSelectedIndex] = useState(1);
   const { Modal, openModal, closeModal } = useModal();
@@ -42,6 +43,7 @@ export default function Sidebar() {
 
   const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
     borderRadius: "10px",
+    display: "flex",
     color: "inherit",
     "&.Mui-selected": {
       backgroundColor: "white",
@@ -76,50 +78,46 @@ export default function Sidebar() {
         }}
         className={grown ? `grow` : "shrink"}
         display={{ xs: "none", md: "flex" }}
-        padding={"10px 20px 50px 30px"}
+        padding={"10px 20px 50px 20px"}
         borderRadius={"0 10px 10px 0"}
       >
-        <Stack direction={"row"} alignItems={"center"} gap={2}>
-          {/*
-        <Typography
-          style={{ fontWeight: 800, fontSize: 35 }}
-          alignItems={"center"}
-          display={"flex"}
+        <br />
+        <Stack
+          direction={"row"}
+          alignItems={"start"}
           gap={2}
+          paddingLeft={"10px"}
         >
-          <SchoolIcon fontSize="50" /> SEA
-        </Typography>
-        <Typography variant="caption" sx={{ opacity: 0.5 }} lineHeight={1.3}>
-          Sistema de <br />
-          Eventos Académicos
-        </Typography>
-          */}
+          <IconButton
+            sx={{ color: "inherit", width: "fit-content" }}
+            onClick={toggleGrow}
+          >
+            <MenuIcon></MenuIcon>
+          </IconButton>
+          <Logo className={grown ? "appear" : "disappear"}></Logo>
         </Stack>
-        <IconButton
-          sx={{ color: "inherit", width: "fit-content" }}
-          onClick={toggleGrow}
-        >
-          <MenuIcon></MenuIcon>
-        </IconButton>
         <br />
         <List component="nav" aria-label="main mailbox folders">
-          <Stack id="user" sx={{ opacity: 0.8 }}>
-            <Typography>{user.fullname}</Typography>
-            <Typography
-              fontFamily={"roboto condensed"}
-              fontWeight={500}
-              sx={{ textTransform: "uppercase" }}
-            >
-              {user.job}
-            </Typography>
-          </Stack>
+          {user ? (
+            <CustomListItemButton onClick={showLoginModal}>
+              <ListItemIcon sx={{ color: "inherit" }}>
+                <LoginIcon></LoginIcon>
+              </ListItemIcon>
+              <Stack>
+                <b>{user.fullname}</b>
 
-          <CustomListItemButton onClick={showLoginModal}>
-            <ListItemIcon sx={{ color: "inherit" }}>
-              <LoginIcon></LoginIcon>
-            </ListItemIcon>
-            <ListItemText primary="Entrar" />
-          </CustomListItemButton>
+                <ChipCustom label={user.job} color={"white"}></ChipCustom>
+              </Stack>
+            </CustomListItemButton>
+          ) : (
+            <CustomListItemButton onClick={showLoginModal}>
+              <ListItemIcon sx={{ color: "inherit" }}>
+                <LoginIcon></LoginIcon>
+              </ListItemIcon>
+              <ListItemText primary="Entrar" />
+            </CustomListItemButton>
+          )}
+
           <CustomListItemButton
             selected={selectedIndex === 0}
             onClick={(event) =>

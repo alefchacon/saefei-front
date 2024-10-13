@@ -9,7 +9,7 @@ import { useLocation } from "react-router-dom";
 import { useLoading } from "./providers/LoadingProvider";
 
 export default function Header({
-  title = "Título",
+  title = "",
   description = "",
   children,
   disablePadding = false,
@@ -29,11 +29,9 @@ export default function Header({
         display={"flex"}
         flexDirection={"column"}
         zIndex={5}
-        className={disablePadding ? "" : `side-padding`}
+        className={disablePadding ? "base-padding" : `side-padding`}
         justifyContent={"space-between"}
-        paddingTop={{ md: "20px", xs: "20px" }}
-        paddingLeft={"40px"}
-        paddingRight={"40px"}
+        paddingTop={{ md: "2rem", xs: "0.5rem" }}
         paddingBottom={{ md: "20px", xs: "10px" }}
         borderBottom={{ xs: "1px solid var(--bg)", md: "none" }}
         position={"sticky"}

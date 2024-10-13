@@ -2,9 +2,9 @@ import { Typography } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import SchoolIcon from "@mui/icons-material/School";
 
-export default function Logo({ center = true }) {
+export default function Logo({ center = true, className }) {
   return (
-    <Stack direction={"row"} alignItems={"center"} gap={"20px"}>
+    <Stack className={className} direction={"column"} alignItems={"start"}>
       <Typography
         style={{ fontWeight: 800, fontSize: 35 }}
         alignItems={"center"}

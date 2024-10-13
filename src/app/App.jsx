@@ -22,6 +22,7 @@ import Sidebar from "../components/Sidebar";
 import Bottombar from "../components/Bottombar";
 import Reservations from "./Reservations";
 import EventView from "./EventView";
+import Notices from "./Notices";
 
 import "moment/dist/locale/es-mx";
 import moment from "moment";
@@ -30,6 +31,7 @@ import { Routes, Route } from "react-router-dom";
 import * as ROUTES from "../stores/ROUTES";
 import EventForm from "./Notify/EventForm";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -63,7 +65,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <Stack
           role={"main"}
-          sx={{ backgroundColor: "var(--bg)" }}
+          sx={{ backgroundColor: "white" }}
           display={"flex"}
           flexDirection={{ md: "row", xs: "column" }}
           height={"100%"}
@@ -85,33 +87,14 @@ function App() {
           <Sidebar />
 
           <Stack
-            id="content"
             className="flex-2"
             sx={{
               position: "relative",
               backgroundColor: "transparent",
-              padding: { md: "1rem", xs: "0" },
             }}
           >
-            <Stack direction={"row"} alignItems={"center"} gap={"20px"}>
-              <Typography
-                style={{ fontWeight: 800, fontSize: 35 }}
-                alignItems={"center"}
-                display={"flex"}
-                gap={2}
-              >
-                <SchoolIcon fontSize="50" /> SEA
-              </Typography>
-              <Typography
-                variant="caption"
-                sx={{ opacity: 0.5 }}
-                lineHeight={1.3}
-              >
-                Sistema de Eventos Académicos <br />
-                de la Facultad de Estadística e Informática
-              </Typography>
-            </Stack>
             <Routes>
+              <Route path={ROUTES.ROUTE_INBOX} element={<Notices />}></Route>
               <Route
                 path={ROUTES.ROUTE_RESERVE}
                 element={<ReservationForm></ReservationForm>}
