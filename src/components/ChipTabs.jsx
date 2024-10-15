@@ -39,11 +39,8 @@ export default function ChipTabs({ children }) {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
-    console.log(newValue);
     setValue(newValue);
   };
-
-  console.log(children[value]);
 
   return (
     <Box sx={{ width: "100%" }}>

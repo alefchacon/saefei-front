@@ -30,6 +30,10 @@ import useIsMobile from "../components/hooks/useIsMobile";
 import ButtonResponsive from "../components/ButtonResponsive";
 import { SCROLL_UP } from "../stores/SCROLL_DIRECTIONS";
 import Collapse from "@mui/material/Collapse";
+import FabResponsive from "../components/FabResponsive";
+import ReplyForm from "../features/notices/components/ReplyForm";
+import * as MEDIA_NOTICES from "../stores/MEDIA_NOTICES";
+import { Program } from "../features/reservations/domain/program";
 
 export default function EventView() {
   const [eventUV, setEventUV] = useState({});
@@ -66,21 +70,71 @@ export default function EventView() {
     );
   };
 
-  const handleScroll = (direction) => {
-    setScrollDirection(direction);
+  const handleUpdatedEvent = (updatedEvent) => {
+    setEventUV(updatedEvent);
   };
+  function ResponsePanel() {
+    return (
+      <Stack className="card" padding={"0px"} gap={"20px"}>
+        <TabsCustom>
+          <Stack label="Respuesta al organizador">
+            <ReplyForm
+              eventUV={eventUV}
+              onSuccess={handleUpdatedEvent}
+            ></ReplyForm>
+          </Stack>
+
+          <Stack label="Notificación a medios">
+            <br />
+            <ChipTabs>
+              <Stack label="Página institucional" value={0}>
+                <MediaNoticeForm
+                  key={"institutional-page"}
+                  id={"institutional-page"}
+                  mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_INSTITUTIONAL_PAGE}
+                ></MediaNoticeForm>
+              </Stack>
+              <Stack label="Correo institucional" value={1}>
+                <MediaNoticeForm
+                  key={"institutional-email"}
+                  id={"institutional-email"}
+                  mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_INSTITUTIONAL_EMAIL}
+                ></MediaNoticeForm>
+              </Stack>
+              <Stack label="Redes sociales">
+                <MediaNoticeForm
+                  key={"social-media"}
+                  id={"social-media"}
+                  mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_SOCIAL_MEDIA}
+                ></MediaNoticeForm>
+              </Stack>
+              <Stack label="Comunicación UV">
+                <MediaNoticeForm
+                  key={"comunication-uv"}
+                  id={"comunication-uv"}
+                  mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_COMUNICATION_UV}
+                ></MediaNoticeForm>
+              </Stack>
+              <Stack label="Radio UV">
+                <MediaNoticeForm
+                  key={"radio-uv"}
+                  id={"radio-uv"}
+                  mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_RADIO_UV}
+                ></MediaNoticeForm>
+              </Stack>
+            </ChipTabs>
+          </Stack>
+        </TabsCustom>
+      </Stack>
+    );
+  }
 
   return (
     <>
       <Page
-        onScroll={handleScroll}
         disablePadding
         title={
-          <Stack
-            direction={"row"}
-            width={"100%"}
-            justifyContent={"space-between"}
-          >
+          <Stack direction={"row"} width={"100%"} justifyContent={"start"}>
             <Stack width={"100%"}>
               {eventUV.name}
               <Stack gap={"20px"}>
@@ -90,23 +144,31 @@ export default function EventView() {
                     {`${eventUV.user?.names} ${eventUV.user?.paternalName} ${eventUV.user?.maternalName}`}
                   </b>
                 </Typography>
-
-                <Collapse in={scrollDirection === SCROLL_UP}>
-                  <ExpandableText id={"description"} modalTitle="Descripción">
-                    {eventUV.description}
-                  </ExpandableText>
-                </Collapse>
               </Stack>
+              <Button onClick={showReplyModal}>Responder notificación</Button>
             </Stack>
           </Stack>
         }
       >
-        <Stack gap={3} id={"principal"}>
-          <br />
+        <Stack gap={3} id={"principal"} position={"relative"}>
+          <Stack direction={"row"} flexWrap={"wrap"} gap={"10px"}>
+            {eventUV.programs?.map((program, index) => {
+              const programModel = new Program(program);
+              return (
+                <ChipCustom
+                  label={programModel.initials}
+                  title={programModel.name}
+                ></ChipCustom>
+              );
+            })}
+          </Stack>
+          <ExpandableText id={"description"} modalTitle="Descripción">
+            {eventUV.description}
+          </ExpandableText>
           <Stack gap={3} direction={{ md: "row", xs: "column" }}>
             {/*
              */}
-            <CardEventSection title={"Logistica"} event={eventUV} flex={2}>
+            <CardEventSection title={"Logistica"} event={eventUV} flex={3}>
               <Stack
                 direction={"row"}
                 flexWrap={"wrap"}
@@ -212,7 +274,13 @@ export default function EventView() {
               </CardEventSection>
             )}
           </Stack>
+          <FabResponsive
+            label="responder notificación"
+            variant="extended"
+            onClick={showReplyModal}
+          ></FabResponsive>
           {!isMobile && <ResponsePanel></ResponsePanel>}
+          <ResponsePanelBottom></ResponsePanelBottom>
         </Stack>
         <Stack id="principal2">sadf</Stack>
       </Page>
@@ -221,57 +289,45 @@ export default function EventView() {
     </>
   );
 
-  function ResponsePanel() {
+  function ResponsePanelBottom() {
+    const [expanded, setExpanded] = useState(false);
+    const toggleExpanded = () => setExpanded(!expanded);
     return (
-      <Stack className="card" padding={"0px"} gap={"20px"}>
-        <TabsCustom>
-          <Stack label="Respuesta al organizador">
-            <ReplyForm></ReplyForm>
-          </Stack>
-          <Stack label="Notificación a medios">
-            <ChipTabs>
-              <Stack label="Página institucional">
-                <MediaNotificationForm></MediaNotificationForm>
-              </Stack>
-              <Stack label="Correo institucional">
-                <MediaNotificationForm></MediaNotificationForm>
-              </Stack>
-              <Stack label="Redes sociales">
-                <MediaNotificationForm></MediaNotificationForm>
-              </Stack>
-              <Stack label="Comunicación UV">
-                <MediaNotificationForm></MediaNotificationForm>
-              </Stack>
-              <Stack label="Radio UV">
-                <MediaNotificationForm></MediaNotificationForm>
-              </Stack>
-            </ChipTabs>
-          </Stack>
-        </TabsCustom>
+      <Stack
+        className="shadow"
+        position={"fixed"}
+        bottom={0}
+        right={20}
+        minWidth={"50vw"}
+        borderRadius={"10px 0 0 0"}
+        height={expanded ? "500px" : "50px"}
+        bgcolor={"white"}
+      >
+        <CardActionArea onClick={toggleExpanded} sx={{ padding: "10px" }}>
+          <Typography>Responder notificación</Typography>
+        </CardActionArea>
+        <ResponsePanel></ResponsePanel>
       </Stack>
     );
   }
 
-  function ReplyForm() {
-    return (
-      <Stack gap={"20px"}>
-        <TextField multiline rows={10} variant="filled"></TextField>
-        <Stack className="button-row">
-          <ButtonResponsive>Responder</ButtonResponsive>
-        </Stack>
-      </Stack>
-    );
-  }
-
-  function MediaNotificationForm() {
+  function MediaNoticeForm({ mediaNotice, id }) {
     return (
       <Stack gap={"20px"}>
         <TextField
+          id={`${id}-email`}
           variant="filled"
+          defaultValue={mediaNotice.email}
           label={"Para"}
           sx={{ maxWidth: "300px" }}
         ></TextField>
-        <TextField multiline rows={10} variant="filled"></TextField>
+        <TextField
+          id={`${id}-notice`}
+          defaultValue={mediaNotice.notice}
+          multiline
+          rows={10}
+          variant="filled"
+        ></TextField>
         <Stack className="button-row">
           <ButtonResponsive>Notificar</ButtonResponsive>
         </Stack>

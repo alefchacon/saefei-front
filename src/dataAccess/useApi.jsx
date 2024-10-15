@@ -41,6 +41,18 @@ export default function useApi() {
         setLoading(false);
       }
     },
+    async put(url, data, config = {}) {
+      setLoading(true);
+      try {
+        const response = await api.put(url, data, config);
+        openSnackbar(response.data.message);
+        return response;
+      } catch (error) {
+        handleApiError(error);
+      } finally {
+        setLoading(false);
+      }
+    },
 
     // Add other methods (put, delete, etc.) as needed...
   };

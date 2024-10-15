@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import moment from "moment";
 import useApi from "../../../dataAccess/useApi";
 import STATUS from "../../../stores/STATUS";
@@ -6,14 +6,13 @@ import EventSerializer from "../domain/eventSerializer";
 export const useEvents = () => {
   const [apiWrapper] = useApi();
 
-  const getEvent = async (idEvent = 0) => {
+  const getEvent = useCallback(async (idEvent = 0) => {
     const response = await apiWrapper.get(`eventos/${idEvent}`);
     return response;
-  };
+  });
 
-  const storeEvent = async (eventUV) => {
+  const storeEvent = useCallback(async (eventUV) => {
     const data = new EventSerializer(eventUV);
-    console.log(data);
     const formData = new FormData();
 
     const { publicidad } = data;
@@ -36,10 +35,20 @@ export const useEvents = () => {
     const response = await apiWrapper.post(`eventos`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-  };
+  });
+
+  const updateEvent = useCallback(async (eventUV) => {
+    console.log(eventUV);
+    const response = await apiWrapper.put(
+      `eventos/${eventUV.id}`,
+      new EventSerializer(eventUV)
+    );
+    return response;
+  });
 
   return {
     getEvent,
     storeEvent,
+    updateEvent,
   };
 };

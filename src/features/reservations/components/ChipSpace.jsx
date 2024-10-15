@@ -56,7 +56,7 @@ export default function ChipSpace({
       size={size}
       label={VARIANT_MAP[space.id]?.label}
       sx={{
-        width: "fit-content",
+        width: "150px",
         color: VARIANT_MAP[space.id]?.color,
         backgroundColor: VARIANT_MAP[space.id]?.backgroundColor,
       }}

@@ -2,40 +2,54 @@ import { sortAsc, getHHssString } from "../../../util/moments"
 import ActivitySerializer from "../../reservations/domain/activitySertializer";
 class EventSerializer{
   constructor(frontendEvent){
-    this.nombre = frontendEvent.name,
-    this.descripcion = frontendEvent.description,
-    this.pagina = frontendEvent.page,
-    this.ambito = frontendEvent.scope,
-    this.programas = JSON.stringify(frontendEvent.programs),
-    this.reservaciones = JSON.stringify(frontendEvent.reservations),
-    this.actividades = JSON.stringify(
-      frontendEvent.activities.map(
-        activity => new ActivitySerializer(activity)
-      )
-    ),
-    this.audiencias = frontendEvent.audiences.join(";"),
-    this.eje = frontendEvent.axis,
-    this.tematicas = frontendEvent.themes.join(";"),
-    this.numParticipantes = frontendEvent.numParticipants,
-    this.medios = frontendEvent.media.join(";"),
-    this.requisitosCentroComputo = frontendEvent.technicalRequirements,
-    this.requiereTransmisionEnVivo = frontendEvent.needsLivestream,
+    this.id = frontendEvent?.id || null;
+    this.nombre = frontendEvent?.name || null;
+    this.descripcion = frontendEvent?.description || null;
+    this.pagina = frontendEvent?.page || null;
+    this.ambito = frontendEvent?.scope || null;
+    this.programas = frontendEvent?.programs ? JSON.stringify(frontendEvent.programs) : null;
+    this.reservaciones = frontendEvent?.reservations ? JSON.stringify(frontendEvent.reservations) : null;
+    this.actividades = frontendEvent?.activities
+      ? JSON.stringify(frontendEvent.activities.map(activity => new ActivitySerializer(activity)))
+      : null;
+    this.audiencias = this.handleCatalog(frontendEvent.audiences),
+    this.eje = frontendEvent?.axis || null;
+    this.tematicas = this.handleCatalog(frontendEvent.themes),
+    this.numParticipantes = frontendEvent?.numParticipants || null;
+    this.medios = this.handleCatalog(frontendEvent.media),
+    this.requisitosCentroComputo = frontendEvent?.technicalRequirements || null;
+    this.requiereTransmisionEnVivo = frontendEvent?.needsLivestream || null;
     
-    //presidium y ponentes no son lo mismo: preguntar a dire
-    this.presidium = frontendEvent.records,
-    this.publicidad = frontendEvent.publicity,
-    this.cronograma = frontendEvent.chronogram,
-
-    this.decoracion = frontendEvent.decoration,
-    this.numParticipantes = frontendEvent.numParticipantsExternal,
-    this.requiereEstacionamiento = frontendEvent.needsParking,
-    this.requiereFinDeSemana = frontendEvent.needsWeekend,
-    this.medios = frontendEvent.media,
-    this.adicional = frontendEvent.additional,
-    this.idUsuario = frontendEvent.idUsuario,
-    this.idTipo = frontendEvent.idTipo,
-    this.idEstado = 1
+    // presidium y ponentes no son lo mismo: preguntar a dire
+    this.presidium = frontendEvent?.records || null;
+    this.publicidad = frontendEvent?.publicity || null;
+    this.cronograma = frontendEvent?.chronogram || null;
+    
+    this.decoracion = frontendEvent?.decoration || null;
+    this.numParticipantes = frontendEvent?.numParticipantsExternal || null;
+    this.requiereEstacionamiento = frontendEvent?.needsParking || null;
+    this.requiereFinDeSemana = frontendEvent?.needsWeekend || null;
+    this.medios = frontendEvent?.media || null;
+    this.adicional = frontendEvent?.additional || null;
+    this.idUsuario = frontendEvent?.idUsuario || null;
+    this.idTipo = frontendEvent?.idTipo || null;
+    this.idEstado = 1; // assuming this is constant
+    
+    this.observaciones = frontendEvent?.reply || null;
+    
   }
+
+  handleCatalog = (catalog) => {
+    if (!Boolean(catalog)) {
+      return null;
+    }
+
+    if (Array.isArray(catalog)){
+      return catalog.join(";");
+    } else {
+      return catalog;
+    }
+  } 
 }
 
 
