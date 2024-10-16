@@ -32,7 +32,12 @@ export default function Notices() {
       disablePadding
     >
       <TabsCustom id={"principal"}>
-        <Stack label={"Eventos"} className="right-padding" gap={1}>
+        <Stack
+          label={"Eventos"}
+          className="right-padding"
+          gap={1}
+          color={"#6B6F79"}
+        >
           {notices.map((notice, index) => (
             <CardActionArea
               onClick={() => navigate(`${ROUTE_EVENT}/${notice.event.id}`)}

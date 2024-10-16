@@ -1,37 +1,81 @@
 import CardList from "../components/CardList";
 import Page from "../components/Page";
 import CardEvent from "../features/events/components/CardEvent";
-import TabsCustom from "../components/Tabs";
-import NoticeWrapper from "../features/notices/components/NoticeWrapper";
 import { useLayoutEffect } from "react";
-import useNotices from "../features/notices/businessLogic/useNotices";
 import CardActionArea from "@mui/material/CardActionArea";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_EVENT } from "../stores/ROUTES";
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
 import SearchField from "../components/SearchField";
 import SelectCustom from "../components/Select";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import useAuth from "../features/auth/businessLogic/useAuth";
-
+import { useEvents } from "../features/events/businessLogic/useEvents";
+import useIsMobile from "../components/hooks/useIsMobile";
 import moment from "moment";
 import { ROLE_COORDINATOR } from "../stores/ROLES";
+
+import * as FILTERS from "../stores/FILTERS_EVENT";
+
 export default function Events() {
-  const { getNotices, notices } = useNotices();
+  const { events, getEvents } = useEvents();
   const navigate = useNavigate();
   const user = useAuth().getUser();
+  const isMobile = useIsMobile();
+  const [filters, setFilters] = useState({
+    date: moment(),
+    order: FILTERS.FILTER_EVENT_DATE,
+    searchbar: "",
+  });
 
+  //If the filters change, launch a brand new search:
   useLayoutEffect(() => {
-    fetchNextPage();
-  }, []);
+    fetchNextPage(true);
+  }, [filters]);
 
-  const fetchNextPage = async () => {
-    getNotices();
+  const fetchNextPage = async (newSearch = false) => {
+    const includeDate = filters.searchbar === "";
+    getEvents(getFilters(includeDate), newSearch);
+  };
+
+  const handleSearchbarChange = (newSearchbarValue) => {
+    setFilters((prev) => ({
+      ...prev,
+      searchbar: newSearchbarValue,
+    }));
+  };
+  const handleDateChange = (newDate) => {
+    setFilters((prev) => ({
+      ...prev,
+      date: newDate,
+    }));
+  };
+  const handleOrderChange = (e) => {
+    setFilters((prev) => ({
+      ...prev,
+      order: e.target.value,
+    }));
+  };
+
+  const getFilters = (includeDate = true) => {
+    const filterArray = [`orden=${filters.order}`, `q=${filters.searchbar}`];
+
+    if (includeDate) {
+      filterArray.push(`fecha=${moment(filters.date).format("YYYY-MM")}`);
+    }
+
+    return filterArray;
+  };
+
+  const resetName = () => {
+    setFilters((prev) => ({
+      ...prev,
+      searchbar: "",
+    }));
   };
 
   return (
@@ -42,46 +86,67 @@ export default function Events() {
       disablePadding
     >
       <Stack id={"principal"} className="right-padding" gap={1}>
-        <SearchField></SearchField>
-        <Stack
-          direction={"row"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Stack direction={"row"} gap={"1vw"}>
-            <LocalizationProvider dateAdapter={AdapterMoment}>
-              <DatePicker
-                label="Mes"
-                name="selected-months"
-                value={moment()}
-                views={["month", "year"]}
-                sx={{ maxWidth: "170px" }}
-                slotProps={{
-                  textField: { variant: "standard", fullWidth: false },
-                }}
-              />
-            </LocalizationProvider>
-            <SelectCustom variant="standard" label="Orden" minWidth={"100px"}>
-              <Stack value={"fecha"}>Fecha</Stack>
-              <Stack value={"alfabetico"}>Alfabético</Stack>
-            </SelectCustom>
-          </Stack>
+        <Stack id={"filters"} padding={"10px"} gap={"20px"}>
+          <SearchField
+            onSearch={handleSearchbarChange}
+            onDeleteQuery={resetName}
+          ></SearchField>
 
-          {user.rol.id === ROLE_COORDINATOR.id && (
-            <Button variant="contained">Reportar</Button>
-          )}
+          <Stack
+            direction={"row"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Stack
+              direction={{ xs: "column", md: "row" }}
+              gap={"1vw"}
+              width={"100%"}
+              justifyContent={"space-between"}
+            >
+              <Stack direction={"row"} gap={"1vw"}>
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                  <DatePicker
+                    label="Mes"
+                    name="selected-months"
+                    value={filters.date}
+                    onAccept={handleDateChange}
+                    views={["month", "year"]}
+                    sx={{ maxWidth: "170px" }}
+                    slotProps={{
+                      textField: { variant: "standard", fullWidth: false },
+                    }}
+                  />
+                </LocalizationProvider>
+                <SelectCustom
+                  variant="standard"
+                  label="Orden"
+                  minWidth={"100px"}
+                  value={filters.order}
+                  onChange={handleOrderChange}
+                >
+                  <Stack value={""}></Stack>
+                  <Stack value={FILTERS.FILTER_EVENT_DATE}>Fecha</Stack>
+                  <Stack value={FILTERS.FILTER_EVENT_ALPHABETIC}>
+                    Alfabético
+                  </Stack>
+                </SelectCustom>
+              </Stack>
+
+              {user.rol.id === ROLE_COORDINATOR.id && (
+                <Button variant="contained" disableElevation>
+                  {isMobile ? "Reporte" : "Generar reporte"}
+                </Button>
+              )}
+            </Stack>
+          </Stack>
         </Stack>
         <br />
-        {notices.map((notice, index) => (
+        {events.map((eventUV, index) => (
           <CardActionArea
-            onClick={() => navigate(`${ROUTE_EVENT}/${notice.event.id}`)}
+            key={index}
+            onClick={() => navigate(`${ROUTE_EVENT}/${eventUV.id}`)}
           >
-            <NoticeWrapper
-              noticeType={notice.type?.id}
-              name={notice.type?.name}
-            >
-              <CardEvent event={notice.event} disablePadding />
-            </NoticeWrapper>
+            <CardEvent event={eventUV} className={"card shadow"} />
           </CardActionArea>
         ))}
       </Stack>

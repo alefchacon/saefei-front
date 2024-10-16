@@ -13,15 +13,26 @@ export default function CardEvent({ event, disablePadding, className }) {
       className={`card ${className}`}
       sx={{ padding: disablePadding ? "" : "20px" }}
     >
-      <Typography gutterBottom variant="h5" component="div">
-        {event?.name}
-      </Typography>
-      <br />
-      <Stack gap={"5px"}>
+      <Stack paddingBottom={"20px"}>
+        <Typography
+          color="#49454F"
+          gutterBottom
+          variant="h5"
+          component="div"
+          fontSize={"20px"}
+          fontWeight={600}
+        >
+          {event?.name}
+        </Typography>
+
         <Typography>{new User(event?.user).fullname}</Typography>
+      </Stack>
+
+      <Stack gap={"5px"}>
         {event?.reservations.map((reservation, index) => (
           <CardReservation
             row
+            activitySchedule
             reservation={reservation}
             key={index}
           ></CardReservation>

@@ -111,9 +111,12 @@ export default function EventForm({}) {
   );
 }
 import { useNavigate, useLocation } from "react-router-dom";
+import { ROUTE_RESERVE } from "../../stores/ROUTES";
 
 function StepForm({ userReservations }) {
-  const [activeSectionId, setActiveSectionId] = useState("welcome");
+  const [activeSectionId, setActiveSectionId] = useState(
+    userReservations.length > 0 ? "welcome" : "no-reservations"
+  );
   const navigate = useNavigate();
   const location = useLocation();
   const { values, errors, setFieldValue, validateForm, submitForm } =
@@ -200,10 +203,10 @@ function StepForm({ userReservations }) {
       onGoBack={currentStep > 3 && handleReturnToMandatory}
     >
       {userReservations.length < 1 ? (
-        <NoReservationsPage />
+        <NoReservationsPage id={"no-reservations"} />
       ) : (
         <WelcomePage
-          id="welcome"
+          id={"welcome"}
           onSectionChange={() => handleSectionChange("principal")}
         />
       )}
@@ -409,6 +412,8 @@ function EndStep({ values, onStepChange }) {
 }
 
 function NoReservationsPage() {
+  const navigate = useNavigate();
+
   return (
     <>
       <br />
@@ -420,7 +425,11 @@ function NoReservationsPage() {
       </Typography>
       <br />
       <br />
-      <Button sx={{ maxWidth: "fit-content" }} startIcon={<DomainIcon />}>
+      <Button
+        sx={{ maxWidth: "fit-content" }}
+        startIcon={<DomainIcon />}
+        onClick={() => navigate(ROUTE_RESERVE)}
+      >
         Reservar un espacio
       </Button>
     </>

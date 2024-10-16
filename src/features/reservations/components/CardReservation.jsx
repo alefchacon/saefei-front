@@ -31,9 +31,10 @@ export default function CardReservation({
       gap={1}
       direction={row ? "row" : "column"}
       alignItems={row ? "center" : "start"}
+      flexWrap={"wrap"}
     >
       <ChipSpace space={reservation?.space}></ChipSpace>
-      <Stack direction={"column"} gap={1}>
+      <Stack direction={row ? "row" : "column"} gap={1} flexWrap={"wrap"}>
         <Stack direction={"row"} gap={1}>
           <EventIcon></EventIcon>
           <Typography>
