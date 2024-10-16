@@ -1,10 +1,16 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import moment from "moment";
 import useApi from "../../../dataAccess/useApi";
 import STATUS from "../../../stores/STATUS";
 import EventSerializer from "../domain/eventSerializer";
 export const useEvents = () => {
+  const [events, setEvents] = useState([]);
   const [apiWrapper] = useApi();
+  const isLoadingRef = useRef(false);
+  const [meta, setMeta] = useState({
+    current_page: 0,
+    last_page: null,
+  });
 
   const getEvent = useCallback(async (idEvent = 0) => {
     const response = await apiWrapper.get(`eventos/${idEvent}`);
@@ -46,9 +52,33 @@ export const useEvents = () => {
     return response;
   });
 
+  const getEvents = async (filters, newSearch = false) => {
+    const cantGetNewEvents =
+      (!newSearch && meta.current_page === meta.last_page) ||
+      isLoadingRef.current;
+
+    if (cantGetNewEvents) {
+      return;
+    }
+
+    const nextPage = newSearch ? 1 : meta.current_page + 1;
+    const query = `eventos?page=${nextPage}&${filters.join("&")}`;
+    const response = await apiWrapper.get(query);
+    const newEvents = response.data.data;
+    if (meta.current_page === 0 || newSearch) {
+      setEvents(newEvents);
+    } else {
+      setEvents((prev) => [...prev, ...newEvents]);
+    }
+    setMeta(response.data.meta);
+    isLoadingRef.current = false;
+  };
+
   return {
+    events,
     getEvent,
     storeEvent,
     updateEvent,
+    getEvents,
   };
 };

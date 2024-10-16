@@ -55,7 +55,7 @@ export default function EventView() {
   const handleDownloadAsZip = () => {
     downloadAsZip(
       eventUV.publicity,
-      `SAE_publicidad_${eventUV.name.split(" ").join("-")}`
+      `SEA_publicidad_${eventUV.name.split(" ").join("-")}`
     );
   };
 

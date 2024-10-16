@@ -2,7 +2,6 @@ import { useState, useCallback, useRef } from "react";
 import useApi from "../../../dataAccess/useApi";
 export default function useNotices() {
   const [notices, setNotices] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [noticeAmount, setNoticeAmount] = useState(0);
   const [apiWrapper] = useApi();
   const isLoadingRef = useRef(false);
