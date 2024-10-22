@@ -32,7 +32,7 @@ export default function ButtonResponsive({
       type={type}
       onClick={onClick}
       disabled={loading}
-      sx={responsive ? config : ""}
+      sx={config}
     >
       {children}
       {loading && <CircularProgress size={"20px"} />}

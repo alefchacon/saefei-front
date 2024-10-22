@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, isValidElement } from "react";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -36,8 +36,26 @@ export default function TabsCustom({ children }) {
     setValue(newValue);
   };
 
+  function preventSingleTabCrash() {
+    const theresOnlyOneTab = !Array.isArray(children);
+    if (theresOnlyOneTab) {
+      children = [children];
+    }
+  }
+  preventSingleTabCrash();
+
+  function preventConditionalTabCrash() {
+    children = children.filter((child) => isValidElement(child));
+  }
+  preventConditionalTabCrash();
+
   return (
-    <Box sx={{ width: "100%" }}>
+    <Stack
+      sx={{
+        width: "100%",
+        maxHeight: "100%",
+      }}
+    >
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           className={"sticky"}
@@ -47,11 +65,11 @@ export default function TabsCustom({ children }) {
           role="tablist"
         >
           {children.map((child, index) => (
-            <Tab label={child.props.label} {...a11yProps(0)} />
+            <Tab key={index} label={child.props.label} {...a11yProps(0)} />
           ))}
         </Tabs>
       </Box>
       <CustomTabPanel value={value}>{children[value]}</CustomTabPanel>
-    </Box>
+    </Stack>
   );
 }

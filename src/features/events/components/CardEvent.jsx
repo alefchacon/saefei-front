@@ -7,11 +7,17 @@ import { Program } from "../../reservations/domain/program";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardHeader from "@mui/material/CardHeader";
 
-export default function CardEvent({ event, disablePadding, className }) {
+export default function CardEvent({
+  event,
+  disablePadding,
+  className,
+  onClick,
+}) {
   return (
     <Stack
       className={`card ${className}`}
       sx={{ padding: disablePadding ? "" : "20px" }}
+      bgcolor={"transparent"}
     >
       <Stack paddingBottom={"20px"}>
         <Typography
@@ -29,7 +35,7 @@ export default function CardEvent({ event, disablePadding, className }) {
       </Stack>
 
       <Stack gap={"5px"}>
-        {event?.reservations.map((reservation, index) => (
+        {event?.reservations?.map((reservation, index) => (
           <CardReservation
             row
             activitySchedule
@@ -38,7 +44,7 @@ export default function CardEvent({ event, disablePadding, className }) {
           ></CardReservation>
         ))}
         <Stack gap={"3px"} direction={"row"} flexWrap={"wrap"}>
-          {event?.programs.map((program, index) => (
+          {event?.programs?.map((program, index) => (
             <ChipCustom
               title={program.name}
               label={new Program(program).initials}

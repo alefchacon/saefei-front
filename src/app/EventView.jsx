@@ -35,7 +35,7 @@ import ReplyForm from "../features/notices/components/ReplyForm";
 import * as MEDIA_NOTICES from "../stores/MEDIA_NOTICES";
 import { Program } from "../features/reservations/domain/program";
 
-export default function EventView() {
+export default function EventView({ defaultEventUV, onReply }) {
   const [eventUV, setEventUV] = useState({});
   const isMobile = useIsMobile();
 
@@ -46,11 +46,18 @@ export default function EventView() {
   const [scrollDirection, setScrollDirection] = useState(SCROLL_UP);
 
   useEffect(() => {
-    getEvent(idEvento).then((response) => setEventUV(response.data.data));
+    if (idEvento) {
+      getEvent(idEvento).then((response) => setEventUV(response.data.data));
+    }
+    if (defaultEventUV) {
+      getEvent(defaultEventUV.id).then((response) =>
+        setEventUV(response.data.data)
+      );
+    }
     if (isMobile) {
       closeModal();
     }
-  }, []);
+  }, [defaultEventUV]);
 
   const handleDownloadAsZip = () => {
     downloadAsZip(
@@ -72,6 +79,9 @@ export default function EventView() {
 
   const handleUpdatedEvent = (updatedEvent) => {
     setEventUV(updatedEvent);
+    if (onReply) {
+      onReply(updatedEvent);
+    }
   };
   function ResponsePanel() {
     return (
@@ -132,6 +142,7 @@ export default function EventView() {
   return (
     <>
       <Page
+        disableLoading={!isMobile}
         disablePadding
         title={
           <Stack direction={"row"} width={"100%"} justifyContent={"start"}>
@@ -145,12 +156,12 @@ export default function EventView() {
                   </b>
                 </Typography>
               </Stack>
-              <Button onClick={showReplyModal}>Responder notificación</Button>
             </Stack>
           </Stack>
         }
       >
         <Stack gap={3} id={"principal"} position={"relative"}>
+          {defaultEventUV?.name}
           <Stack direction={"row"} flexWrap={"wrap"} gap={"10px"}>
             {eventUV.programs?.map((program, index) => {
               const programModel = new Program(program);
@@ -168,7 +179,7 @@ export default function EventView() {
           <Stack gap={3} direction={{ md: "row", xs: "column" }}>
             {/*
              */}
-            <CardEventSection title={"Logistica"} event={eventUV} flex={3}>
+            <CardEventSection title={"Logistica"} event={eventUV} flex={2}>
               <Stack
                 direction={"row"}
                 flexWrap={"wrap"}
@@ -244,7 +255,6 @@ export default function EventView() {
               )}
             </CardEventSection>
           </Stack>
-
           <Stack gap={3} direction={{ md: "row", xs: "column" }}>
             <CardEventSection title={"Difusión"} event={eventUV} flex={3}>
               <Stack direction={"row"} gap={1} flexWrap={"wrap"}>
@@ -280,7 +290,6 @@ export default function EventView() {
             onClick={showReplyModal}
           ></FabResponsive>
           {!isMobile && <ResponsePanel></ResponsePanel>}
-          <ResponsePanelBottom></ResponsePanelBottom>
         </Stack>
         <Stack id="principal2">sadf</Stack>
       </Page>
@@ -288,28 +297,6 @@ export default function EventView() {
       <Modal></Modal>
     </>
   );
-
-  function ResponsePanelBottom() {
-    const [expanded, setExpanded] = useState(false);
-    const toggleExpanded = () => setExpanded(!expanded);
-    return (
-      <Stack
-        className="shadow"
-        position={"fixed"}
-        bottom={0}
-        right={20}
-        minWidth={"50vw"}
-        borderRadius={"10px 0 0 0"}
-        height={expanded ? "500px" : "50px"}
-        bgcolor={"white"}
-      >
-        <CardActionArea onClick={toggleExpanded} sx={{ padding: "10px" }}>
-          <Typography>Responder notificación</Typography>
-        </CardActionArea>
-        <ResponsePanel></ResponsePanel>
-      </Stack>
-    );
-  }
 
   function MediaNoticeForm({ mediaNotice, id }) {
     return (

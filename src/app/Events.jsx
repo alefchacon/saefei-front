@@ -132,7 +132,7 @@ export default function Events() {
                 </SelectCustom>
               </Stack>
 
-              {user.rol.id === ROLE_COORDINATOR.id && (
+              {user.rol?.id === ROLE_COORDINATOR.id && (
                 <Button variant="contained" disableElevation>
                   {isMobile ? "Reporte" : "Generar reporte"}
                 </Button>

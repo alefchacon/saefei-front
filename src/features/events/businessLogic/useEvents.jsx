@@ -7,6 +7,15 @@ export const useEvents = () => {
   const [events, setEvents] = useState([]);
   const [apiWrapper] = useApi();
   const isLoadingRef = useRef(false);
+
+  /*
+  Meta is an object sent by Laravel to let the frontend know
+  about the current state of the pagination
+  
+  The contents of the object vary from endpoint to endpoint, so
+  you should always be on the lookout for changes in your 
+  Network browser dev tool. 
+  */
   const [meta, setMeta] = useState({
     current_page: 0,
     last_page: null,

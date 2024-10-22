@@ -53,8 +53,6 @@ export default function useApi() {
         setLoading(false);
       }
     },
-
-    // Add other methods (put, delete, etc.) as needed...
   };
 
   function handleApiError(error) {

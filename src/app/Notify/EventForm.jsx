@@ -115,7 +115,7 @@ import { ROUTE_RESERVE } from "../../stores/ROUTES";
 
 function StepForm({ userReservations }) {
   const [activeSectionId, setActiveSectionId] = useState(
-    userReservations.length > 0 ? "welcome" : "no-reservations"
+    userReservations.length > 0 ? "principal" : "no-reservations"
   );
   const navigate = useNavigate();
   const location = useLocation();
@@ -191,6 +191,8 @@ function StepForm({ userReservations }) {
   const handleReturnToMandatory = () => {
     handleStepChange(3);
   };
+
+  console.log(activeSectionId);
 
   return (
     <Page
