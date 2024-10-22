@@ -20,6 +20,7 @@ export default function Page({
   disablePadding = false,
   bgcolor = "white",
   onBottomReached,
+  disableLoading,
   onScroll,
   onScrollUp,
   onScrollDown,
@@ -87,6 +88,7 @@ export default function Page({
     >
       {header && (
         <Header
+          disableLoading={disableLoading}
           disablePadding={disablePadding}
           onGoBack={onGoBack}
           onSectionChange={handleReturnToFirstSection}

@@ -22,7 +22,8 @@ import Sidebar from "../components/Sidebar";
 import Bottombar from "../components/Bottombar";
 import Reservations from "./Reservations";
 import EventView from "./EventView";
-import Notices from "./Notices";
+import { NoticesDesktop } from "./NoticesDesktop";
+import NoticesMobile from "./NoticesMobile";
 
 import "moment/dist/locale/es-mx";
 import moment from "moment";
@@ -32,6 +33,7 @@ import * as ROUTES from "../stores/ROUTES";
 import EventForm from "./Notify/EventForm";
 import Events from "./Events";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import useIsMobile from "../components/hooks/useIsMobile";
 
 const theme = createTheme({
   palette: {
@@ -58,7 +60,7 @@ const theme = createTheme({
 
 function App() {
   moment.locale("es-mx");
-
+  const isMobile = useIsMobile();
   const [count, setCount] = useState(0);
 
   return (
@@ -96,7 +98,10 @@ function App() {
             }}
           >
             <Routes>
-              <Route path={ROUTES.ROUTE_INBOX} element={<Notices />}></Route>
+              <Route
+                path={ROUTES.ROUTE_INBOX}
+                element={isMobile ? <NoticesMobile /> : <NoticesDesktop />}
+              ></Route>
               <Route
                 path={ROUTES.ROUTE_RESERVE}
                 element={<ReservationForm></ReservationForm>}
@@ -116,6 +121,12 @@ function App() {
               <Route
                 path={`${ROUTES.ROUTE_SEARCH_EVENTS}`}
                 element={<Events />}
+              ></Route>{" "}
+              <Route
+                path={`/test`}
+                element={
+                  isMobile ? <Stack>Mobile</Stack> : <Stack>Desktop</Stack>
+                }
               ></Route>{" "}
             </Routes>
           </Stack>

@@ -13,6 +13,7 @@ export default function Header({
   description = "",
   children,
   disablePadding = false,
+  disableLoading = false,
   sectionedPage = false,
   onGoBack,
   onSectionChange,
@@ -75,7 +76,7 @@ export default function Header({
           </Stack>
         </Stack>
       </Stack>
-      {loading ? (
+      {loading && !disableLoading ? (
         <LinearProgress sx={{ height: "5px" }}></LinearProgress>
       ) : (
         <Stack bgcolor={"transparent"} height={"5px"}></Stack>

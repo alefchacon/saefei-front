@@ -103,7 +103,7 @@ export default function Sidebar() {
               <ListItemIcon sx={{ color: "inherit" }}>
                 <LoginIcon></LoginIcon>
               </ListItemIcon>
-              <Stack>
+              <Stack className={grown ? "appear" : "disappear"}>
                 <b>{user.fullname}</b>
 
                 <ChipCustom label={user.job} color={"white"}></ChipCustom>

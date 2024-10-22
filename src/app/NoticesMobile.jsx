@@ -11,8 +11,9 @@ import { ROUTE_EVENT } from "../stores/ROUTES";
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
+import CardReservation from "../features/reservations/components/CardReservation";
 
-export default function Notices() {
+export default function NoticesMobile() {
   const { getNotices, notices } = useNotices();
   const navigate = useNavigate();
 
@@ -38,8 +39,9 @@ export default function Notices() {
           gap={1}
           color={"#6B6F79"}
         >
-          {notices.map((notice, index) => (
+          {notices.coordinatorNotices.map((notice, index) => (
             <CardActionArea
+              key={index}
               onClick={() => navigate(`${ROUTE_EVENT}/${notice.event.id}`)}
             >
               <NoticeWrapper
@@ -51,7 +53,28 @@ export default function Notices() {
             </CardActionArea>
           ))}
         </Stack>
-        <CardList label="Reservaciones"></CardList>
+        <Stack
+          label={"Reservaciones"}
+          className="right-padding"
+          gap={1}
+          color={"#6B6F79"}
+        >
+          {notices.administratorNotices.map((notice, index) => (
+            <CardActionArea
+              onClick={() => navigate(`${ROUTE_EVENT}/${notice.event.id}`)}
+            >
+              <NoticeWrapper
+                noticeType={notice.type?.id}
+                name={notice.type?.name}
+              >
+                <CardReservation
+                  reservation={notice.reservation}
+                  disablePadding
+                />
+              </NoticeWrapper>
+            </CardActionArea>
+          ))}
+        </Stack>
       </TabsCustom>
       <CardList></CardList>
     </Page>

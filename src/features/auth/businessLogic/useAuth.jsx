@@ -19,6 +19,7 @@ export default function useAuth() {
 
   const logIn = useCallback(async (credentials) => {
     apiWrapper.post("/login", credentials).then((response) => {
+      console.log(credentials);
       console.log(response);
       const token = response.data.token;
       localStorage.setItem(CREDENTIAL_KEYS.TOKEN_KEY, token);
