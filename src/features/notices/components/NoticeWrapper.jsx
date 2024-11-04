@@ -6,6 +6,7 @@ import NewReleasesIcon from "@mui/icons-material/NewReleases";
 
 const ICONS = {
   1: <NewReleasesIcon sx={{ color: "var(--green)" }} />,
+  5: <NewReleasesIcon sx={{ color: "var(--green)" }} />,
 };
 
 export default function NoticeWrapper({
@@ -14,26 +15,31 @@ export default function NoticeWrapper({
   name,
   onReply,
   selected,
+  replyButton,
 }) {
   return (
     <Stack
-      className="card shadow"
+      className="notice-wrapper card shadow"
       padding={"10px"}
       direction={"row"}
       bgcolor={selected ? "var(--selected)" : "transparent"}
+      maxWidth={"100%"}
     >
       <Stack flex={1} alignItems={"center"}>
         {ICONS[noticeType]}
       </Stack>
-      <Stack flex={15}>
+      <Stack
+        flex={15}
+        flexWrap={"wrap"}
+        maxWidth={"100%"}
+        position={"relative"}
+        gap={"10px"}
+      >
         <Typography>{name}</Typography>
-        <br />
+
         <Divider></Divider>
-        <br />
+
         {children}
-        <Stack className="button-row">
-          <Button onClick={onReply}>Responder</Button>
-        </Stack>
       </Stack>
     </Stack>
   );

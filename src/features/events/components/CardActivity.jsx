@@ -15,6 +15,7 @@ export default function CardActivity({
   required,
   onDelete,
   onEdit,
+  editable = true,
 }) {
   const handleDeleteActivity = () => {
     onDelete(activity);
@@ -42,20 +43,22 @@ export default function CardActivity({
         <Typography>{activity.name}</Typography>
       </Stack>
 
-      <Stack direction={"row"}>
-        <Tooltip title="Editar actividad" placement="top-start">
-          <IconButton color="primary" onClick={handleEditActivity}>
-            <EditIcon></EditIcon>
-          </IconButton>
-        </Tooltip>
-        {!required && (
-          <Tooltip title="Eliminar actividad" placement="top-start">
-            <IconButton color="primary" onClick={handleDeleteActivity}>
-              <DeleteIcon></DeleteIcon>
+      {editable && (
+        <Stack direction={"row"}>
+          <Tooltip title="Editar actividad" placement="top-start">
+            <IconButton color="primary" onClick={handleEditActivity}>
+              <EditIcon></EditIcon>
             </IconButton>
           </Tooltip>
-        )}
-      </Stack>
+          {!required && (
+            <Tooltip title="Eliminar actividad" placement="top-start">
+              <IconButton color="primary" onClick={handleDeleteActivity}>
+                <DeleteIcon></DeleteIcon>
+              </IconButton>
+            </Tooltip>
+          )}
+        </Stack>
+      )}
     </ListItemButton>
   );
 }

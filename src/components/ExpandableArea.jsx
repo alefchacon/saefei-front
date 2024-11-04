@@ -4,7 +4,12 @@ import CardActionArea from "@mui/material/CardActionArea";
 
 export default function ExpandableArea({ children, onClick, expanded }) {
   return (
-    <Stack position={"relative"} justifyContent={"start"} alignItems={"start"}>
+    <Stack
+      position={"relative"}
+      justifyContent={"start"}
+      alignItems={"start"}
+      maxWidth={"100%"}
+    >
       {children}
       <Button variant="text" size="small" onClick={onClick}>
         Ver {expanded ? "menos" : "más"}

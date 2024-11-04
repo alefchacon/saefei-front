@@ -6,10 +6,15 @@ export class User {
     this.maternalName = data?.maternalName,
     this.email = data?.email,
     this.job = data?.job,
-    this.rol = data?.rol
+    this.roles = data?.roles
   }
 
   get fullname(){
     return `${this.names} ${this.paternalName} ${this.maternalName}`
   }
+
+  get isCoordinator(){
+    return Object.values(this.roles).some(role => role.id === 1);
+  }
+  
 }

@@ -25,8 +25,6 @@ export default function CheckList({
   const [selectedAll, setSelectedAll] = useState(false);
 
   const handleToggle = (value) => () => {
-    console.log(value);
-
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
 
@@ -41,6 +39,7 @@ export default function CheckList({
       newChecked.splice(currentIndex, 1);
     }
 
+    console.log(newChecked);
     setChecked(newChecked);
     return onChange(newChecked);
   };

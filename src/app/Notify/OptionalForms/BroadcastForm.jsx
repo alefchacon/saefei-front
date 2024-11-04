@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 import FormLabel from "@mui/material/FormLabel";
 import CheckList from "../../../components/CheckList";
 import RadioList from "../../../components/RadioList";
@@ -12,16 +13,20 @@ import { useSearchParams } from "react-router-dom";
 export default function BroadcastForm() {
   const { values, setFieldValue } = useFormikContext();
 
-  const [showUpload, setShowUpload] = useState(values.publicity.length > 0);
+  const [showUpload, setShowUpload] = useState(values?.publicity?.length > 0);
   return (
     <Stack gap={"var(--field-gap)"} className="optional-form">
+      <Button onClick={() => console.log(values.media)}>asdf</Button>
       <CheckList
         label={
           "Seleccione los medios donde se requiere hacer difusión del evento"
         }
-        values={values.media}
+        values={values?.media}
         name={"media"}
-        onChange={(checked) => setFieldValue("media", checked)}
+        onChange={(checked) => {
+          console.log(checked);
+          setFieldValue("media", checked);
+        }}
       >
         <Typography value={"Página Web Institucional de la Facultad"}>
           Página Web Institucional de la Facultad
@@ -59,7 +64,7 @@ export default function BroadcastForm() {
           </FormLabel>
           <UploadButton
             multiple
-            values={values.publicity}
+            values={values?.publicity}
             onChange={(files) => setFieldValue("publicity", files)}
           ></UploadButton>
         </Stack>

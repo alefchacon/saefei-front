@@ -17,7 +17,7 @@ class EventSerializer{
     this.tematicas = this.handleCatalog(frontendEvent.themes),
     this.numParticipantes = frontendEvent?.numParticipants || null;
     this.medios = this.handleCatalog(frontendEvent.media),
-    this.requisitosCentroComputo = frontendEvent?.technicalRequirements || null;
+    this.requisitosCentroComputo = frontendEvent?.computerCenterRequirements || null;
     this.requiereTransmisionEnVivo = frontendEvent?.needsLivestream || null;
     
     // presidium y ponentes no son lo mismo: preguntar a dire

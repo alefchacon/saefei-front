@@ -175,7 +175,7 @@ export default function ReservationForm() {
                 <Stack>
                   <ProposedScheduleForm />
                   <br />
-                  <ButtonResponsive>Reservar</ButtonResponsive>
+                  <ButtonResponsive type="submit">Reservar</ButtonResponsive>
                 </Stack>
               </Fade>
             </Form>

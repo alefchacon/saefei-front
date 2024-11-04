@@ -12,8 +12,6 @@ export default function Page({
   children,
   flex,
   header = true,
-  activeSectionId = "principal",
-  onSectionChange,
   className,
   skeleton,
   onGoBack,
@@ -30,14 +28,6 @@ export default function Page({
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
-
-  const handleReturnToFirstSection = () => {
-    onSectionChange("principal");
-  };
-
-  const currentSection = children.find(
-    (child) => child.props.id === activeSectionId
-  );
 
   const conditionalPadding = () =>
     disablePadding ? { md: "0px 40px", sx: "0" } : "";
@@ -91,9 +81,7 @@ export default function Page({
           disableLoading={disableLoading}
           disablePadding={disablePadding}
           onGoBack={onGoBack}
-          onSectionChange={handleReturnToFirstSection}
-          sectionedPage={activeSectionId !== "principal"}
-          title={title ?? currentSection?.props.title}
+          title={title}
           scrolled={scrolled}
         ></Header>
       )}
@@ -106,7 +94,7 @@ export default function Page({
           className={`body ${disablePadding ? "" : "side-padding top-padding"}`}
           padding={conditionalPadding}
         >
-          {currentSection}
+          {children}
         </Stack>
       )}
     </Stack>

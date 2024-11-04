@@ -60,6 +60,27 @@ export default function EventForm({}) {
     storeEvent(values);
   };
 
+  if (loading) {
+    return (
+      <Page>
+        <EventFormSkeleton />;
+      </Page>
+    );
+  }
+
+  if (!loading && userReservations.length < 1) {
+    return <NoReservationsPage id={"no-reservations"} />;
+  }
+
+  if (showWelcome) {
+    return (
+      <WelcomePage
+        id={"welcome"}
+        onSectionChange={() => setShowWelcome(false)}
+      />
+    );
+  }
+
   return (
     <>
       <Formik
@@ -93,7 +114,7 @@ export default function EventForm({}) {
           decoration: "",
 
           //TechRequirementsForm
-          technicalRequirements: "",
+          computerCenterRequirements: "",
           needsLivestream: "",
 
           //ExternalParticipantsForm
@@ -192,8 +213,6 @@ function StepForm({ userReservations }) {
     handleStepChange(3);
   };
 
-  console.log(activeSectionId);
-
   return (
     <Page
       onSectionChange={handleSectionChange}
@@ -204,14 +223,6 @@ function StepForm({ userReservations }) {
       header={activeSectionId !== 0}
       onGoBack={currentStep > 3 && handleReturnToMandatory}
     >
-      {userReservations.length < 1 ? (
-        <NoReservationsPage id={"no-reservations"} />
-      ) : (
-        <WelcomePage
-          id={"welcome"}
-          onSectionChange={() => handleSectionChange("principal")}
-        />
-      )}
       <StepperCustom
         id={"principal"}
         title="Notificar evento"
@@ -385,7 +396,7 @@ function EndStep({ values, onStepChange }) {
         onClick={() => onStepChange(7)}
         icon={<SettingsIcon sx={iconSX} />}
         configured={Boolean(
-          values.technicalRequirements || values.needsLivestream
+          values.computerCenterRequirements || values.needsLivestream
         )}
         name="Requisitos técnicos"
         description="Solicite asistencia del Centro de Cómputo (equipo de cómputo, transmisión en vivo...) "
@@ -417,10 +428,7 @@ function NoReservationsPage() {
   const navigate = useNavigate();
 
   return (
-    <>
-      <br />
-      <Typography variant="h4">No ha reservado espacios</Typography>
-      <br />
+    <Page title={"No ha reservado espacios"}>
       <Typography>
         Para notificar su evento, debe contar con reservaciones aprobadas por la
         administración de la facultad.
@@ -434,15 +442,14 @@ function NoReservationsPage() {
       >
         Reservar un espacio
       </Button>
-    </>
+    </Page>
   );
 }
 
 function WelcomePage({ onSectionChange }) {
   return (
-    <>
+    <Page title="Bienvenido">
       <br />
-      <Typography variant="h4">Bienvenido</Typography>
       <br />
       <Typography>
         Este es el formulario de Notificación de Eventos Académicos de la
@@ -470,6 +477,6 @@ function WelcomePage({ onSectionChange }) {
       <Button sx={{ maxWidth: "fit-content" }} onClick={onSectionChange}>
         Continuar
       </Button>
-    </>
+    </Page>
   );
 }

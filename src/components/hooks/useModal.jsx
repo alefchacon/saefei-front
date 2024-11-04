@@ -27,7 +27,6 @@ export const useModal = () => {
 
   const openModal = useCallback(
     (title, content, actions, responsive, minWidth, noBackdrop = false) => {
-      console.log(title);
       setTitle(title);
       setContent(content);
       setActions(actions);

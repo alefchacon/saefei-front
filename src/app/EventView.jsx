@@ -34,25 +34,25 @@ import FabResponsive from "../components/FabResponsive";
 import ReplyForm from "../features/notices/components/ReplyForm";
 import * as MEDIA_NOTICES from "../stores/MEDIA_NOTICES";
 import { Program } from "../features/reservations/domain/program";
+import CardEventSection from "../features/events/components/CardEventSection";
+import useAuth from "../features/auth/businessLogic/useAuth";
 
 export default function EventView({ defaultEventUV, onReply }) {
-  const [eventUV, setEventUV] = useState({});
   const isMobile = useIsMobile();
+  const { getUser } = useAuth();
+  const user = getUser();
 
   const { Modal, openModal, closeModal } = useModal();
-  const { getEvent } = useEvents();
+  const { getEvent, eventUV, updateEvent } = useEvents();
   const { idEvento } = useParams();
-
   const [scrollDirection, setScrollDirection] = useState(SCROLL_UP);
 
   useEffect(() => {
     if (idEvento) {
-      getEvent(idEvento).then((response) => setEventUV(response.data.data));
+      getEvent(idEvento);
     }
     if (defaultEventUV) {
-      getEvent(defaultEventUV.id).then((response) =>
-        setEventUV(response.data.data)
-      );
+      getEvent(defaultEventUV.id);
     }
     if (isMobile) {
       closeModal();
@@ -83,61 +83,72 @@ export default function EventView({ defaultEventUV, onReply }) {
       onReply(updatedEvent);
     }
   };
+
+  const userCanEdit = user.isCoordinator || eventUV.idUsuario === user.id;
+
   function ResponsePanel() {
     return (
       <Stack className="card" padding={"0px"} gap={"20px"}>
         <TabsCustom>
-          <Stack label="Respuesta al organizador">
-            <ReplyForm
-              eventUV={eventUV}
-              onSuccess={handleUpdatedEvent}
-            ></ReplyForm>
-          </Stack>
+          {userCanEdit && (
+            <Stack label="Respuesta al organizador">
+              <ReplyForm
+                editable={user.isCoordinator}
+                submitButton={user.isCoordinator}
+                eventUV={eventUV}
+                onSuccess={handleUpdatedEvent}
+              ></ReplyForm>
+            </Stack>
+          )}
 
-          <Stack label="Notificación a medios">
-            <br />
-            <ChipTabs>
-              <Stack label="Página institucional" value={0}>
-                <MediaNoticeForm
-                  key={"institutional-page"}
-                  id={"institutional-page"}
-                  mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_INSTITUTIONAL_PAGE}
-                ></MediaNoticeForm>
-              </Stack>
-              <Stack label="Correo institucional" value={1}>
-                <MediaNoticeForm
-                  key={"institutional-email"}
-                  id={"institutional-email"}
-                  mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_INSTITUTIONAL_EMAIL}
-                ></MediaNoticeForm>
-              </Stack>
-              <Stack label="Redes sociales">
-                <MediaNoticeForm
-                  key={"social-media"}
-                  id={"social-media"}
-                  mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_SOCIAL_MEDIA}
-                ></MediaNoticeForm>
-              </Stack>
-              <Stack label="Comunicación UV">
-                <MediaNoticeForm
-                  key={"comunication-uv"}
-                  id={"comunication-uv"}
-                  mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_COMUNICATION_UV}
-                ></MediaNoticeForm>
-              </Stack>
-              <Stack label="Radio UV">
-                <MediaNoticeForm
-                  key={"radio-uv"}
-                  id={"radio-uv"}
-                  mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_RADIO_UV}
-                ></MediaNoticeForm>
-              </Stack>
-            </ChipTabs>
-          </Stack>
+          {user.isCoordinator && (
+            <Stack label="Notificación a medios">
+              <br />
+              <ChipTabs>
+                <Stack label="Página institucional" value={0}>
+                  <MediaNoticeForm
+                    key={"institutional-page"}
+                    id={"institutional-page"}
+                    mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_INSTITUTIONAL_PAGE}
+                  ></MediaNoticeForm>
+                </Stack>
+                <Stack label="Correo institucional" value={1}>
+                  <MediaNoticeForm
+                    key={"institutional-email"}
+                    id={"institutional-email"}
+                    mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_INSTITUTIONAL_EMAIL}
+                  ></MediaNoticeForm>
+                </Stack>
+                <Stack label="Redes sociales">
+                  <MediaNoticeForm
+                    key={"social-media"}
+                    id={"social-media"}
+                    mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_SOCIAL_MEDIA}
+                  ></MediaNoticeForm>
+                </Stack>
+                <Stack label="Comunicación UV">
+                  <MediaNoticeForm
+                    key={"comunication-uv"}
+                    id={"comunication-uv"}
+                    mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_COMUNICATION_UV}
+                  ></MediaNoticeForm>
+                </Stack>
+                <Stack label="Radio UV">
+                  <MediaNoticeForm
+                    key={"radio-uv"}
+                    id={"radio-uv"}
+                    mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_RADIO_UV}
+                  ></MediaNoticeForm>
+                </Stack>
+              </ChipTabs>
+            </Stack>
+          )}
         </TabsCustom>
       </Stack>
     );
   }
+
+  console.log(eventUV);
 
   return (
     <>
@@ -147,12 +158,12 @@ export default function EventView({ defaultEventUV, onReply }) {
         title={
           <Stack direction={"row"} width={"100%"} justifyContent={"start"}>
             <Stack width={"100%"}>
-              {eventUV.name}
+              {eventUV?.name}
               <Stack gap={"20px"}>
                 <Typography fontSize={18}>
                   por{" "}
                   <b>
-                    {`${eventUV.user?.names} ${eventUV.user?.paternalName} ${eventUV.user?.maternalName}`}
+                    {`${eventUV?.user?.names} ${eventUV?.user?.paternalName} ${eventUV?.user?.maternalName}`}
                   </b>
                 </Typography>
               </Stack>
@@ -163,7 +174,7 @@ export default function EventView({ defaultEventUV, onReply }) {
         <Stack gap={3} id={"principal"} position={"relative"}>
           {defaultEventUV?.name}
           <Stack direction={"row"} flexWrap={"wrap"} gap={"10px"}>
-            {eventUV.programs?.map((program, index) => {
+            {eventUV?.programs?.map((program, index) => {
               const programModel = new Program(program);
               return (
                 <ChipCustom
@@ -174,79 +185,93 @@ export default function EventView({ defaultEventUV, onReply }) {
             })}
           </Stack>
           <ExpandableText id={"description"} modalTitle="Descripción">
-            {eventUV.description}
+            {eventUV?.description}
           </ExpandableText>
           <Stack gap={3} direction={{ md: "row", xs: "column" }}>
             {/*
              */}
-            <CardEventSection title={"Logistica"} event={eventUV} flex={2}>
-              <Stack
-                direction={"row"}
-                flexWrap={"wrap"}
-                gap={1}
-                alignItems={"center"}
-              >
-                <Typography>
-                  <b>Requiere:</b>
-                </Typography>{" "}
-                <ChipCustom
-                  label={"Apoyo del CC"}
-                  display={eventUV.computerCenterRequirements ? "flex" : "none"}
-                />
-                <ChipCustom
-                  label={"Livestream"}
-                  display={eventUV.needsLivestream > 0 ? "flex" : "none"}
-                />
-                <ChipCustom label={`${eventUV.numParticipants} asistentes`} />
-                <ChipCustom
-                  label={`${eventUV.numExternalParticipants} externos`}
-                />
-                <ChipCustom
-                  label={"Estacionamiento para externos"}
-                  display={eventUV.needsParking > 0 ? "flex" : "none"}
-                />
-                <ChipCustom
-                  label={"Fin de semana"}
-                  display={eventUV.needsWeekend > 0 ? "flex" : "none"}
-                />
-              </Stack>
-              <br />
-              <Stack gap={"10px"}>
-                <ExpandableText
-                  name="Requisitos del CC"
-                  id={"computerCenterRequirements"}
-                >
-                  {eventUV.computerCenterRequirements}
-                </ExpandableText>
-                <ExpandableText name="Decoracion" id={"decoration"}>
-                  {eventUV.decoration}
-                </ExpandableText>
 
-                <ExpandableText name="Presidium" id={"presidium"}>
-                  {eventUV.presidium}
-                </ExpandableText>
-                <ExpandableText name="Constancias" id={"speakers"}>
-                  {eventUV.speakers}
-                </ExpandableText>
-              </Stack>
-            </CardEventSection>
+            {user.isCoordinator && (
+              <CardEventSection
+                editable={userCanEdit}
+                title={"Logística"}
+                eventUV={eventUV}
+                flex={2}
+              >
+                <Stack
+                  direction={"row"}
+                  flexWrap={"wrap"}
+                  gap={1}
+                  alignItems={"center"}
+                >
+                  <Typography>
+                    <b>Requiere:</b>
+                  </Typography>{" "}
+                  <ChipCustom
+                    label={"Apoyo del CC"}
+                    display={
+                      eventUV?.computerCenterRequirements ? "flex" : "none"
+                    }
+                  />
+                  <ChipCustom
+                    label={"Livestream"}
+                    display={eventUV?.needsLivestream > 0 ? "flex" : "none"}
+                  />
+                  <ChipCustom
+                    label={`${eventUV?.numParticipants} asistentes`}
+                  />
+                  <ChipCustom
+                    label={`${eventUV?.numExternalParticipants} externos`}
+                  />
+                  <ChipCustom
+                    label={"Estacionamiento para externos"}
+                    display={eventUV?.needsParking > 0 ? "flex" : "none"}
+                  />
+                  <ChipCustom
+                    label={"Fin de semana"}
+                    display={eventUV?.needsWeekend > 0 ? "flex" : "none"}
+                  />
+                </Stack>
+                <br />
+                <Stack gap={"10px"}>
+                  <ExpandableText
+                    name="Requisitos del CC"
+                    id={"computerCenterRequirements"}
+                  >
+                    {eventUV?.computerCenterRequirements}
+                  </ExpandableText>
+                  <ExpandableText name="Decoracion" id={"decoration"}>
+                    {eventUV?.decoration}
+                  </ExpandableText>
+
+                  <ExpandableText name="Presidium" id={"presidium"}>
+                    {eventUV?.presidium}
+                  </ExpandableText>
+                  <ExpandableText name="Constancias" id={"speakers"}>
+                    {eventUV?.speakers}
+                  </ExpandableText>
+                </Stack>
+              </CardEventSection>
+            )}
             {/*
              */}
             <CardEventSection
               title={"Agenda"}
-              event={eventUV}
+              eventUV={eventUV}
               flex={1}
               maxHeight={"100%"}
+              editable={userCanEdit}
             >
               <ActivityViewer
                 name="Agenda"
-                reservations={eventUV.reservations}
+                reservations={eventUV?.reservations}
+                editable={userCanEdit}
               ></ActivityViewer>
               <br />
-              {eventUV.chronogram && (
+              {eventUV?.chronogram && (
                 <Button>
                   <a
-                    href={FILE_URL.concat(eventUV.chronogram.file)}
+                    href={FILE_URL.concat(eventUV?.chronogram.file)}
                     target="_blank"
                   >
                     Descargar cronograma
@@ -256,30 +281,45 @@ export default function EventView({ defaultEventUV, onReply }) {
             </CardEventSection>
           </Stack>
           <Stack gap={3} direction={{ md: "row", xs: "column" }}>
-            <CardEventSection title={"Difusión"} event={eventUV} flex={3}>
-              <Stack direction={"row"} gap={1} flexWrap={"wrap"}>
-                <Typography>
-                  <b>Medios:</b>
-                </Typography>{" "}
-                {eventUV.media?.split(",").map((medium, index) => (
-                  <ChipCustom label={medium} key={index} />
-                ))}
-              </Stack>
+            <CardEventSection
+              title={"Difusión"}
+              eventUV={eventUV}
+              flex={3}
+              editable={userCanEdit}
+              onUpdate={updateEvent}
+            >
+              {user.isCoordinator && (
+                <Stack direction={"row"} gap={1} flexWrap={"wrap"}>
+                  <Typography>
+                    <b>Medios:</b>
+                  </Typography>{" "}
+                  {eventUV?.media?.map((medium, index) => (
+                    <ChipCustom label={medium} key={index} />
+                  ))}
+                </Stack>
+              )}
               <br />
-              {eventUV.publicity?.length > 0 && (
+              {eventUV?.publicity?.length > 0 && (
                 <Button onClick={handleDownloadAsZip}>
                   Descargar material promocional
                 </Button>
               )}
             </CardEventSection>
-            {eventUV.additional && (
-              <CardEventSection title={"Adicional"} event={eventUV} flex={3}>
+            {eventUV?.additional && user.isCoordinator && (
+              <CardEventSection
+                eventUV={eventUV}
+                title={"Adicional"}
+                event={eventUV}
+                flex={3}
+                editable={userCanEdit}
+                onUpdate={updateEvent}
+              >
                 <ExpandableText
                   modalTitle="Adicional"
                   id={"additional"}
                   maxLines={4}
                 >
-                  {eventUV.additional}
+                  {eventUV?.additional}
                 </ExpandableText>
               </CardEventSection>
             )}
@@ -291,7 +331,6 @@ export default function EventView({ defaultEventUV, onReply }) {
           ></FabResponsive>
           {!isMobile && <ResponsePanel></ResponsePanel>}
         </Stack>
-        <Stack id="principal2">sadf</Stack>
       </Page>
 
       <Modal></Modal>
@@ -317,54 +356,6 @@ export default function EventView({ defaultEventUV, onReply }) {
         ></TextField>
         <Stack className="button-row">
           <ButtonResponsive>Notificar</ButtonResponsive>
-        </Stack>
-      </Stack>
-    );
-  }
-
-  function CardEventSection({
-    event,
-    title,
-    children,
-    flex,
-    maxHeight = "100%",
-  }) {
-    if (!Array.isArray(children)) {
-      children = [children];
-    }
-    const refsExpandable = children
-      .filter((child) => child?.type === "p")
-      .map((expandable) => expandable.ref);
-    const toggleExpand = () => {
-      refsExpandable.map((ref) => ref.current.classList.toggle("line-clamp-4"));
-    };
-
-    return (
-      <Stack
-        height={"100%"}
-        maxHeight={maxHeight}
-        className="card shadow"
-        flex={flex}
-        overflow={"hidden"}
-        justifyContent={"space-between"}
-        bgcolor={"white"}
-      >
-        <Stack
-          sx={{
-            padding: 2,
-            height: "100%",
-            maxHeight: "fit-content",
-            alignItems: "start",
-            justifyContent: "start",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Typography variant="h5" fontWeight={500}>
-            {title}
-          </Typography>
-          <br />
-          {children}
         </Stack>
       </Stack>
     );

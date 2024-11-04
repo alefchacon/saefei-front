@@ -90,9 +90,8 @@ export default function Reservations() {
   }, []);
 
   return (
-    <Stack direction={"row"} height={"100%"} gap={2}>
-      <Stack flex={2} className="page">
-        <Header title="Reservaciones de espacios"></Header>
+    <Page title={"Reservaciones"} disablePadding>
+      <Stack flex={2} className="page" direction={"row"}>
         <br />
         <CalendarReservations
           forEvents={false}
@@ -100,40 +99,40 @@ export default function Reservations() {
           onMonthChange={handleMonthChange}
           items={reservations}
         ></CalendarReservations>
-      </Stack>
-      <Stack
-        id="reservation-list"
-        className="page"
-        position={"relative"}
-        flex={1}
-        display={{ md: "flex", xs: "none" }}
-      >
-        <Stack padding={"20px"}>
-          <Typography>Reservaciones del</Typography>
-          <Typography
-            variant="h5"
-            color={"black"}
-            fontSize={{ md: 26, xs: 20 }}
-          >
-            {selectedDate.format("DD/MM/YYYY")}
-          </Typography>
-        </Stack>
-        <Stack gap={3}>
-          {SPACES.map((space, index) => (
-            <ReservationGroup
-              space={space}
-              reservations={itemsInSelectedDate.filter(
-                (item) => item.space.id === space.id
-              )}
-            ></ReservationGroup>
-          ))}
-        </Stack>
-        {/*
+        <Stack
+          id="reservation-list"
+          className="page"
+          position={"relative"}
+          flex={1}
+          display={{ md: "flex", xs: "none" }}
+        >
+          <Stack padding={"20px"}>
+            <Typography>Reservaciones del</Typography>
+            <Typography
+              variant="h5"
+              color={"black"}
+              fontSize={{ md: 26, xs: 20 }}
+            >
+              {selectedDate.format("DD/MM/YYYY")}
+            </Typography>
+          </Stack>
+          <Stack gap={3}>
+            {SPACES.map((space, index) => (
+              <ReservationGroup
+                space={space}
+                reservations={itemsInSelectedDate.filter(
+                  (item) => item.space.id === space.id
+                )}
+              ></ReservationGroup>
+            ))}
+          </Stack>
+          {/*
         {itemsInSelectedDate.map((item, index) => (
           <Stack key={index}>{item.title}</Stack>
-        ))}
+          ))}
           */}
+        </Stack>
       </Stack>
-    </Stack>
+    </Page>
   );
 }

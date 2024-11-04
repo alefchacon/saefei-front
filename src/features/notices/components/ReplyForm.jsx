@@ -9,14 +9,20 @@ import { useEvents } from "../../events/businessLogic/useEvents";
 import { useLoading } from "../../../components/providers/LoadingProvider";
 
 import { useNoticesContext } from "../../../app/NoticesDesktop";
+import { Typography } from "@mui/material";
 
-export default function ReplyForm({ eventUV, onSuccess }) {
+export default function ReplyForm({
+  eventUV,
+  onSuccess,
+  submitButton,
+  editable,
+}) {
   const { updateEvent } = useEvents();
   const { loading } = useLoading();
   const textRef = useRef(null);
   const handleSubmit = async () => {
     const values = {
-      id: eventUV.id,
+      id: eventUV?.id,
       reply: textRef.current.value,
     };
     const response = await updateEvent(values);
@@ -30,12 +36,16 @@ export default function ReplyForm({ eventUV, onSuccess }) {
     textRef.current.value = newValue;
   };
 
+  if (!editable) {
+    return <Typography>{eventUV?.reply}</Typography>;
+  }
+
   return (
     <Stack gap={"20px"}>
       <TextField
         inputRef={textRef}
         defaultValue={
-          eventUV.reply ||
+          eventUV?.reply ||
           "[necesito los fragmentos de texto para armar el mensaje! :D]"
         }
         onChange={handleChange}
@@ -43,15 +53,17 @@ export default function ReplyForm({ eventUV, onSuccess }) {
         rows={10}
         variant="filled"
       ></TextField>
-      <Stack className="button-row">
-        <ButtonResponsive
-          type="submit"
-          onClick={handleSubmit}
-          loading={loading}
-        >
-          Responder
-        </ButtonResponsive>
-      </Stack>
+      {submitButton && (
+        <Stack className="button-row">
+          <ButtonResponsive
+            type="submit"
+            onClick={handleSubmit}
+            loading={loading}
+          >
+            Responder
+          </ButtonResponsive>
+        </Stack>
+      )}
     </Stack>
   );
 }

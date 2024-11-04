@@ -122,7 +122,11 @@ export default function CalendarReservations({
           </IconButton>
           <Button onClick={handleResetMonth}> Hoy</Button>
         </Stack>
-        <Button onClick={() => navigate(ROUTE_RESERVE)} variant="contained">
+        <Button
+          onClick={() => navigate(ROUTE_RESERVE)}
+          variant="contained"
+          disableElevation
+        >
           Reservar espacio
         </Button>
       </Stack>

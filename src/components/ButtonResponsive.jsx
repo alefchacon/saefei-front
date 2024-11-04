@@ -1,16 +1,17 @@
 import { Button } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-
+import { useLoading } from "./providers/LoadingProvider";
 import useIsMobile from "./hooks/useIsMobile";
 export default function ButtonResponsive({
   children,
   variant = "contained",
-  loading = false,
+  isLoading = null,
   onClick,
   type = "button",
   responsive,
 }) {
   const isMobile = useIsMobile();
+  const { loading } = useLoading();
 
   const config = isMobile
     ? {
@@ -31,7 +32,7 @@ export default function ButtonResponsive({
       variant={variant}
       type={type}
       onClick={onClick}
-      disabled={loading}
+      disabled={isLoading || loading}
       sx={config}
     >
       {children}

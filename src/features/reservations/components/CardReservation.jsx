@@ -20,49 +20,88 @@ import Tooltip from "@mui/material/Tooltip";
 import moment from "moment";
 import SchoolIcon from "@mui/icons-material/School";
 import { getScheduleString } from "../../../util/moments";
+import PersonIcon from "@mui/icons-material/Person";
+import ExpandableText from "../../events/components/ExpandableText";
+import MessageIcon from "@mui/icons-material/Message";
 export default function CardReservation({
   reservation,
   activitySchedule = false,
   reservationSchedule = false,
   row = false,
+  motive,
+  user,
+  forAdmin,
 }) {
   return (
     <Stack
       gap={1}
-      direction={row ? "row" : "column"}
-      alignItems={row ? "center" : "start"}
+      direction={"column"}
+      alignItems={"start"}
+      justifyContent={"center"}
       flexWrap={"wrap"}
+      maxWidth={"100%"}
     >
-      <ChipSpace space={reservation?.space}></ChipSpace>
-      <Stack direction={row ? "row" : "column"} gap={1} flexWrap={"wrap"}>
-        <Stack direction={"row"} gap={1}>
-          <EventIcon></EventIcon>
-          <Typography>
-            {moment(reservation?.date).format("DD/MM/YYYY")}
-          </Typography>
-        </Stack>
-        {reservationSchedule && (
-          <Stack direction={"row"} gap={1}>
-            <DomainIcon></DomainIcon>
-            <Typography>Reservación:</Typography>
+      <Stack
+        direction={row ? "row" : "column"}
+        alignItems={row ? "center" : ""}
+        justifyContent={"center"}
+        gap={"20px"}
+      >
+        <ChipSpace space={reservation?.space}></ChipSpace>
+        <Stack
+          direction={"row"}
+          gap={"10px"}
+          flexWrap={"wrap"}
+          maxWidth={"100%"}
+        >
+          <Stack direction={"row"} gap={1} flexWrap={"wrap"} maxWidth={"100%"}>
+            <EventIcon></EventIcon>
             <Typography>
-              {getScheduleString({
-                start: reservation.startEvent,
-                end: reservation.endEvent,
-              })}
+              {moment(reservation?.date).format("DD/MM/YYYY")}
             </Typography>
           </Stack>
+          {reservationSchedule && (
+            <Stack direction={"row"} gap={1}>
+              {forAdmin ? <AccessTimeIcon /> : <DomainIcon></DomainIcon>}
+              {!forAdmin && <Typography>Reservación:</Typography>}
+              <Typography>
+                {getScheduleString({
+                  start: reservation.startEvent,
+                  end: reservation.endEvent,
+                })}
+              </Typography>
+            </Stack>
+          )}
+          {activitySchedule && (
+            <Stack direction={"row"} gap={1}>
+              <SchoolIcon></SchoolIcon>
+              <Typography>Evento:</Typography>
+              <Typography>
+                {getScheduleString({
+                  start: reservation.startEvent,
+                  end: reservation.endEvent,
+                })}
+              </Typography>
+            </Stack>
+          )}
+        </Stack>
+      </Stack>
+      <Stack gap={"10px"} flexWrap={"wrap"} maxWidth={"100%"}>
+        {user && (
+          <Stack direction={"row"} gap={1} maxWidth={"100%"}>
+            <PersonIcon></PersonIcon>
+            <Stack direction={"column"}>
+              <Typography>{reservation.user?.names}</Typography>
+              <Typography variant="caption">
+                {reservation.user?.email}
+              </Typography>
+            </Stack>
+          </Stack>
         )}
-        {activitySchedule && (
+        {motive && (
           <Stack direction={"row"} gap={1}>
-            <SchoolIcon></SchoolIcon>
-            <Typography>Evento:</Typography>
-            <Typography>
-              {getScheduleString({
-                start: reservation.startEvent,
-                end: reservation.endEvent,
-              })}
-            </Typography>
+            <MessageIcon></MessageIcon>
+            <ExpandableText>{reservation?.motive}</ExpandableText>
           </Stack>
         )}
       </Stack>

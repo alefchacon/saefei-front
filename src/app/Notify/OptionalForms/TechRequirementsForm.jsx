@@ -16,9 +16,9 @@ export default function TechRequirementsForm({}) {
           especializado, equipos audiovisuales, acceso a internet, entre otros)
         </FormLabel>
         <TextField
-          value={values.technicalRequirements}
+          value={values?.computerCenterRequirements}
           onChange={(e) =>
-            setFieldValue("technicalRequirements", e.target.value)
+            setFieldValue("computerCenterRequirements", e.target.value)
           }
           placeholder="Escriba su respuesta"
           variant="filled"
@@ -28,7 +28,7 @@ export default function TechRequirementsForm({}) {
       </Stack>
       <RadioList
         label={"¿Necesita que el evento sea transmitido?"}
-        value={values.needsLivestream}
+        value={values?.needsLivestream}
         onChange={(e) => setFieldValue("needsLivestream", e.target.value)}
       >
         <Typography value="1">Sí</Typography>

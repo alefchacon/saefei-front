@@ -21,6 +21,11 @@ export const useReservations = () => {
   };
 
   const getReservationsByMonth = async (date = moment()) => {
+    console.log(`reservaciones?
+      anio[eq]=${date.format("YYYY")}
+      &mes[eq]=${date.format("MM")}
+      &idEstado[gte]=${STATUS.ACCEPTED}
+      &idEstado[lte]=${STATUS.EVALUATED}`);
     return apiWrapper.get(`reservaciones?
       anio[eq]=${date.format("YYYY")}
       &mes[eq]=${date.format("MM")}
@@ -47,10 +52,29 @@ export const useReservations = () => {
     return response;
   };
 
+  const acceptReservation = async (reservation) => {
+    const response = await apiWrapper.put(
+      `reservaciones/aceptar/${reservation.id}`
+    );
+    return response;
+  };
+  const rejectReservation = async (reservation, reply = "Sin motivo") => {
+    const body = {
+      reply: reply,
+    };
+    const response = await apiWrapper.put(
+      `reservaciones/rechazar/${reservation.id}`,
+      body
+    );
+    return response;
+  };
+
   return {
     getReservationsBySpaceDate,
     addReservation,
     getReservationsByMonth,
     getReservationsAvailableToUser,
+    acceptReservation,
+    rejectReservation,
   };
 };

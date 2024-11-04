@@ -4,6 +4,7 @@ import useApi from "../../../dataAccess/useApi";
 import STATUS from "../../../stores/STATUS";
 import EventSerializer from "../domain/eventSerializer";
 export const useEvents = () => {
+  const [eventUV, setEventUV] = useState({});
   const [events, setEvents] = useState([]);
   const [apiWrapper] = useApi();
   const isLoadingRef = useRef(false);
@@ -23,7 +24,7 @@ export const useEvents = () => {
 
   const getEvent = useCallback(async (idEvent = 0) => {
     const response = await apiWrapper.get(`eventos/${idEvent}`);
-    return response;
+    setEventUV(response.data.data);
   });
 
   const storeEvent = useCallback(async (eventUV) => {
@@ -52,15 +53,6 @@ export const useEvents = () => {
     });
   });
 
-  const updateEvent = useCallback(async (eventUV) => {
-    console.log(eventUV);
-    const response = await apiWrapper.put(
-      `eventos/${eventUV.id}`,
-      new EventSerializer(eventUV)
-    );
-    return response;
-  });
-
   const getEvents = async (filters, newSearch = false) => {
     const cantGetNewEvents =
       (!newSearch && meta.current_page === meta.last_page) ||
@@ -83,8 +75,21 @@ export const useEvents = () => {
     isLoadingRef.current = false;
   };
 
+  const updateEvent = async (eventUV) => {
+    const response = await apiWrapper.put(
+      `eventos/${eventUV.id}`,
+      new EventSerializer(eventUV)
+    );
+    if (response.status === 200) {
+      setEventUV((prev) => ({ ...prev, ...response.data.data }));
+      console.log(eventUV);
+    }
+    return response;
+  };
+
   return {
     events,
+    eventUV,
     getEvent,
     storeEvent,
     updateEvent,
