@@ -20,7 +20,7 @@ import SchoolIcon from "@mui/icons-material/School";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Bottombar from "../components/Bottombar";
-import Reservations from "./Reservations";
+import CalendarReservations from "./CalendarReservations";
 import EventView from "./EventView";
 import { Notices } from "./Notices";
 import "moment/dist/locale/es-mx";
@@ -33,6 +33,7 @@ import Events from "./Events";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useIsMobile from "../components/hooks/useIsMobile";
 import EventUpdateForm from "./EventUpdateForm";
+import CalendarEvents from "./CalendarEvents";
 const theme = createTheme({
   palette: {
     primary: {
@@ -103,7 +104,11 @@ function App() {
               ></Route>
               <Route
                 path={ROUTES.ROUTE_CALENDAR_RESERVATIONS}
-                element={<Reservations></Reservations>}
+                element={<CalendarReservations></CalendarReservations>}
+              ></Route>
+              <Route
+                path={ROUTES.ROUTE_CALENDAR_EVENTS}
+                element={<CalendarEvents></CalendarEvents>}
               ></Route>
               <Route
                 path={`${ROUTES.ROUTE_EVENT}/:idEvento?`}

@@ -37,8 +37,6 @@ export default function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  console.log(location.pathname);
-
   const handleListItemClick = (event, index, route) => {
     setSelectedIndex(index);
     navigate(route);

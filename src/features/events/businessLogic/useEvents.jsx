@@ -86,6 +86,10 @@ export const useEvents = () => {
     setMeta(response.data.meta);
     isLoadingRef.current = false;
   };
+  const getCalendarEvents = async (dateFilter) => {
+    const query = `calendario?${dateFilter}`;
+    return await apiWrapper.get(query);
+  };
 
   const updateEvent = async (eventUV) => {
     console.log(eventUV);
@@ -107,5 +111,6 @@ export const useEvents = () => {
     storeEvent,
     updateEvent,
     getEvents,
+    getCalendarEvents,
   };
 };

@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, cloneElement, Children } from "react";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import moment from "moment";
 import Page from "../components/Page";
 import Header from "../components/Header";
-import CalendarReservations from "../features/reservations/components/CalendarReservations";
+import CalendarCustom from "../components/CalendarCustom";
 import events from "../stores/events";
 import { useReservations } from "../features/reservations/businessLogic/useReservations";
 import ChipSpace from "../features/reservations/components/ChipSpace";
@@ -15,6 +15,9 @@ import ExpandCircleDownIcon from "@mui/icons-material/ExpandCircleDown";
 import Collapse from "@mui/material/Collapse";
 import ChipReservation from "../features/reservations/components/ChipReservation";
 import ListItemButton from "@mui/material/ListItemButton";
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
+import { ROUTE_RESERVE } from "../stores/ROUTES";
 function ReservationGroup({ space = {}, reservations = [] }) {
   const [show, setShow] = useState(true);
 
@@ -62,7 +65,7 @@ function ReservationGroup({ space = {}, reservations = [] }) {
   );
 }
 
-export default function Reservations() {
+export default function CalendarReservations() {
   const [selectedDate, setSelectedDate] = useState(moment());
   const [reservations, setReservations] = useState([]);
   const { getReservationsByMonth } = useReservations();
@@ -89,21 +92,47 @@ export default function Reservations() {
     fetchReservations();
   }, []);
 
+  const spaceWrapper = ({ children }) => {
+    return cloneElement(Children.only(children), {
+      style: {
+        backgroundColor: "var(--blue)",
+        borderRadius: "100px",
+        fontFamily: "roboto condensed",
+        padding: "0 10px",
+        fontWeight: "500",
+      },
+    });
+  };
+
+  const actionButton = (
+    <Link to={ROUTE_RESERVE} style={{ height: "100%", display: "flex" }}>
+      <Button
+        disableElevation
+        onClick={() => console.log("asdf")}
+        variant="contained"
+      >
+        Reservar espacios
+      </Button>
+    </Link>
+  );
+
   return (
     <Page title={"Reservaciones"} disablePadding>
-      <Stack flex={2} className="page" direction={"row"}>
+      <Stack flex={10} className="page" direction={"row"}>
         <br />
-        <CalendarReservations
+        <CalendarCustom
           forEvents={false}
           onDateSelect={handleDateSelect}
           onMonthChange={handleMonthChange}
           items={reservations}
-        ></CalendarReservations>
+          eventWrapper={spaceWrapper}
+          actionButton={actionButton}
+        ></CalendarCustom>
         <Stack
           id="reservation-list"
           className="page"
           position={"relative"}
-          flex={1}
+          flex={0.8}
           display={{ md: "flex", xs: "none" }}
         >
           <Stack padding={"20px"}>
