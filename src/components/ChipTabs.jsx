@@ -54,7 +54,7 @@ export default function ChipTabs({ children }) {
           />
         ))}
       </Stack>
-      <CustomTabPanel index={index} value={value}>
+      <CustomTabPanel index={value} value={value}>
         {children[value]}
       </CustomTabPanel>
     </Box>

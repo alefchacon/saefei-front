@@ -39,8 +39,9 @@ import { useEvents } from "../../features/events/businessLogic/useEvents";
 import { useLoading } from "../../components/providers/LoadingProvider";
 import EventFormSkeleton from "./StepForms/EventFormSkeleton";
 import DomainIcon from "@mui/icons-material/Domain";
+import PeopleIcon from "@mui/icons-material/People";
 import { Routes, Route } from "react-router-dom";
-
+import PresidiumForm from "./OptionalForms/PresidiumForm";
 export default function EventForm({}) {
   const { getReservationsAvailableToUser } = useReservations();
   const { getUser } = useAuth();
@@ -109,6 +110,9 @@ export default function EventForm({}) {
 
           //RecordsForm
           records: "",
+
+          //PresidiumForm
+          presidium: "",
 
           //DecorationForm
           decoration: "",
@@ -317,6 +321,17 @@ function StepForm({ userReservations }) {
         <Stack
           optional
           className="step-optional"
+          id={"presidium"}
+          title={"Presidium"}
+        >
+          <PresidiumForm
+            values={values}
+            onFieldValueChange={setFieldValue}
+          ></PresidiumForm>
+        </Stack>
+        <Stack
+          optional
+          className="step-optional"
           id={"decoracion"}
           title={"Decoración"}
         >
@@ -387,13 +402,20 @@ function EndStep({ values, onStepChange }) {
       ></SectionButton>
       <SectionButton
         onClick={() => onStepChange(6)}
+        icon={<PeopleIcon sx={iconSX} />}
+        configured={Boolean(values.presidium)}
+        name="Presidium"
+        description="Describa la participación de invitados especiales."
+      ></SectionButton>
+      <SectionButton
+        onClick={() => onStepChange(7)}
         configured={values.decoration}
         icon={<AutoAwesomeIcon sx={iconSX} />}
         name="Decoración"
         description="Pida sus personificadores, banderas y demás."
       ></SectionButton>
       <SectionButton
-        onClick={() => onStepChange(7)}
+        onClick={() => onStepChange(8)}
         icon={<SettingsIcon sx={iconSX} />}
         configured={Boolean(
           values.computerCenterRequirements || values.needsLivestream
@@ -402,7 +424,7 @@ function EndStep({ values, onStepChange }) {
         description="Solicite asistencia del Centro de Cómputo (equipo de cómputo, transmisión en vivo...) "
       ></SectionButton>
       <SectionButton
-        onClick={() => onStepChange(8)}
+        onClick={() => onStepChange(9)}
         configured={Boolean(
           values.numParticipantsExternal > 0 ||
             values.needsParking ||
@@ -413,11 +435,11 @@ function EndStep({ values, onStepChange }) {
         description="¿Asistirán personas ajenas a la FEI? Cuéntenos aquí."
       ></SectionButton>
       <SectionButton
-        onClick={() => onStepChange(9)}
+        onClick={() => onStepChange(10)}
         configured={Boolean(values.additional)}
         icon={<QuestionMarkIcon sx={iconSX} />}
         name="Requisitos adicionales"
-        description="¿Nos faltó pedirle algo? Pídalo aquí."
+        description="¿Nos faltó preguntarle algo? Aquí lo puede pedir."
       ></SectionButton>
       <Modal></Modal>
     </Stack>

@@ -34,7 +34,7 @@ import EventForm from "./Notify/EventForm";
 import Events from "./Events";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useIsMobile from "../components/hooks/useIsMobile";
-
+import EventUpdateForm from "./EventUpdateForm";
 const theme = createTheme({
   palette: {
     primary: {
@@ -115,12 +115,24 @@ function App() {
                 element={<EventView></EventView>}
               ></Route>
               <Route
+                path={`${ROUTES.ROUTE_EVENT}/:idEvento?`}
+                element={<EventView></EventView>}
+              ></Route>
+              <Route
+                path={`${ROUTES.ROUTE_EVENT}/:idEvento?${ROUTES.ROUTE_EDIT}/:idSeccion?`}
+                element={<EventUpdateForm></EventUpdateForm>}
+              ></Route>{" "}
+              <Route
                 path={`${ROUTES.ROUTE_NOTIFY}/:paso?`}
                 element={<EventForm />}
               ></Route>{" "}
               <Route
                 path={`${ROUTES.ROUTE_SEARCH_EVENTS}`}
                 element={<Events />}
+              ></Route>{" "}
+              <Route
+                path={`${ROUTES.ROUTE_MY_EVENTS}`}
+                element={<Events userEvents />}
               ></Route>{" "}
               <Route
                 path={`/test`}

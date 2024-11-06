@@ -36,11 +36,14 @@ import * as MEDIA_NOTICES from "../stores/MEDIA_NOTICES";
 import { Program } from "../features/reservations/domain/program";
 import CardEventSection from "../features/events/components/CardEventSection";
 import useAuth from "../features/auth/businessLogic/useAuth";
-
+import { useNavigate, useLocation } from "react-router-dom";
+import { ROUTE_EDIT } from "../stores/ROUTES";
 export default function EventView({ defaultEventUV, onReply }) {
   const isMobile = useIsMobile();
   const { getUser } = useAuth();
   const user = getUser();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const { Modal, openModal, closeModal } = useModal();
   const { getEvent, eventUV, updateEvent } = useEvents();
@@ -148,6 +151,12 @@ export default function EventView({ defaultEventUV, onReply }) {
     );
   }
 
+  const navigateToEdit = () => {
+    navigate(`${location.pathname}${ROUTE_EDIT}`, {
+      state: { eventUVToUpdate: eventUV },
+    });
+  };
+
   console.log(eventUV);
 
   return (
@@ -159,13 +168,16 @@ export default function EventView({ defaultEventUV, onReply }) {
           <Stack direction={"row"} width={"100%"} justifyContent={"start"}>
             <Stack width={"100%"}>
               {eventUV?.name}
-              <Stack gap={"20px"}>
+              <Stack direction={"column"}>
                 <Typography fontSize={18}>
-                  por{" "}
-                  <b>
-                    {`${eventUV?.user?.names} ${eventUV?.user?.paternalName} ${eventUV?.user?.maternalName}`}
-                  </b>
+                  por <b>{`${eventUV?.user?.fullname}`}</b>
                 </Typography>
+                <Button
+                  sx={{ maxWidth: "fit-content" }}
+                  onClick={navigateToEdit}
+                >
+                  Editar
+                </Button>
               </Stack>
             </Stack>
           </Stack>
@@ -196,6 +208,17 @@ export default function EventView({ defaultEventUV, onReply }) {
                 editable={userCanEdit}
                 title={"Logística"}
                 eventUV={eventUV}
+                onUpdate={updateEvent}
+                fieldKeys={[
+                  "requisitosCentroComputo",
+                  "decoracion",
+                  "presidium",
+                  "constancias",
+                  "numParticipantes",
+                  "numParticipantesExternos",
+                  "requiereFinDeSemana",
+                  "requiereTransmisionEnVivo",
+                ]}
                 flex={2}
               >
                 <Stack
@@ -221,7 +244,7 @@ export default function EventView({ defaultEventUV, onReply }) {
                     label={`${eventUV?.numParticipants} asistentes`}
                   />
                   <ChipCustom
-                    label={`${eventUV?.numExternalParticipants} externos`}
+                    label={`${eventUV?.numParticipantsExternal} externos`}
                   />
                   <ChipCustom
                     label={"Estacionamiento para externos"}
@@ -247,8 +270,8 @@ export default function EventView({ defaultEventUV, onReply }) {
                   <ExpandableText name="Presidium" id={"presidium"}>
                     {eventUV?.presidium}
                   </ExpandableText>
-                  <ExpandableText name="Constancias" id={"speakers"}>
-                    {eventUV?.speakers}
+                  <ExpandableText name="Constancias" id={"records"}>
+                    {eventUV?.records}
                   </ExpandableText>
                 </Stack>
               </CardEventSection>
@@ -309,6 +332,7 @@ export default function EventView({ defaultEventUV, onReply }) {
               <CardEventSection
                 eventUV={eventUV}
                 title={"Adicional"}
+                fieldKeys={["adicional"]}
                 event={eventUV}
                 flex={3}
                 editable={userCanEdit}

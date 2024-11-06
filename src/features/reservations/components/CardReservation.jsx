@@ -66,16 +66,17 @@ export default function CardReservation({
               {!forAdmin && <Typography>Reservación:</Typography>}
               <Typography>
                 {getScheduleString({
-                  start: reservation.startEvent,
-                  end: reservation.endEvent,
+                  start: reservation.start,
+                  end: reservation.end,
                 })}
               </Typography>
             </Stack>
           )}
           {activitySchedule && (
             <Stack direction={"row"} gap={1}>
-              <SchoolIcon></SchoolIcon>
-              <Typography>Evento:</Typography>
+              {forAdmin ? <AccessTimeIcon /> : <SchoolIcon></SchoolIcon>}
+              {!forAdmin && <Typography>Evento:</Typography>}
+
               <Typography>
                 {getScheduleString({
                   start: reservation.startEvent,

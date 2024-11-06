@@ -84,7 +84,7 @@ export default function GeneralForm({ userReservations }) {
             setFieldValue("activities", remainingActivities);
           }}
         >
-          {userReservations.map((reservation, index) => (
+          {userReservations?.map((reservation, index) => (
             <Stack
               key={index}
               className="reservation-wrapper"
@@ -95,7 +95,8 @@ export default function GeneralForm({ userReservations }) {
                 value={reservation.id}
                 key={index}
                 reservation={reservation}
-                activitySchedule={false}
+                reservationSchedule
+                forAdmin={true}
               ></CardReservation>
             </Stack>
           ))}

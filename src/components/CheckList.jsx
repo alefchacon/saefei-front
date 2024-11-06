@@ -49,7 +49,7 @@ export default function CheckList({
       setChecked([]);
       onChange([]);
     } else {
-      const all = children.map((child) => child.props.value);
+      const all = children?.map((child) => child.props.value);
       setChecked(all);
       onChange(all);
     }
@@ -84,7 +84,7 @@ export default function CheckList({
           </ListItem>
         )}
 
-        {children.map((child, index) => {
+        {children?.map((child, index) => {
           const labelId = `checkbox-list-label-${child.props.value}`;
 
           return (

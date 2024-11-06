@@ -12,21 +12,22 @@ class EventSerializer{
     this.actividades = frontendEvent?.activities
       ? JSON.stringify(frontendEvent.activities.map(activity => new ActivitySerializer(activity)))
       : null;
-    this.audiencias = this.handleCatalog(frontendEvent.audiences),
+    this.audiencias = frontendEvent.audiences,
     this.eje = frontendEvent?.axis || null;
-    this.tematicas = this.handleCatalog(frontendEvent.themes),
+    this.tematicas = frontendEvent.themes,
     this.numParticipantes = frontendEvent?.numParticipants || null;
-    this.medios = this.handleCatalog(frontendEvent.media),
+    this.medios = frontendEvent.media,
     this.requisitosCentroComputo = frontendEvent?.computerCenterRequirements || null;
     this.requiereTransmisionEnVivo = frontendEvent?.needsLivestream || null;
     
     // presidium y ponentes no son lo mismo: preguntar a dire
-    this.presidium = frontendEvent?.records || null;
+    this.constancias = frontendEvent?.records || null;
+    this.presidium = frontendEvent?.presidium || null;
     this.publicidad = frontendEvent?.publicity || null;
     this.cronograma = frontendEvent?.chronogram || null;
     
     this.decoracion = frontendEvent?.decoration || null;
-    this.numParticipantes = frontendEvent?.numParticipantsExternal || null;
+    this.numParticipantesExternos = frontendEvent?.numParticipantsExternal || null;
     this.requiereEstacionamiento = frontendEvent?.needsParking || null;
     this.requiereFinDeSemana = frontendEvent?.needsWeekend || null;
     this.medios = frontendEvent?.media || null;
@@ -39,17 +40,6 @@ class EventSerializer{
     
   }
 
-  handleCatalog = (catalog) => {
-    if (!Boolean(catalog)) {
-      return null;
-    }
-
-    if (Array.isArray(catalog)){
-      return catalog.join(";");
-    } else {
-      return catalog;
-    }
-  } 
 }
 
 

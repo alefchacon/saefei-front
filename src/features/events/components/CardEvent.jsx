@@ -40,6 +40,7 @@ export default function CardEvent({
             row
             activitySchedule
             reservation={reservation}
+            forAdmin
             key={index}
           ></CardReservation>
         ))}

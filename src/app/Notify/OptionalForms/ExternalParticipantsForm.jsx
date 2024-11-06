@@ -6,7 +6,7 @@ import RadioList from "../../../components/RadioList";
 
 import { useFormikContext } from "formik";
 
-export default function EternalParticipantsForm({}) {
+export default function ExternalParticipantsForm({}) {
   const { values, setFieldValue } = useFormikContext();
 
   return (

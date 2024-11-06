@@ -63,6 +63,7 @@ export default function ScheduleForm({ selectedUserReservations }) {
             name: newActivityNameRef.current.value,
             time: moment(newActivityTimeRef.current.value, "HH:mm"),
           };
+          console.log(newActivity);
           setFieldValue("activities", [...values.activities, newActivity]);
         }}
         variant="contained"
@@ -156,7 +157,7 @@ export default function ScheduleForm({ selectedUserReservations }) {
           </FormLabel>
           <br />
           <Stack>
-            {selectedUserReservations.map((reservation, index) => (
+            {selectedUserReservations?.map((reservation, index) => (
               <AccordionCustom
                 key={index}
                 header={
@@ -169,7 +170,8 @@ export default function ScheduleForm({ selectedUserReservations }) {
                     <CardReservation
                       key={index}
                       reservation={reservation}
-                      activitySchedule={false}
+                      reservationSchedule
+                      forAdmin
                     />
                     <Button
                       onClick={(event) => {

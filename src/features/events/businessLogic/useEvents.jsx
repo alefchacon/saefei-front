@@ -3,6 +3,7 @@ import moment from "moment";
 import useApi from "../../../dataAccess/useApi";
 import STATUS from "../../../stores/STATUS";
 import EventSerializer from "../domain/eventSerializer";
+import Event from "../domain/event";
 export const useEvents = () => {
   const [eventUV, setEventUV] = useState({});
   const [events, setEvents] = useState([]);
@@ -24,27 +25,38 @@ export const useEvents = () => {
 
   const getEvent = useCallback(async (idEvent = 0) => {
     const response = await apiWrapper.get(`eventos/${idEvent}`);
-    setEventUV(response.data.data);
+    console.log(response.data.data);
+    setEventUV(new Event(response.data.data));
   });
 
   const storeEvent = useCallback(async (eventUV) => {
     const data = new EventSerializer(eventUV);
+    console.log(eventUV);
+    console.log(data);
     const formData = new FormData();
 
-    const { publicidad } = data;
-    for (let i = 0; i < publicidad.length; i++) {
-      formData.append(`publicidad[${i}]`, publicidad[i]);
+    if (Boolean(data.publicidad)) {
+      const { publicidad } = data;
+      for (let i = 0; i < publicidad.length; i++) {
+        formData.append(`publicidad[${i}]`, publicidad[i]);
+      }
+      delete data.publicidad;
     }
-    delete data.publicidad;
 
-    const { cronograma } = data;
-    for (let i = 0; i < cronograma.length; i++) {
-      formData.append(`cronograma[${i}]`, cronograma[i]);
+    if (Boolean(data.cronograma)) {
+      const { cronograma } = data;
+      for (let i = 0; i < cronograma.length; i++) {
+        formData.append(`cronograma[${i}]`, cronograma[i]);
+      }
+      delete data.cronograma;
     }
-    delete data.cronograma;
 
     Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, value);
+      if (Array.isArray(value)) {
+        formData.append(key, JSON.stringify(value));
+      } else {
+        formData.append(key, value);
+      }
     });
     formData.append("idEstado", 1);
 
@@ -76,6 +88,7 @@ export const useEvents = () => {
   };
 
   const updateEvent = async (eventUV) => {
+    console.log(eventUV);
     const response = await apiWrapper.put(
       `eventos/${eventUV.id}`,
       new EventSerializer(eventUV)

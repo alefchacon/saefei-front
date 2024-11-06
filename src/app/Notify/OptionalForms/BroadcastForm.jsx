@@ -16,7 +16,6 @@ export default function BroadcastForm() {
   const [showUpload, setShowUpload] = useState(values?.publicity?.length > 0);
   return (
     <Stack gap={"var(--field-gap)"} className="optional-form">
-      <Button onClick={() => console.log(values.media)}>asdf</Button>
       <CheckList
         label={
           "Seleccione los medios donde se requiere hacer difusión del evento"

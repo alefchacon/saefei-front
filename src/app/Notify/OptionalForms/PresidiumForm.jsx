@@ -3,21 +3,21 @@ import TextField from "@mui/material/TextField";
 import FormLabel from "@mui/material/FormLabel";
 import { useFormikContext } from "formik";
 
-export default function RecordsForm() {
+export default function PresidiumForm() {
   const { values, setFieldValue } = useFormikContext();
 
   return (
     <Stack gap={"var(--field-gap)"}>
       <Stack>
         <FormLabel>
-          Proporcione el grado y nombres de los ponentes u organizadores,
-          especificando su rol.
+          Proporcione los nombres, cargos y direcciones de correo electrónico de
+          los invitados especiales.
         </FormLabel>
         <TextField
           placeholder="Escriba su respuesta"
           variant="filled"
-          value={values?.records}
-          onChange={(e) => setFieldValue("records", e.target.value)}
+          value={values?.presidium}
+          onChange={(e) => setFieldValue("presidium", e.target.value)}
           multiline
           rows={10}
         ></TextField>

@@ -45,7 +45,7 @@ export default function UploadButton({
         />
       </Button>
       <Typography variant="caption">
-        {files.length} archivos cargados
+        {files?.length} archivos cargados
       </Typography>
     </Stack>
   );
