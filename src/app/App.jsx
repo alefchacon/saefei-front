@@ -22,9 +22,7 @@ import Sidebar from "../components/Sidebar";
 import Bottombar from "../components/Bottombar";
 import Reservations from "./Reservations";
 import EventView from "./EventView";
-import { NoticesDesktop } from "./NoticesDesktop";
-import NoticesMobile from "./NoticesMobile";
-
+import { Notices } from "./Notices";
 import "moment/dist/locale/es-mx";
 import moment from "moment";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -98,10 +96,7 @@ function App() {
             }}
           >
             <Routes>
-              <Route
-                path={ROUTES.ROUTE_INBOX}
-                element={isMobile ? <NoticesMobile /> : <NoticesDesktop />}
-              ></Route>
+              <Route path={ROUTES.ROUTE_INBOX} element={<Notices />}></Route>
               <Route
                 path={ROUTES.ROUTE_RESERVE}
                 element={<ReservationForm></ReservationForm>}

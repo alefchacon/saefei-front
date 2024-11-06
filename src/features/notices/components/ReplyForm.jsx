@@ -8,7 +8,7 @@ import { Formik, Form } from "formik";
 import { useEvents } from "../../events/businessLogic/useEvents";
 import { useLoading } from "../../../components/providers/LoadingProvider";
 
-import { useNoticesContext } from "../../../app/NoticesDesktop";
+import { useNoticesContext } from "../../../app/Notices";
 import { Typography } from "@mui/material";
 
 export default function ReplyForm({

@@ -30,7 +30,7 @@ export default function CardReservation({
   row = false,
   motive,
   user,
-  forAdmin,
+  simpleSchedule,
 }) {
   return (
     <Stack
@@ -62,8 +62,8 @@ export default function CardReservation({
           </Stack>
           {reservationSchedule && (
             <Stack direction={"row"} gap={1}>
-              {forAdmin ? <AccessTimeIcon /> : <DomainIcon></DomainIcon>}
-              {!forAdmin && <Typography>Reservación:</Typography>}
+              {simpleSchedule ? <AccessTimeIcon /> : <DomainIcon></DomainIcon>}
+              {!simpleSchedule && <Typography>Reservación:</Typography>}
               <Typography>
                 {getScheduleString({
                   start: reservation.start,
@@ -74,8 +74,8 @@ export default function CardReservation({
           )}
           {activitySchedule && (
             <Stack direction={"row"} gap={1}>
-              {forAdmin ? <AccessTimeIcon /> : <SchoolIcon></SchoolIcon>}
-              {!forAdmin && <Typography>Evento:</Typography>}
+              {simpleSchedule ? <AccessTimeIcon /> : <SchoolIcon></SchoolIcon>}
+              {!simpleSchedule && <Typography>Evento:</Typography>}
 
               <Typography>
                 {getScheduleString({

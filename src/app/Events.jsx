@@ -86,7 +86,7 @@ export default function Events({ userEvents = false }) {
       onBottomReached={fetchNextPage}
       bgcolor="white"
     >
-      <Stack id={"principal"} className="right-padding" gap={1}>
+      <Stack id={"principal"} gap={1}>
         <Stack id={"filters"} padding={"10px"} gap={"20px"}>
           <SearchField
             onSearch={handleSearchbarChange}

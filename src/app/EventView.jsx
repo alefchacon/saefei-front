@@ -289,6 +289,7 @@ export default function EventView({ defaultEventUV, onReply }) {
                 name="Agenda"
                 reservations={eventUV?.reservations}
                 editable={userCanEdit}
+                forCoordinator={user.isCoordinator}
               ></ActivityViewer>
               <br />
               {eventUV?.chronogram && (

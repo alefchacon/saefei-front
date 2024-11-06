@@ -171,7 +171,7 @@ export default function ScheduleForm({ selectedUserReservations }) {
                       key={index}
                       reservation={reservation}
                       reservationSchedule
-                      forAdmin
+                      simpleSchedule
                     />
                     <Button
                       onClick={(event) => {

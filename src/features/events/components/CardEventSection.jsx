@@ -34,6 +34,7 @@ export default function CardEventSection({
   maxHeight = "100%",
   editable,
   fieldKeys = [],
+  forCoordinator,
 }) {
   const { Modal, openModal, closeModal } = useModal();
   const { loading } = useLoading();
@@ -150,6 +151,13 @@ export default function CardEventSection({
             <br />
             {children}
           </Stack>
+          {editable && (
+            <Stack className="button-row" padding={"10px"}>
+              <Button onClick={() => showEditModal(title, eventUV)}>
+                Editar{" "}
+              </Button>
+            </Stack>
+          )}
         </Stack>
       </>
     </Formik>

@@ -96,7 +96,7 @@ export default function GeneralForm({ userReservations }) {
                 key={index}
                 reservation={reservation}
                 reservationSchedule
-                forAdmin={true}
+                simpleSchedule={true}
               ></CardReservation>
             </Stack>
           ))}

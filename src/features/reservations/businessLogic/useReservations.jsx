@@ -45,7 +45,7 @@ export const useReservations = () => {
       fecha: moment(values.date).format("YYYY-MM-DD"),
       inicio: moment(values.start).format("HH:mm"),
       fin: moment(values.end).format("HH:mm"),
-      idUsuario: 1,
+      idUsuario: values.idUsuario,
       idEspacio: values.idEspacio,
     };
     const response = await apiWrapper.post("reservaciones", body);

@@ -30,7 +30,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import Page from "../components/Page";
 import SPACES from "../stores/SPACES";
 import ChipReservation from "../features/reservations/components/ChipReservation";
-
+import useAuth from "../features/auth/businessLogic/useAuth";
 const checkOverlap = (proposedReservation, existingReservation) => {
   const proposedReservationOverlapsAll =
     proposedReservation.start?.isSameOrBefore(
@@ -78,6 +78,7 @@ const checkOverlap = (proposedReservation, existingReservation) => {
 export default function ReservationForm() {
   const { openModal, closeModal, Modal } = useModal();
   const { addReservation } = useReservations();
+  const user = useAuth().getUser();
 
   const handleSubmit = async (values, actions) => {
     const response = await addReservation(values);
@@ -125,6 +126,7 @@ export default function ReservationForm() {
           motive: "",
           end: null,
           idEspacio: "",
+          idUsuario: user.id,
           overlaps: false,
         }}
       >

@@ -15,7 +15,6 @@ function CustomTabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
       padding={{ md: "20px", xs: "0px" }}
-      overflow={"hidden"}
     >
       {children}
     </Stack>

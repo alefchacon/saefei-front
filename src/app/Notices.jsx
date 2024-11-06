@@ -24,6 +24,7 @@ import Typography from "@mui/material/Typography";
 import { Box } from "@mui/material";
 import { useReservations } from "../features/reservations/businessLogic/useReservations";
 import ButtonResponsive from "../components/ButtonResponsive";
+import useIsMobile from "../components/hooks/useIsMobile";
 
 const NoticesContext = createContext(null);
 
@@ -31,12 +32,13 @@ export function useNoticesContext() {
   return useContext(NoticesContext);
 }
 
-export function NoticesDesktop({ onLoad }) {
+export function Notices({ onLoad }) {
   const { getNotices, notices, markAsRead } = useNotices();
   const [selectedNotice, setSelectedNotice] = useState(null);
   const navigate = useNavigate();
   const { Modal, openModal } = useModal();
   const { acceptReservation, rejectReservation } = useReservations();
+  const isMobile = useIsMobile();
 
   useLayoutEffect(() => {
     fetchNextPage();
@@ -70,7 +72,7 @@ export function NoticesDesktop({ onLoad }) {
           reservation={reservation}
           user
           reservationSchedule
-          forAdmin
+          simpleSchedule
         ></CardReservation>
         <br />
         <Typography>
@@ -92,61 +94,79 @@ export function NoticesDesktop({ onLoad }) {
     return <Slide {...props} ref={ref} />;
   });
 
-  const handleAcceptReservation = async (notice) => {
+  const handleAccept = async (notice) => {
     const response = await acceptReservation(notice.reservation);
   };
+
+  const eventsMobile = (
+    <Stack
+      label={"Eventos"}
+      className="right-padding"
+      gap={1}
+      color={"#6B6F79"}
+    >
+      {notices.coordinatorNotices?.map((notice, index) => (
+        <CardActionArea
+          key={index}
+          onClick={() => navigate(`${ROUTE_EVENT}/${notice.event.id}`)}
+        >
+          <NoticeWrapper noticeType={notice.type?.id} name={notice.type?.name}>
+            <CardEvent event={notice.event} disablePadding />
+          </NoticeWrapper>
+        </CardActionArea>
+      ))}
+    </Stack>
+  );
+
+  const eventsDesktop = (
+    <Stack label={"Eventos"} color={"#6B6F79"} maxHeight={"100%"}>
+      <Stack direction={"row"} gap={"20px"} maxHeight={"100%"}>
+        <Stack
+          direction={"column"}
+          gap={1}
+          flex={1}
+          maxHeight={"100%"}
+          sx={{ overflowY: "auto", overflowX: "hidden" }}
+          padding={"10px"}
+        >
+          <TransitionGroup>
+            {notices.coordinatorNotices?.map((notice, index) => (
+              <Slide direction="left" key={index} mountOnEnter unmountOnExit>
+                <CardActionArea
+                  key={index}
+                  onClick={() => setSelectedNotice(notice)}
+                  sx={{ padding: "5px 0" }}
+                >
+                  <NoticeWrapper
+                    noticeType={notice.type?.id}
+                    name={notice.type?.name}
+                    onReply={() => markAsRead(notice)}
+                    selected={notice.id === selectedNotice?.id}
+                  >
+                    <CardEvent event={notice.event} disablePadding />
+                  </NoticeWrapper>
+                </CardActionArea>
+              </Slide>
+            ))}
+          </TransitionGroup>
+        </Stack>
+
+        <Stack flex={2} className="shadow">
+          <EventView
+            defaultEventUV={selectedNotice}
+            onReply={handleReply}
+          ></EventView>
+        </Stack>
+      </Stack>
+    </Stack>
+  );
 
   return (
     <NoticesContext.Provider value={{ handleReply }}>
       <Page title={"Bandeja de entrada"} bgcolor="white" disablePadding>
         <TabsCustom id={"principal"}>
-          {notices.coordinatorNotices?.length > 0 && (
-            <Stack label={"Eventos"} color={"#6B6F79"} maxHeight={"100%"}>
-              <Stack direction={"row"} gap={"20px"} maxHeight={"100%"}>
-                <Stack
-                  direction={"column"}
-                  gap={1}
-                  flex={1}
-                  maxHeight={"100%"}
-                  sx={{ overflowY: "auto", overflowX: "hidden" }}
-                  padding={"10px"}
-                >
-                  <TransitionGroup>
-                    {notices.coordinatorNotices?.map((notice, index) => (
-                      <Slide
-                        direction="left"
-                        key={index}
-                        mountOnEnter
-                        unmountOnExit
-                      >
-                        <CardActionArea
-                          key={index}
-                          onClick={() => setSelectedNotice(notice)}
-                          sx={{ padding: "5px 0" }}
-                        >
-                          <NoticeWrapper
-                            noticeType={notice.type?.id}
-                            name={notice.type?.name}
-                            onReply={() => markAsRead(notice)}
-                            selected={notice.id === selectedNotice?.id}
-                          >
-                            <CardEvent event={notice.event} disablePadding />
-                          </NoticeWrapper>
-                        </CardActionArea>
-                      </Slide>
-                    ))}
-                  </TransitionGroup>
-                </Stack>
-
-                <Stack flex={2} className="shadow">
-                  <EventView
-                    defaultEventUV={selectedNotice}
-                    onReply={handleReply}
-                  ></EventView>
-                </Stack>
-              </Stack>
-            </Stack>
-          )}
+          {notices.coordinatorNotices?.length > 0 &&
+            (isMobile ? eventsMobile : eventsDesktop)}
           <Stack
             label={"Reservaciones"}
             className="right-padding"
@@ -173,7 +193,7 @@ export function NoticesDesktop({ onLoad }) {
                         user
                         motive
                         reservationSchedule
-                        forAdmin
+                        simpleSchedule
                       />
                       <Stack className="button-row">
                         <Button
@@ -186,7 +206,7 @@ export function NoticesDesktop({ onLoad }) {
                         <Button
                           variant="contained"
                           disableElevation
-                          onClick={() => handleAcceptReservation(notice)}
+                          onClick={() => handleAccept(notice)}
                         >
                           Aceptar
                         </Button>

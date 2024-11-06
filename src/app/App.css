@@ -162,13 +162,13 @@ p{
   padding: 0 40px;
 }º
 
-.right-padding{
-  padding-right: clamp(10px, 45%, 800px) 
-
-}
 
 .top-padding{
   padding-top: 0rem;
+}
+
+.right-padding{
+  padding-right: clamp(10px, 45%, 800px); 
 }
 
 .grow{

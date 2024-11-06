@@ -16,7 +16,7 @@ import AddAlertIcon from "@mui/icons-material/AddAlert";
 import SchoolIcon from "@mui/icons-material/School";
 import FolderSharedIcon from "@mui/icons-material/FolderShared";
 import { styled } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import * as ROUTES from "../stores/ROUTES";
 import MenuIcon from "@mui/icons-material/Menu";
 import Badge from "@mui/material/Badge";
@@ -28,13 +28,16 @@ import useAuth from "../features/auth/businessLogic/useAuth";
 import useNotices from "../features/notices/businessLogic/useNotices";
 import Logo from "../components/Logo";
 import ChipCustom from "./Chip";
+
 export default function Sidebar() {
   const [selectedIndex, setSelectedIndex] = useState(1);
   const { Modal, openModal, closeModal } = useModal();
   const user = useAuth().getUser();
   const { getNoticeCount, noticeAmount } = useNotices();
-
+  const location = useLocation();
   const navigate = useNavigate();
+
+  console.log(location.pathname);
 
   const handleListItemClick = (event, index, route) => {
     setSelectedIndex(index);
@@ -105,7 +108,6 @@ export default function Sidebar() {
               </ListItemIcon>
               <Stack className={grown ? "appear" : "disappear"}>
                 <b>{user.fullname}</b>
-
                 <ChipCustom label={user.job} color={"white"}></ChipCustom>
               </Stack>
             </CustomListItemButton>
@@ -119,7 +121,7 @@ export default function Sidebar() {
           )}
 
           <CustomListItemButton
-            selected={selectedIndex === 0}
+            selected={location.pathname.includes(ROUTES.ROUTE_INBOX)}
             onClick={(event) =>
               handleListItemClick(event, 0, ROUTES.ROUTE_INBOX)
             }
@@ -131,7 +133,7 @@ export default function Sidebar() {
             {grown && <Badge badgeContent={noticeAmount} color="error"></Badge>}
           </CustomListItemButton>
           <CustomListItemButton
-            selected={selectedIndex === 1}
+            selected={location.pathname.includes(ROUTES.ROUTE_MY_EVENTS)}
             onClick={(event) =>
               handleListItemClick(event, 1, ROUTES.ROUTE_MY_EVENTS)
             }
@@ -145,7 +147,7 @@ export default function Sidebar() {
         <Divider />
         <List component="nav" aria-label="secondary mailbox folder">
           <CustomListItemButton
-            selected={selectedIndex === 2}
+            selected={location.pathname.includes(ROUTES.ROUTE_SEARCH_EVENTS)}
             onClick={(event) =>
               handleListItemClick(event, 2, ROUTES.ROUTE_SEARCH_EVENTS)
             }
@@ -156,7 +158,7 @@ export default function Sidebar() {
             <ListItemText primary="Buscar eventos" />
           </CustomListItemButton>
           <CustomListItemButton
-            selected={selectedIndex === 3}
+            selected={location.pathname.includes(ROUTES.ROUTE_CALENDAR_EVENTS)}
             onClick={(event) =>
               handleListItemClick(event, 3, ROUTES.ROUTE_CALENDAR_EVENTS)
             }
@@ -167,7 +169,9 @@ export default function Sidebar() {
             <ListItemText primary="Calendario de eventos" />
           </CustomListItemButton>
           <CustomListItemButton
-            selected={selectedIndex === 4}
+            selected={location.pathname.includes(
+              ROUTES.ROUTE_CALENDAR_RESERVATIONS
+            )}
             onClick={(event) =>
               handleListItemClick(event, 4, ROUTES.ROUTE_CALENDAR_RESERVATIONS)
             }
@@ -179,7 +183,7 @@ export default function Sidebar() {
             <ListItemText primary="Reservaciones de espacios" />
           </CustomListItemButton>
           <CustomListItemButton
-            selected={selectedIndex === 5}
+            selected={location.pathname.includes(ROUTES.ROUTE_NOTIFY)}
             onClick={(event) =>
               handleListItemClick(event, 5, `${ROUTES.ROUTE_NOTIFY}?paso=0`)
             }
