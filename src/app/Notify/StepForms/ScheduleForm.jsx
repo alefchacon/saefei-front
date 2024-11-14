@@ -19,8 +19,11 @@ import CardActivity from "../../../features/events/components/CardActivity";
 import { v4 as uuidv4 } from "uuid";
 
 import { useFormikContext } from "formik";
+import useIsMobile from "../../../components/hooks/useIsMobile";
+import TruncatingText from "../../../components/TruncatingText";
 
 export default function ScheduleForm({ selectedUserReservations }) {
+  const isMobile = useIsMobile();
   const { openModal, closeModal, Modal } = useModal();
   const { values, setFieldValue, setFieldTouched } = useFormikContext();
 
@@ -30,7 +33,7 @@ export default function ScheduleForm({ selectedUserReservations }) {
   const openAddActivityModal = (idReservacion = 0) => {
     openModal(
       "Agregar actividad",
-      <Stack minWidth={"500px"} gap={"var(--field-gap)"}>
+      <Stack gap={"var(--field-gap)"}>
         <TextField
           inputRef={newActivityNameRef}
           label={"Nombre de la actividad"}
@@ -68,7 +71,7 @@ export default function ScheduleForm({ selectedUserReservations }) {
         }}
         variant="contained"
       >
-        Agregar actividad
+        <TruncatingText>Agregar actividad</TruncatingText>
       </Button>,
       true
     );

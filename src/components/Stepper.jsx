@@ -9,12 +9,14 @@ import StepLabel from "@mui/material/StepLabel";
 import { useFormikContext } from "formik";
 import Alert from "@mui/material/Alert";
 import ButtonResponsive from "./ButtonResponsive";
+import useIsMobile from "./hooks/useIsMobile";
 export default function StepperCustom({
   children,
   currentStep = 0,
   onStepChange,
   endButton,
 }) {
+  const isMobile = useIsMobile();
   const { validate, validateForm, dirty, validateField, errors } =
     useFormikContext();
   const [triedNextWithErrors, setTriedNextWithErrors] = React.useState(false);
@@ -97,7 +99,7 @@ export default function StepperCustom({
                       color="inherit"
                       onClick={handleStepSelect(index)}
                     >
-                      <StepLabel>{child.props.title}</StepLabel>
+                      {!isMobile && <StepLabel>{child.props.title}</StepLabel>}
                     </StepButton>
                   )}
                 </Step>

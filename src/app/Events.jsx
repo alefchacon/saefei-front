@@ -21,7 +21,7 @@ import { ROLE_COORDINATOR } from "../stores/ROLES";
 
 import * as FILTERS from "../stores/FILTERS_EVENT";
 
-export default function Events({ userEvents = false }) {
+export default function Events({ userEvents = false, noPage = false }) {
   const { events, getEvents } = useEvents();
   const navigate = useNavigate();
   const user = useAuth().getUser();
@@ -80,12 +80,8 @@ export default function Events({ userEvents = false }) {
     }));
   };
 
-  return (
-    <Page
-      title={`Eventos ${userEvents ? `de ${user.fullname}` : ""}`}
-      onBottomReached={fetchNextPage}
-      bgcolor="white"
-    >
+  const eventList = (
+    <>
       <Stack id={"principal"} gap={1}>
         <Stack id={"filters"} padding={"10px"} gap={"20px"}>
           <SearchField
@@ -99,7 +95,7 @@ export default function Events({ userEvents = false }) {
             justifyContent={"space-between"}
           >
             <Stack
-              direction={{ xs: "column", md: "row" }}
+              direction={"row"}
               gap={"1vw"}
               width={"100%"}
               justifyContent={"space-between"}
@@ -135,7 +131,7 @@ export default function Events({ userEvents = false }) {
                 </SelectCustom>
               </Stack>
 
-              {user.isCoordinator && (
+              {user?.isCoordinator && (
                 <Button variant="contained" disableElevation>
                   {isMobile ? "Reporte" : "Generar reporte"}
                 </Button>
@@ -144,17 +140,34 @@ export default function Events({ userEvents = false }) {
           </Stack>
         </Stack>
         <br />
-        {events.map((eventUV, index) => (
-          <CardActionArea
-            key={index}
-            onClick={() => navigate(`${ROUTE_EVENT}/${eventUV.id}`)}
-          >
-            <CardEvent event={eventUV} className={"card shadow"} />
-          </CardActionArea>
-        ))}
+        <CardList>
+          {events.map((eventUV, index) => (
+            <CardActionArea
+              key={index}
+              onClick={() => navigate(`${ROUTE_EVENT}/${eventUV.id}`)}
+            >
+              <CardEvent event={eventUV} />
+            </CardActionArea>
+          ))}
+        </CardList>
       </Stack>
       <CardList label="Reservaciones"></CardList>
       <CardList></CardList>
+    </>
+  );
+
+  if (noPage) {
+    return eventList;
+  }
+
+  return (
+    <Page
+      title={`Eventos ${userEvents ? `de ${user?.fullname}` : ""}`}
+      onBottomReached={fetchNextPage}
+      bgcolor="white"
+      showHeader={!isMobile}
+    >
+      {eventList}
     </Page>
   );
 }

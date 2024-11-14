@@ -34,11 +34,7 @@ export function SnackbarProvider({ children }) {
   const action = (
     <Fragment>
       {content}
-      {/*
-      <Button color="secondary" size="small" onClick={handleUndo}>
-        DESHACER
-      </Button>
-        */}
+
       <IconButton
         size="small"
         aria-label="close"

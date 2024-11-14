@@ -8,7 +8,7 @@ import { Formik, Form } from "formik";
 import { useEvents } from "../../events/businessLogic/useEvents";
 import { useLoading } from "../../../components/providers/LoadingProvider";
 
-import { useNoticesContext } from "../../../app/Notices";
+import { useNoticesContext } from "../../../app/Notices/Notices";
 import { Typography } from "@mui/material";
 
 export default function ReplyForm({
@@ -25,6 +25,7 @@ export default function ReplyForm({
       id: eventUV?.id,
       reply: textRef.current.value,
     };
+    console.log(values);
     const response = await updateEvent(values);
     if (response.status === 200) {
       onSuccess(response.data.data);

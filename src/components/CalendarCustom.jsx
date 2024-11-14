@@ -46,6 +46,24 @@ const eventWrapper = ({ children }) => {
   });
 };
 
+const StyledDatePicker = styled(DatePicker)(({ theme }) => ({
+  "& .MuiInputBase-input": {
+    fontSize: "16px",
+    textTransform: "capitalize",
+    fontWeight: 500,
+  },
+  "& .MuiInputBase-root": {
+    backgroundColor: "transparent",
+
+    "&:hover": {
+      backgroundColor: "#eeeeee",
+    },
+  },
+  "& .MuiOutlinedInput-notchedOutline": {
+    border: "none",
+  },
+}));
+
 export default function CalendarCustom({
   localizer = mLocalizer,
   showDemoLink = true,
@@ -105,17 +123,16 @@ export default function CalendarCustom({
         justifyContent={"space-between"}
         alignItems={"center"}
         direction={"row"}
-        padding={2}
+        padding={"0 20px 20px 20px"}
       >
         {" "}
         <Stack gap={1} direction={"row"}>
           <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DatePicker
+            <StyledDatePicker
               name="selected-months"
               value={moment(date)}
               onChange={(e) => handleSelectMonth(moment(e))}
               views={["month", "year"]}
-              slotProps={{ textField: { variant: "filled" } }}
             />
           </LocalizationProvider>
           <IconButton color="primary" onClick={handleNavigateBack}>
@@ -131,6 +148,12 @@ export default function CalendarCustom({
     );
   }
 
+  const handleDateSelect = (e) => {
+    if (onDateSelect) {
+      onDateSelect(e);
+    }
+  };
+
   return (
     <Stack
       width={"100%"}
@@ -139,6 +162,8 @@ export default function CalendarCustom({
       flex={2}
       flexGrow={2}
       className="calendar"
+      paddingTop={"0px"}
+      bgcolor={"transparent"}
     >
       <Calendar
         titleAccessor={forEvents ? "name" : (item) => item.space.name}
@@ -153,7 +178,7 @@ export default function CalendarCustom({
         showMultiDayTimes
         step={60}
         selectable
-        onSelectSlot={onDateSelect}
+        onSelectSlot={handleDateSelect}
         views={views}
       />
     </Stack>

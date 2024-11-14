@@ -52,7 +52,7 @@ export default function EventForm({}) {
   const [showWelcome, setShowWelcome] = useState(true);
 
   useEffect(() => {
-    getReservationsAvailableToUser(getUser().id).then((response) => {
+    getReservationsAvailableToUser(getUser()?.id).then((response) => {
       setUserReservations(response.data.data);
     });
   }, []);
@@ -137,8 +137,11 @@ export default function EventForm({}) {
 }
 import { useNavigate, useLocation } from "react-router-dom";
 import { ROUTE_RESERVE } from "../../stores/ROUTES";
+import useIsMobile from "../../components/hooks/useIsMobile";
 
 function StepForm({ userReservations }) {
+  const isMobile = useIsMobile();
+
   const [activeSectionId, setActiveSectionId] = useState(
     userReservations.length > 0 ? "principal" : "no-reservations"
   );
@@ -219,6 +222,7 @@ function StepForm({ userReservations }) {
 
   return (
     <Page
+      showHeader
       onSectionChange={handleSectionChange}
       className={"section"}
       id={"notificar-evento"}
@@ -226,6 +230,7 @@ function StepForm({ userReservations }) {
       skeleton={<EventFormSkeleton />}
       header={activeSectionId !== 0}
       onGoBack={currentStep > 3 && handleReturnToMandatory}
+      title={"Notificar evento"}
     >
       <StepperCustom
         id={"principal"}
@@ -450,7 +455,8 @@ function NoReservationsPage() {
   const navigate = useNavigate();
 
   return (
-    <Page title={"No ha reservado espacios"}>
+    <Page>
+      <Typography variant="h4">No ha reservado espacios</Typography>
       <Typography>
         Para notificar su evento, debe contar con reservaciones aprobadas por la
         administración de la facultad.
@@ -470,9 +476,9 @@ function NoReservationsPage() {
 
 function WelcomePage({ onSectionChange }) {
   return (
-    <Page title="Bienvenido">
-      <br />
-      <br />
+    <Page>
+      <Typography variant="h4">Bienvenido</Typography>
+
       <Typography>
         Este es el formulario de Notificación de Eventos Académicos de la
         Facultad de Estadística e Informática de la Universidad Veracruzana.
@@ -496,9 +502,11 @@ function WelcomePage({ onSectionChange }) {
       </Typography>
       <br />
       <br />
-      <Button sx={{ maxWidth: "fit-content" }} onClick={onSectionChange}>
-        Continuar
-      </Button>
+      <Stack className="button-row">
+        <Button sx={{ maxWidth: "fit-content" }} onClick={onSectionChange}>
+          Continuar
+        </Button>
+      </Stack>
     </Page>
   );
 }

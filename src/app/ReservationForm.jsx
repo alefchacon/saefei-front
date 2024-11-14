@@ -5,8 +5,6 @@ import { Typography } from "@mui/material";
 
 import Stack from "@mui/material/Stack";
 
-import Header from "../components/Header";
-
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import moment from "moment";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
@@ -107,7 +105,7 @@ export default function ReservationForm() {
   };
 
   return (
-    <Page title={"Reservar un espacio"} activeSectionId="principal">
+    <Page title={"Reservar un espacio"} activeSectionId="principal" showHeader>
       <Formik
         id={"principal"}
         onSubmit={handleSubmit}
@@ -126,7 +124,7 @@ export default function ReservationForm() {
           motive: "",
           end: null,
           idEspacio: "",
-          idUsuario: user.id,
+          idUsuario: user?.id,
           overlaps: false,
         }}
       >

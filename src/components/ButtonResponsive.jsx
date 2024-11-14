@@ -8,23 +8,24 @@ export default function ButtonResponsive({
   isLoading = null,
   onClick,
   type = "button",
-  responsive,
+  responsive = true,
 }) {
   const isMobile = useIsMobile();
   const { loading } = useLoading();
 
-  const config = isMobile
-    ? {
-        position: "absolute !important",
-        top: 10,
-        right: 30,
-        zIndex: 100,
-        gap: 2,
-      }
-    : {
-        gap: 2,
-        maxWidth: "fit-content",
-      };
+  const configuration =
+    isMobile && responsive
+      ? {
+          position: "absolute !important",
+          top: 10,
+          right: 30,
+          zIndex: 100,
+          gap: 2,
+        }
+      : {
+          gap: 2,
+          maxWidth: "fit-content",
+        };
 
   return (
     <Button
@@ -33,7 +34,7 @@ export default function ButtonResponsive({
       type={type}
       onClick={onClick}
       disabled={isLoading || loading}
-      sx={config}
+      sx={configuration}
     >
       {children}
       {loading && <CircularProgress size={"20px"} />}

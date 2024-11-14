@@ -1,31 +1,17 @@
-import { useState } from "react";
-import reactLogo from "../assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useState, useLayoutEffect } from "react";
 import "./App.css";
 
-import { Card, dividerClasses } from "@mui/material";
-import { Box } from "@mui/material";
 import { Typography } from "@mui/material";
-import { IconButton } from "@mui/material";
-import { Divider } from "@mui/material";
-import { CardActionArea } from "@mui/material";
-import TodayIcon from "@mui/icons-material/Today";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Stack from "@mui/material/Stack";
-import CardHeader from "@mui/material/CardHeader";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ReservationForm from "./ReservationForm";
-import SchoolIcon from "@mui/icons-material/School";
 
-import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Bottombar from "../components/Bottombar";
 import CalendarReservations from "./CalendarReservations";
 import EventView from "./EventView";
-import { Notices } from "./Notices";
+import { Notices } from "./Notices/Notices";
 import "moment/dist/locale/es-mx";
 import moment from "moment";
-import LinearProgress from "@mui/material/LinearProgress";
 import { Routes, Route } from "react-router-dom";
 import * as ROUTES from "../stores/ROUTES";
 import EventForm from "./Notify/EventForm";
@@ -34,6 +20,13 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useIsMobile from "../components/hooks/useIsMobile";
 import EventUpdateForm from "./EventUpdateForm";
 import CalendarEvents from "./CalendarEvents";
+import { useAxiosInterceptors } from "../dataAccess/useAxiosInterceptor";
+import NoContent from "../components/NoContent";
+import getNoticeAmount from "../features/notices/businessLogic/getNoticeAmount";
+import useAuth from "../features/auth/businessLogic/useAuth";
+import AuthGuard from "../features/auth/components/AuthGuard";
+import isAuthenticated from "../features/auth/businessLogic/isAuthenticated";
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -58,16 +51,24 @@ const theme = createTheme({
 });
 
 function App() {
+  useAxiosInterceptors();
+
   moment.locale("es-mx");
   const isMobile = useIsMobile();
   const [count, setCount] = useState(0);
-
+  const [noticeAmount, setNoticeAmount] = useState(null);
+  const user = useAuth().getUser();
+  useLayoutEffect(() => {
+    if (isAuthenticated) {
+      getNoticeAmount().then((response) => setNoticeAmount(response));
+    }
+  }, []);
   return (
     <>
       <ThemeProvider theme={theme}>
         <Stack
           role={"main"}
-          sx={{ backgroundColor: "white" }}
+          sx={{ backgroundColor: "var(--bg)" }}
           display={"flex"}
           flexDirection={{ md: "row", xs: "column" }}
           height={"100%"}
@@ -87,7 +88,7 @@ function App() {
             <Typography color="white">Universidad Veracruzana</Typography>
           </Stack>
 
-          <Sidebar />
+          <Sidebar noticeAmount={noticeAmount} />
 
           <Stack
             className="flex-2"
@@ -97,7 +98,14 @@ function App() {
             }}
           >
             <Routes>
-              <Route path={ROUTES.ROUTE_INBOX} element={<Notices />}></Route>
+              <Route
+                path={ROUTES.ROUTE_INBOX}
+                element={
+                  <AuthGuard>
+                    <Notices />
+                  </AuthGuard>
+                }
+              ></Route>
               <Route
                 path={ROUTES.ROUTE_RESERVE}
                 element={<ReservationForm></ReservationForm>}
@@ -132,16 +140,19 @@ function App() {
               ></Route>{" "}
               <Route
                 path={`${ROUTES.ROUTE_MY_EVENTS}`}
-                element={<Events userEvents />}
+                element={
+                  <AuthGuard>
+                    <Events userEvents />
+                  </AuthGuard>
+                }
               ></Route>{" "}
               <Route
                 path={`/test`}
-                element={
-                  isMobile ? <Stack>Mobile</Stack> : <Stack>Desktop</Stack>
-                }
+                element={isMobile ? <Stack>Mobile</Stack> : <NoContent />}
               ></Route>{" "}
             </Routes>
           </Stack>
+          <Bottombar noticeAmount={noticeAmount}></Bottombar>
         </Stack>
       </ThemeProvider>
     </>

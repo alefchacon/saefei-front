@@ -14,6 +14,11 @@ export class User {
   }
 
   get isCoordinator(){
+
+    if (!Boolean(this.roles)){
+      return false;
+    }
+
     return Object.values(this.roles).some(role => role.id === 1);
   }
   

@@ -121,11 +121,10 @@ export default function CardEventSection({
         <Stack
           height={"100%"}
           maxHeight={maxHeight}
-          className="card shadow"
+          className="card"
           flex={flex}
           overflow={"hidden"}
           justifyContent={"space-between"}
-          bgcolor={"white"}
         >
           <Stack
             sx={{

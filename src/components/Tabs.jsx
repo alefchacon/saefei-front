@@ -14,7 +14,8 @@ function CustomTabPanel(props) {
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
-      padding={{ md: "20px", xs: "0px" }}
+      height={"100%"}
+      padding={{ md: "", xs: "0px" }}
     >
       {children}
     </Stack>
@@ -44,7 +45,9 @@ export default function TabsCustom({ children }) {
   preventSingleTabCrash();
 
   function preventConditionalTabCrash() {
-    children = children.filter((child) => isValidElement(child));
+    children = children.filter(
+      (child) => isValidElement(child) // && Object.values(child.props).length > 0
+    );
   }
   preventConditionalTabCrash();
 
@@ -52,10 +55,12 @@ export default function TabsCustom({ children }) {
     <Stack
       sx={{
         width: "100%",
-        maxHeight: "100%",
+        height: "100%",
       }}
     >
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+      <Box
+        sx={{ borderBottom: 1, borderColor: "divider", marginBottom: "10px" }}
+      >
         <Tabs
           className={"sticky"}
           value={value}

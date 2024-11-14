@@ -36,7 +36,7 @@ class EventSerializer{
     this.idTipo = frontendEvent?.idTipo || null;
     this.idEstado = 1; // assuming this is constant
     
-    this.observaciones = frontendEvent?.reply || null;
+    this.respuesta = frontendEvent?.reply || null;
     
   }
 

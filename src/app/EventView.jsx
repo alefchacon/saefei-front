@@ -1,21 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import Stack from "@mui/material/Stack";
-import Card from "@mui/material/Card";
-import CardActionArea from "@mui/material/CardActionArea";
-import CardActions from "@mui/material/CardActions";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import ChipCustom from "../components/Chip";
-import Header from "../components/Header";
 import ChipTabs from "../components/ChipTabs";
 import { useEvents } from "../features/events/businessLogic/useEvents";
-import ReplyIcon from "@mui/icons-material/Reply";
 import { useParams } from "react-router-dom";
-import ChipSpace from "../features/reservations/components/ChipSpace";
-import EventIcon from "@mui/icons-material/Event";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import CampaignIcon from "@mui/icons-material/Campaign";
-import moment from "moment";
 import { useModal } from "../components/hooks/useModal";
 import ExpandableText from "../features/events/components/ExpandableText";
 import ActivityViewer from "../features/events/components/ActivityViewer";
@@ -81,13 +71,13 @@ export default function EventView({ defaultEventUV, onReply }) {
   };
 
   const handleUpdatedEvent = (updatedEvent) => {
-    setEventUV(updatedEvent);
+    //setEventUV(updatedEvent);
     if (onReply) {
       onReply(updatedEvent);
     }
   };
 
-  const userCanEdit = user.isCoordinator || eventUV.idUsuario === user.id;
+  const userCanEdit = user?.isCoordinator || eventUV.idUsuario === user?.id;
 
   function ResponsePanel() {
     return (
@@ -96,15 +86,15 @@ export default function EventView({ defaultEventUV, onReply }) {
           {userCanEdit && (
             <Stack label="Respuesta al organizador">
               <ReplyForm
-                editable={user.isCoordinator}
-                submitButton={user.isCoordinator}
+                editable={user?.isCoordinator}
+                submitButton={user?.isCoordinator}
                 eventUV={eventUV}
                 onSuccess={handleUpdatedEvent}
               ></ReplyForm>
             </Stack>
           )}
 
-          {user.isCoordinator && (
+          {user?.isCoordinator && (
             <Stack label="Notificación a medios">
               <br />
               <ChipTabs>
@@ -162,6 +152,7 @@ export default function EventView({ defaultEventUV, onReply }) {
   return (
     <>
       <Page
+        showHeader
         disableLoading={!isMobile}
         disablePadding
         title={
@@ -183,9 +174,9 @@ export default function EventView({ defaultEventUV, onReply }) {
           </Stack>
         }
       >
-        <Stack gap={3} id={"principal"} position={"relative"}>
+        <Stack gap={"5px"} id={"principal"} position={"relative"}>
           {defaultEventUV?.name}
-          <Stack direction={"row"} flexWrap={"wrap"} gap={"10px"}>
+          <Stack direction={"row"} flexWrap={"wrap"} gap={"px"}>
             {eventUV?.programs?.map((program, index) => {
               const programModel = new Program(program);
               return (
@@ -199,11 +190,11 @@ export default function EventView({ defaultEventUV, onReply }) {
           <ExpandableText id={"description"} modalTitle="Descripción">
             {eventUV?.description}
           </ExpandableText>
-          <Stack gap={3} direction={{ md: "row", xs: "column" }}>
+          <Stack gap={"5px"} direction={{ md: "row", xs: "column" }}>
             {/*
              */}
 
-            {user.isCoordinator && (
+            {user?.isCoordinator && (
               <CardEventSection
                 editable={userCanEdit}
                 title={"Logística"}
@@ -289,14 +280,14 @@ export default function EventView({ defaultEventUV, onReply }) {
                 name="Agenda"
                 reservations={eventUV?.reservations}
                 editable={userCanEdit}
-                forCoordinator={user.isCoordinator}
+                forCoordinator={user?.isCoordinator}
               ></ActivityViewer>
               <br />
               {eventUV?.chronogram && (
                 <Button>
                   <a
                     href={FILE_URL.concat(eventUV?.chronogram.file)}
-                    target="_blank"
+                    //target="_blank"
                   >
                     Descargar cronograma
                   </a>
@@ -304,7 +295,7 @@ export default function EventView({ defaultEventUV, onReply }) {
               )}
             </CardEventSection>
           </Stack>
-          <Stack gap={3} direction={{ md: "row", xs: "column" }}>
+          <Stack gap={"5px"} direction={{ md: "row", xs: "column" }}>
             <CardEventSection
               title={"Difusión"}
               eventUV={eventUV}
@@ -312,7 +303,7 @@ export default function EventView({ defaultEventUV, onReply }) {
               editable={userCanEdit}
               onUpdate={updateEvent}
             >
-              {user.isCoordinator && (
+              {user?.isCoordinator && (
                 <Stack direction={"row"} gap={1} flexWrap={"wrap"}>
                   <Typography>
                     <b>Medios:</b>
@@ -329,7 +320,7 @@ export default function EventView({ defaultEventUV, onReply }) {
                 </Button>
               )}
             </CardEventSection>
-            {eventUV?.additional && user.isCoordinator && (
+            {eventUV?.additional && user?.isCoordinator && (
               <CardEventSection
                 eventUV={eventUV}
                 title={"Adicional"}

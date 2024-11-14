@@ -1,55 +1,24 @@
-import { useEffect, useState, useRef } from "react";
 import Stack from "@mui/material/Stack";
-import Card from "@mui/material/Card";
-import CardActionArea from "@mui/material/CardActionArea";
-import CardActions from "@mui/material/CardActions";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import ChipCustom from "../components/Chip";
-import Header from "../components/Header";
-import ChipTabs from "../components/ChipTabs";
 import { useEvents } from "../features/events/businessLogic/useEvents";
-import ReplyIcon from "@mui/icons-material/Reply";
 import { useParams } from "react-router-dom";
-import ChipSpace from "../features/reservations/components/ChipSpace";
-import EventIcon from "@mui/icons-material/Event";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import CampaignIcon from "@mui/icons-material/Campaign";
-import moment from "moment";
 import { useModal } from "../components/hooks/useModal";
-import ExpandableText from "../features/events/components/ExpandableText";
-import ActivityViewer from "../features/events/components/ActivityViewer";
-import CardReservation from "../features/reservations/components/CardReservation";
 import TabsCustom from "../components/Tabs";
-import downloadAsZip from "../util/downloadAsZip";
 import Page from "../components/Page";
 import TextField from "@mui/material/TextField";
-//MOVE THIS TO SOME KIND OF ENV FILE!! >:D
-const FILE_URL = "http://localhost:8000/api/file/";
 import useIsMobile from "../components/hooks/useIsMobile";
 import ButtonResponsive from "../components/ButtonResponsive";
-import { SCROLL_UP } from "../stores/SCROLL_DIRECTIONS";
-import Collapse from "@mui/material/Collapse";
-import FabResponsive from "../components/FabResponsive";
-import ReplyForm from "../features/notices/components/ReplyForm";
-import * as MEDIA_NOTICES from "../stores/MEDIA_NOTICES";
-import { Program } from "../features/reservations/domain/program";
-import CardEventSection from "../features/events/components/CardEventSection";
 import useAuth from "../features/auth/businessLogic/useAuth";
 import { useLocation, Navigate } from "react-router-dom";
 import GeneralForm from "./Notify/StepForms/GeneralForm";
-import ScheduleForm from "./Notify/StepForms/ScheduleForm";
 import RecordsForm from "./Notify/OptionalForms/RecordsForm";
 import TechRequirementsForm from "./Notify/OptionalForms/TechRequirementsForm";
 import PresidiumForm from "./Notify/OptionalForms/PresidiumForm";
-import ExternalParticipantsForm from "./Notify/OptionalForms/ExternalParticipantsForm";
 import DecorationForm from "./Notify/OptionalForms/DecorationForm";
 import BroadcastForm from "./Notify/OptionalForms/BroadcastForm";
 import AdditionalForm from "./Notify/OptionalForms/AdditionalForm";
 import { Formik, Form } from "formik";
 import { ROUTE_CALENDAR_EVENTS } from "../stores/ROUTES";
-import { validate } from "uuid";
-import { eventSchema } from "../features/events/validation/eventSchema";
 
 export default function EventUpdateForm({ defaultEventUV, onReply }) {
   const isMobile = useIsMobile();
@@ -89,6 +58,7 @@ export default function EventUpdateForm({ defaultEventUV, onReply }) {
       <Formik initialValues={eventUVToUpdate}>
         {({ values }) => (
           <Page
+            showHeader
             disableLoading={!isMobile}
             title={
               <Stack direction={"row"} width={"100%"} justifyContent={"start"}>
@@ -106,7 +76,6 @@ export default function EventUpdateForm({ defaultEventUV, onReply }) {
               </Stack>
             }
           >
-            {eventUVToUpdate.id}
             <Form>
               <Stack gap={3} id={"principal"} position={"relative"}>
                 <TabsCustom>

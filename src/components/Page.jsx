@@ -5,8 +5,10 @@ import { useLoading } from "./providers/LoadingProvider";
 import Fade from "@mui/material/Fade";
 import { useNavigate, useLocation } from "react-router-dom";
 import * as SCROLL_DIRECTIONS from "../stores/SCROLL_DIRECTIONS";
-
+import Divider from "@mui/material/Divider";
 import { useState, useEffect, useRef, useCallback } from "react";
+import LinearProgress from "@mui/material/LinearProgress";
+
 export default function Page({
   title,
   children,
@@ -22,6 +24,8 @@ export default function Page({
   onScroll,
   onScrollUp,
   onScrollDown,
+  disableDivider,
+  showHeader = true,
 }) {
   const { loading } = useLoading();
   const navigate = useNavigate();
@@ -36,7 +40,6 @@ export default function Page({
 
   const handleScroll = useCallback(async () => {
     const { scrollTop, scrollHeight, clientHeight } = divRef.current;
-    //console.log(scrollTop);
 
     const userScrolledAtAll = scrollTop !== 0;
     setScrolled(userScrolledAtAll);
@@ -60,6 +63,23 @@ export default function Page({
     }
   });
 
+  function LoadingBar() {
+    return (
+      <Stack
+        sx={{
+          position: "absolute",
+          top: 0,
+          zIndex: 100,
+          width: "100%",
+        }}
+      >
+        <LinearProgress
+          className={`${loading ? "show" : "hide"}`}
+        ></LinearProgress>
+      </Stack>
+    );
+  }
+
   useEffect(() => {
     const divElement = divRef?.current;
     divElement?.addEventListener("scroll", handleScroll);
@@ -74,28 +94,38 @@ export default function Page({
       id="page"
       className={`page ${className}`}
       flex={flex}
-      bgcolor={bgcolor}
+      bgcolor={"transparent"}
     >
-      {header && (
-        <Header
-          disableLoading={disableLoading}
-          disablePadding={disablePadding}
-          onGoBack={onGoBack}
-          title={title}
-          scrolled={scrolled}
-        ></Header>
+      {header && showHeader && (
+        <Stack>
+          <Header
+            disableLoading={disableLoading}
+            disablePadding={disablePadding}
+            onGoBack={onGoBack}
+            title={title}
+            scrolled={scrolled}
+          ></Header>
+        </Stack>
       )}
       {loading && skeleton ? (
         skeleton
       ) : (
-        <Stack
-          ref={divRef}
-          id={"content"}
-          className={`body ${disablePadding ? "" : "side-padding top-padding"}`}
-          padding={conditionalPadding}
-        >
-          {children}
-        </Stack>
+        <>
+          <Stack position={"relative"}>
+            <LoadingBar></LoadingBar>
+          </Stack>
+          <Stack
+            ref={divRef}
+            id={"content"}
+            className={`body ${
+              disablePadding ? "" : "side-padding top-padding"
+            }`}
+            padding={conditionalPadding}
+            position={"relative"}
+          >
+            {children}
+          </Stack>
+        </>
       )}
     </Stack>
   );
