@@ -34,7 +34,7 @@ export default function Page({
   const [scrollPosition, setScrollPosition] = useState(0);
 
   const conditionalPadding = () =>
-    disablePadding ? { md: "0px 40px", sx: "0" } : "";
+    disablePadding ? { md: "10px 40px", sx: "0" } : "";
 
   const divRef = useRef(null);
 

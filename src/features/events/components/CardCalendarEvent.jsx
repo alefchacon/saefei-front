@@ -1,9 +1,9 @@
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import ChipSpace from "../features/reservations/components/ChipSpace";
+import ChipSpace from "../../reservations/components/ChipSpace";
 import ListItemButton from "@mui/material/ListItemButton";
 import Divider from "@mui/material/Divider";
-import { getScheduleString } from "../util/moments";
+import { getScheduleString } from "../../../util/moments";
 
 export default function CardCalendarEvent({ event }) {
   return (

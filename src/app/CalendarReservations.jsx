@@ -1,82 +1,23 @@
 import { useState, useEffect, cloneElement, Children } from "react";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
 import moment from "moment";
 import Page from "../components/Page";
-import CalendarCustom from "../components/CalendarCustom";
-import events from "../stores/events";
+import CalendarCustom from "../components/calendar/CalendarCustom";
 import { useReservations } from "../features/reservations/businessLogic/useReservations";
-import ChipSpace from "../features/reservations/components/ChipSpace";
-import SPACES from "../stores/SPACES";
-import IconButton from "@mui/material/IconButton";
-import ExpandCircleDownIcon from "@mui/icons-material/ExpandCircleDown";
-import Collapse from "@mui/material/Collapse";
-import ChipReservation from "../features/reservations/components/ChipReservation";
-import ListItemButton from "@mui/material/ListItemButton";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 import { ROUTE_RESERVE } from "../stores/ROUTES";
 import useIsMobile from "../components/hooks/useIsMobile";
-function ReservationGroup({ space = {}, reservations = [] }) {
-  const [show, setShow] = useState(true);
-  const toggleShow = () => setShow(!show);
-
-  const sx = {
-    direction: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "10px 20px",
-  };
-
-  return (
-    <Stack>
-      <ListItemButton
-        sx={sx}
-        onClick={toggleShow}
-        disableRipple={reservations.length < 1}
-      >
-        <ChipSpace space={space} />{" "}
-        {reservations.length > 0 && (
-          <ExpandCircleDownIcon></ExpandCircleDownIcon>
-        )}
-      </ListItemButton>
-      <Divider></Divider>
-      <Stack padding={1}>
-        {reservations.length === 0 ? (
-          <Typography textAlign={"center"} sx={{ opacity: 0.5 }}>
-            Nadie ha reservado este espacio
-          </Typography>
-        ) : (
-          <Collapse in={show}>
-            <Stack gap={1} padding={"0 20px"}>
-              {reservations.map((reservation, index) => (
-                <ChipReservation
-                  existingReservation={reservation}
-                  key={index}
-                />
-              ))}
-            </Stack>
-          </Collapse>
-        )}
-      </Stack>
-    </Stack>
-  );
-}
+import DayViewWrapper from "../components/calendar/DayViewWrapper";
+import DayView from "../components/calendar/DayView";
+import { useModal } from "../components/providers/ModalProvider";
 
 export default function CalendarReservations() {
   const [selectedDate, setSelectedDate] = useState(moment());
   const [reservations, setReservations] = useState([]);
   const { getReservationsByMonth } = useReservations();
   const isMobile = useIsMobile();
-
-  const handleDateSelect = (slotInfo) => {
-    setSelectedDate(moment(slotInfo.start));
-  };
-
-  const itemsInSelectedDate = reservations.filter((item) =>
-    moment(item.date).isSame(moment(selectedDate), "day", "[)")
-  );
+  const { openModal } = useModal();
 
   const handleMonthChange = async (newDate) => {
     const momentDate = moment(newDate);
@@ -117,51 +58,47 @@ export default function CalendarReservations() {
     </Link>
   );
 
-  const calendar = (
-    <>
-      <CalendarCustom
-        forEvents={false}
-        onDateSelect={handleDateSelect}
-        onMonthChange={handleMonthChange}
-        items={reservations}
-        eventWrapper={spaceWrapper}
-        actionButton={actionButton}
-      ></CalendarCustom>
-      <Stack
-        id="reservation-list"
-        position={"relative"}
-        flex={0.8}
-        display={{ md: "flex", xs: "none" }}
-        padding={"0 10px"}
-      >
-        <Stack padding={"10px 0"}>
-          <Typography>Reservaciones del</Typography>
-          <Typography
-            variant="h5"
-            color={"black"}
-            fontSize={{ md: 26, xs: 20 }}
-          >
-            {selectedDate.format("DD/MM/YYYY")}
-          </Typography>
-        </Stack>
-        <Stack gap={"10px"}>
-          {SPACES.map((space, index) => (
-            <ReservationGroup
-              space={space}
-              reservations={itemsInSelectedDate.filter(
-                (item) => item.space.id === space.id
-              )}
-            ></ReservationGroup>
-          ))}
-        </Stack>
-      </Stack>
-    </>
-  );
+  const handleDateSelect = (dateString) => {
+    const selectedDate = moment(new Date(dateString));
+    if (isMobile) {
+      openModal(
+        `Reservaciones del ${selectedDate.format("D [de] MMMM [de] YYYY")}`,
+        <DayView
+          items={reservations}
+          selectedDate={selectedDate}
+          forEvents={false}
+        />,
+        "",
+        true
+      );
+    }
+    setSelectedDate(moment(dateString));
+  };
 
   return (
     <Page title={"Reservaciones"} disablePadding showHeader={!isMobile}>
       <Stack flex={10} className={isMobile ? `` : "card"} direction={"row"}>
-        {calendar}
+        <CalendarCustom
+          forEvents={false}
+          onDateSelect={handleDateSelect}
+          onMonthChange={handleMonthChange}
+          items={reservations}
+          eventWrapper={spaceWrapper}
+          actionButton={actionButton}
+        ></CalendarCustom>
+        {!isMobile && (
+          <DayViewWrapper
+            forEvents={false}
+            selectedDate={selectedDate}
+            items={reservations}
+          >
+            <DayView
+              forEvents={false}
+              selectedDate={selectedDate}
+              items={reservations}
+            />
+          </DayViewWrapper>
+        )}
       </Stack>
     </Page>
   );

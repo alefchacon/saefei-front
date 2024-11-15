@@ -222,7 +222,7 @@ function StepForm({ userReservations }) {
 
   return (
     <Page
-      showHeader
+      showHeader={!isMobile}
       onSectionChange={handleSectionChange}
       className={"section"}
       id={"notificar-evento"}
@@ -453,9 +453,9 @@ function EndStep({ values, onStepChange }) {
 
 function NoReservationsPage() {
   const navigate = useNavigate();
-
+  const isMobile = useIsMobile();
   return (
-    <Page>
+    <Page showHeader={!isMobile}>
       <Typography variant="h4">No ha reservado espacios</Typography>
       <Typography>
         Para notificar su evento, debe contar con reservaciones aprobadas por la

@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState } from "react";
+import { useMemo, useState, Children, cloneElement } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 import {
@@ -18,24 +18,18 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
-import { ROUTE_RESERVE } from "../stores/ROUTES";
+import { ROUTE_RESERVE } from "../../stores/ROUTES";
 const mLocalizer = momentLocalizer(moment);
 
 const coloredDateCellWrapper = ({ children }) =>
-  React.cloneElement(React.Children.only(children), {
+  cloneElement(Children.only(children), {
     style: {
       backgroundColor: "var(--blue)",
     },
   });
 
-const dateCellWrapper = ({ children }) => {
-  return React.cloneElement(React.Children.only(children), {
-    className: "date-cell",
-  });
-};
-
 const eventWrapper = ({ children }) => {
-  return React.cloneElement(React.Children.only(children), {
+  return cloneElement(Children.only(children), {
     style: {
       backgroundColor: "var(--blue)",
       borderRadius: "100px",
@@ -82,7 +76,9 @@ export default function CalendarCustom({
         toolbar: CustomToolbar,
         timeSlotWrapper: coloredDateCellWrapper,
         eventWrapper: eventWrapper,
-        dateCellWrapper: dateCellWrapper,
+        dateCellWrapper: (props) => (
+          <TouchCellWrapper {...props} onSelectSlot={handleDateSelect} />
+        ),
       },
       defaultDate: moment(),
 
@@ -135,7 +131,11 @@ export default function CalendarCustom({
               views={["month", "year"]}
             />
           </LocalizationProvider>
-          <IconButton color="primary" onClick={handleNavigateBack}>
+          <IconButton
+            color="primary"
+            onClick={handleNavigateBack}
+            title="Retroceder un mes"
+          >
             <ChevronLeftIcon></ChevronLeftIcon>
           </IconButton>
           <IconButton color="primary" onClick={handleNavigateForwards}>
@@ -148,10 +148,21 @@ export default function CalendarCustom({
     );
   }
 
-  const handleDateSelect = (e) => {
+  const handleDateSelectForDesktop = (selectedDate) => {
+    handleDateSelect(selectedDate.start);
+  };
+
+  const handleDateSelect = (dateString) => {
     if (onDateSelect) {
-      onDateSelect(e);
+      onDateSelect(dateString, items);
     }
+  };
+
+  const TouchCellWrapper = ({ children, value, onSelectSlot }) => {
+    return cloneElement(Children.only(children), {
+      onTouchEnd: () => onSelectSlot(value),
+      className: "date-cell",
+    });
   };
 
   return (
@@ -178,7 +189,7 @@ export default function CalendarCustom({
         showMultiDayTimes
         step={60}
         selectable
-        onSelectSlot={handleDateSelect}
+        onSelectSlot={handleDateSelectForDesktop}
         views={views}
       />
     </Stack>
