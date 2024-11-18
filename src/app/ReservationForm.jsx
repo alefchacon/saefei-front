@@ -19,14 +19,14 @@ import ChipSpace from "../features/reservations/components/ChipSpace";
 import { useReservations } from "../features/reservations/businessLogic/useReservations";
 import FormControl from "@mui/material/FormControl";
 import * as yup from "yup";
-import { MESSAGES_FIELD } from "../stores/MESSAGES";
+import { MESSAGES_FIELD } from "../stores/messages";
 import { useModal } from "../components/hooks/useModal";
 import ButtonResponsive from "../components/ButtonResponsive";
 import Select from "../components/Select";
 import Fade from "@mui/material/Fade";
 import FormHelperText from "@mui/material/FormHelperText";
 import Page from "../components/Page";
-import SPACES from "../stores/SPACES";
+import SPACES from "../stores/spaces";
 import ChipReservation from "../features/reservations/components/ChipReservation";
 import useAuth from "../features/auth/businessLogic/useAuth";
 const checkOverlap = (proposedReservation, existingReservation) => {

@@ -15,7 +15,7 @@ export default function FabResponsive({
         <Fab
           variant={variant}
           color="primary"
-          sx={{ position: "fixed", bottom: 50, right: 50 }}
+          sx={{ position: "fixed", bottom: 90, right: 20 }}
           onClick={onClick}
         >
           <Typography>{label}</Typography>

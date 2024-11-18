@@ -20,7 +20,6 @@ class EventSerializer{
     this.requisitosCentroComputo = frontendEvent?.computerCenterRequirements || null;
     this.requiereTransmisionEnVivo = frontendEvent?.needsLivestream || null;
     
-    // presidium y ponentes no son lo mismo: preguntar a dire
     this.constancias = frontendEvent?.records || null;
     this.presidium = frontendEvent?.presidium || null;
     this.publicidad = frontendEvent?.publicity || null;

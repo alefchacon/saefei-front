@@ -15,7 +15,8 @@ function CustomTabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
       height={"100%"}
-      padding={{ md: "", xs: "0px" }}
+      padding={{ md: "", xs: "5px 0" }}
+      overflow={"auto"}
     >
       {children}
     </Stack>
@@ -45,9 +46,7 @@ export default function TabsCustom({ children }) {
   preventSingleTabCrash();
 
   function preventConditionalTabCrash() {
-    children = children.filter(
-      (child) => isValidElement(child) // && Object.values(child.props).length > 0
-    );
+    children = children.filter((child) => isValidElement(child));
   }
   preventConditionalTabCrash();
 

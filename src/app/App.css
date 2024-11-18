@@ -18,7 +18,8 @@
   --light-yellow: #f1e8d6;
   --purple: #9E1870;
   --light-purple: #F6E1EF;
-  --light-gray: #D0DCEB;
+  --light-gray: #d0dceb;
+  --lighter-gray: #eaeff5;
   --gray: #233449;
   --dark: #665f70;
 
@@ -96,7 +97,7 @@ p{
   display: flex;
   flex-direction: column;
   background-color: var(--card);
-  border-radius: 10px;
+  border-radius: 3px;
   
   box-shadow: 0 0 3px 0px rgba(0,0,0,0.2);
   
@@ -217,7 +218,7 @@ p{
 .date-cell{
   background-color: transparredent ;
   width: 100%;
-  border-right: 1px solid var(--light-gray);
+  border-right: 1px solid var(--lighter-gray);
   cursor: pointer;
 }
 
@@ -245,7 +246,7 @@ p{
 }
 
 .rbc-month-row + .rbc-month-row {
-  border-top: 1px solid var(--light-gray) !important;
+  border-top: 1px solid var(--lighter-gray) !important;
 
 } 
 

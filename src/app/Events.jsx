@@ -4,7 +4,7 @@ import CardEvent from "../features/events/components/CardEvent";
 import { useLayoutEffect } from "react";
 import CardActionArea from "@mui/material/CardActionArea";
 import { useNavigate } from "react-router-dom";
-import { ROUTE_EVENT } from "../stores/ROUTES";
+import { ROUTE_EVENT } from "../stores/routes";
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
@@ -17,9 +17,8 @@ import useAuth from "../features/auth/businessLogic/useAuth";
 import { useEvents } from "../features/events/businessLogic/useEvents";
 import useIsMobile from "../components/hooks/useIsMobile";
 import moment from "moment";
-import { ROLE_COORDINATOR } from "../stores/ROLES";
 
-import * as FILTERS from "../stores/FILTERS_EVENT";
+import * as FILTERS from "../stores/filtersEvent";
 
 export default function Events({ userEvents = false, noPage = false }) {
   const { events, getEvents } = useEvents();
@@ -152,18 +151,22 @@ export default function Events({ userEvents = false, noPage = false }) {
         </CardList>
       </Stack>
       <CardList label="Reservaciones"></CardList>
-      <CardList></CardList>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
     </>
   );
-
-  if (noPage) {
-    return eventList;
-  }
 
   return (
     <Page
       title={`Eventos ${userEvents ? `de ${user?.fullname}` : ""}`}
       onBottomReached={fetchNextPage}
+      disablePadding={isMobile}
+      disableLoading={noPage}
       bgcolor="white"
       showHeader={!isMobile}
     >

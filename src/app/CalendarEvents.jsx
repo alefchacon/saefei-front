@@ -6,7 +6,7 @@ import Page from "../components/Page";
 import CalendarCustom from "../components/calendar/CalendarCustom";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
-import { ROUTE_NOTIFY } from "../stores/ROUTES";
+import { ROUTE_NOTIFY } from "../stores/routes";
 import { useEvents } from "../features/events/businessLogic/useEvents";
 import TabsCustom from "../components/Tabs";
 import useIsMobile from "../components/hooks/useIsMobile";
@@ -102,7 +102,7 @@ export default function CalendarEvents() {
             <Stack label={"Calendario"} height={"100%"}>
               {calendar}
             </Stack>
-            <Stack label={"Lista"} height={"100%"}>
+            <Stack label={"Buscar eventos"} height={"100%"}>
               <Events noPage></Events>
             </Stack>
           </TabsCustom>

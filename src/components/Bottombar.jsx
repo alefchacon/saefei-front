@@ -14,31 +14,15 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import InboxIcon from "@mui/icons-material/Inbox";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate, useLocation } from "react-router-dom";
-import * as ROUTES from "../stores/ROUTES";
+import * as ROUTES from "../stores/routes";
 import { styled } from "@mui/material/styles";
-import isAuthenticated from "../features/auth/businessLogic/isAuthenticated";
 import LogInForm from "../features/auth/components/LogInForm";
 import { useModal } from "./providers/ModalProvider";
 import { useTheme } from "@emotion/react";
 import { IconButton, ListItem } from "@mui/material";
 import ListItemButton from "@mui/material/ListItemButton";
-
-const StyledAction = styled(BottomNavigationAction)(({ theme }) => ({
-  "& .Mui-selected	": {
-    backgroundColor: "blue",
-
-    "&:hover": {
-      backgroundColor: "#eeeeee",
-    },
-  },
-  "& .MuiBottomNavigationAction-iconOnly	": {
-    color: "red",
-
-    "&:hover": {
-      backgroundColor: "#eeeeee",
-    },
-  },
-}));
+import LoginIcon from "@mui/icons-material/Login";
+import Alert from "@mui/material/Alert";
 
 function NavOption({
   route = null,
@@ -54,10 +38,6 @@ function NavOption({
   const handleClick = () => {
     if (onClick) {
       onClick();
-    }
-
-    if (route) {
-      navigate(route);
     }
   };
 
@@ -91,13 +71,17 @@ function NavOption({
   );
 }
 
-export default function Bottombar({ noticeAmount }) {
+export default function Bottombar({ noticeAmount, isAuthenticated }) {
   const navigate = useNavigate();
-  const [value, setValue] = React.useState(0);
   const { openModal, closeModal } = useModal();
 
-  const showLoginModal = () => {
-    openModal("Entrar", <LogInForm onLogin={handleLogin} />, "", true);
+  const showLoginModal = (message = "") => {
+    openModal(
+      "Entrar",
+      <LogInForm onLogin={handleLogin}>{message}</LogInForm>,
+      "",
+      true
+    );
   };
   const handleLogin = () => {
     closeModal();
@@ -105,6 +89,18 @@ export default function Bottombar({ noticeAmount }) {
 
   const iconSize = {
     fontSize: "28px",
+  };
+
+  const handleNavigateToNotify = () => {
+    if (isAuthenticated) {
+      navigate(ROUTES.ROUTE_NOTIFY);
+    } else {
+      showLoginModal(
+        <Alert severity="info">
+          Debe iniciar sesión para poder notificar su evento
+        </Alert>
+      );
+    }
   };
 
   return (
@@ -122,23 +118,27 @@ export default function Bottombar({ noticeAmount }) {
       <NavOption
         label="Notificar"
         route={ROUTES.ROUTE_NOTIFY}
+        onClick={handleNavigateToNotify}
         icon={<AddAlertIcon sx={iconSize} />}
       />
       <NavOption
         label="Reservar"
         route={ROUTES.ROUTE_CALENDAR_RESERVATIONS}
-        icon={<DomainIcon sx={iconSize} />}
+        icon={<LocationOnIcon sx={iconSize} />}
+        onClick={() => navigate(ROUTES.ROUTE_CALENDAR_RESERVATIONS)}
       />
       <NavOption
         label="Eventos"
-        route={ROUTES.ROUTE_CALENDAR_EVENTS}
         icon={<CalendarMonthIcon sx={iconSize} />}
+        route={ROUTES.ROUTE_CALENDAR_EVENTS}
+        onClick={() => navigate(ROUTES.ROUTE_CALENDAR_EVENTS)}
       />
 
       {isAuthenticated ? (
         <>
           <NavOption
             label="Bandeja"
+            onClick={() => navigate(ROUTES.ROUTE_INBOX)}
             route={ROUTES.ROUTE_INBOX}
             badgeContent={noticeAmount}
             icon={<InboxIcon sx={iconSize} />}
@@ -146,13 +146,14 @@ export default function Bottombar({ noticeAmount }) {
           <NavOption
             label="Usuario"
             route={ROUTES.ROUTE_MY_EVENTS}
+            onClick={() => navigate(ROUTES.ROUTE_MY_EVENTS)}
             icon={<AccountCircleIcon sx={iconSize} />}
           />
         </>
       ) : (
         <NavOption
           label="Entrar"
-          icon={<AccountCircleIcon sx={iconSize} />}
+          icon={<LoginIcon sx={iconSize} />}
           onClick={showLoginModal}
         />
       )}

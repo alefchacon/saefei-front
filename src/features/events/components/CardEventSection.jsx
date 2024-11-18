@@ -4,7 +4,6 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
 import TabsCustom from "../../../components/Tabs";
-import { useModal } from "../../../components/hooks/useModal";
 const FILE_URL = "http://localhost:8000/api/file/";
 
 import AdditionalForm from "../../../app/Notify/OptionalForms/AdditionalForm";
@@ -14,10 +13,8 @@ import RecordsForm from "../../../app/Notify/OptionalForms/RecordsForm";
 import DecorationForm from "../../../app/Notify/OptionalForms/DecorationForm";
 import { Formik, Form } from "formik";
 import ButtonResponsive from "../../../components/ButtonResponsive";
-import { useEvents } from "../businessLogic/useEvents";
 import { useLoading } from "../../../components/providers/LoadingProvider";
 import PresidiumForm from "../../../app/Notify/OptionalForms/PresidiumForm";
-import GeneralForm from "../../../app/Notify/StepForms/GeneralForm";
 import ExternalParticipantsForm from "../../../app/Notify/OptionalForms/ExternalParticipantsForm";
 import ChipCustom from "../../../components/Chip";
 import IconButton from "@mui/material/IconButton";
@@ -25,9 +22,14 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ReplyIcon from "@mui/icons-material/Reply";
 import MessageIcon from "@mui/icons-material/Message";
 import Tooltip from "@mui/material/Tooltip";
+import FILE_TYPES from "../../../stores/fileTypes";
+import { useModal } from "../../../components/providers/ModalProvider";
+import ScheduleForm from "../../../app/Notify/StepForms/ScheduleForm";
 export default function CardEventSection({
   eventUV,
   onUpdate,
+  onUploadFile,
+  onUpdateFile,
   title,
   children,
   flex,
@@ -35,6 +37,7 @@ export default function CardEventSection({
   editable,
   fieldKeys = [],
   forCoordinator,
+  secondaryAction,
 }) {
   const { Modal, openModal, closeModal } = useModal();
   const { loading } = useLoading();
@@ -66,14 +69,32 @@ export default function CardEventSection({
 
   const editType = {
     Logística: logisticsForm,
-    Agenda: "Agenda",
-    Difusión: <BroadcastForm />,
+    Agenda: <ScheduleForm forEditing />,
+    Difusión: <BroadcastForm forEditing />,
     Adicional: <AdditionalForm />,
   };
 
   const submitEdit = async (values) => {
-    const response = await onUpdate(values);
-    if (response.status === 200) {
+    const responseJSONUpdate = await onUpdate(values);
+    console.log(values);
+
+    if (values["updatedPublicity"]) {
+      onUploadFile(
+        values["updatedPublicity"],
+        FILE_TYPES.PUBLICITY,
+        eventUV.id
+      );
+    }
+
+    if (values["updatedChronogram"]) {
+      onUploadFile(
+        values["updatedChronogram"],
+        FILE_TYPES.CHRONOGRAM,
+        eventUV.id
+      );
+    }
+
+    if (responseJSONUpdate.status === 200) {
       closeModal();
     }
   };
@@ -117,7 +138,6 @@ export default function CardEventSection({
   return (
     <Formik>
       <>
-        <Modal></Modal>
         <Stack
           height={"100%"}
           maxHeight={maxHeight}
@@ -152,6 +172,7 @@ export default function CardEventSection({
           </Stack>
           {editable && (
             <Stack className="button-row" padding={"10px"}>
+              {secondaryAction}
               <Button onClick={() => showEditModal(title, eventUV)}>
                 Editar{" "}
               </Button>

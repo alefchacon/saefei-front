@@ -18,17 +18,17 @@ import TextField from "@mui/material/TextField";
 const FILE_URL = "http://localhost:8000/api/file/";
 import useIsMobile from "../components/hooks/useIsMobile";
 import ButtonResponsive from "../components/ButtonResponsive";
-import { SCROLL_UP } from "../stores/SCROLL_DIRECTIONS";
+import { SCROLL_UP } from "../stores/scrollDirections";
 import Collapse from "@mui/material/Collapse";
 import FabResponsive from "../components/FabResponsive";
 import ReplyForm from "../features/notices/components/ReplyForm";
-import * as MEDIA_NOTICES from "../stores/MEDIA_NOTICES";
+import * as MEDIA_NOTICES from "../stores/mediaNotices";
 import { Program } from "../features/reservations/domain/program";
 import CardEventSection from "../features/events/components/CardEventSection";
 import useAuth from "../features/auth/businessLogic/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ROUTE_EDIT } from "../stores/ROUTES";
-export default function EventView({ defaultEventUV, onReply }) {
+import { ROUTE_EDIT } from "../stores/routes";
+export default function EventView({ defaultEventUV, onReply, disableLoading }) {
   const isMobile = useIsMobile();
   const { getUser } = useAuth();
   const user = getUser();
@@ -36,9 +36,8 @@ export default function EventView({ defaultEventUV, onReply }) {
   const location = useLocation();
 
   const { Modal, openModal, closeModal } = useModal();
-  const { getEvent, eventUV, updateEvent } = useEvents();
+  const { getEvent, eventUV, updateEvent, uploadFile } = useEvents();
   const { idEvento } = useParams();
-  const [scrollDirection, setScrollDirection] = useState(SCROLL_UP);
 
   useEffect(() => {
     if (idEvento) {
@@ -147,8 +146,6 @@ export default function EventView({ defaultEventUV, onReply }) {
     });
   };
 
-  console.log(eventUV);
-
   return (
     <>
       <Page
@@ -160,21 +157,20 @@ export default function EventView({ defaultEventUV, onReply }) {
             <Stack width={"100%"}>
               {eventUV?.name}
               <Stack direction={"column"}>
-                <Typography fontSize={18}>
+                <Typography fontSize={15}>
                   por <b>{`${eventUV?.user?.fullname}`}</b>
                 </Typography>
-                <Button
-                  sx={{ maxWidth: "fit-content" }}
-                  onClick={navigateToEdit}
-                >
-                  Editar
-                </Button>
               </Stack>
             </Stack>
           </Stack>
         }
       >
-        <Stack gap={"5px"} id={"principal"} position={"relative"}>
+        <Stack
+          gap={"5px"}
+          id={"principal"}
+          position={"relative"}
+          paddingBottom={{ md: "", xs: "200px" }}
+        >
           {defaultEventUV?.name}
           <Stack direction={"row"} flexWrap={"wrap"} gap={"px"}>
             {eventUV?.programs?.map((program, index) => {
@@ -194,7 +190,7 @@ export default function EventView({ defaultEventUV, onReply }) {
             {/*
              */}
 
-            {user?.isCoordinator && (
+            {userCanEdit && (
               <CardEventSection
                 editable={userCanEdit}
                 title={"Logística"}
@@ -275,6 +271,24 @@ export default function EventView({ defaultEventUV, onReply }) {
               flex={1}
               maxHeight={"100%"}
               editable={userCanEdit}
+              onUpdate={updateEvent}
+              onUploadFile={uploadFile}
+              secondaryAction={
+                Boolean(eventUV?.chronogram) ? (
+                  <a
+                    href={FILE_URL.concat(eventUV?.chronogram.file)}
+                    //target="_blank"
+                  >
+                    <Button onClick={handleDownloadAsZip}>
+                      Descargar cronograma
+                    </Button>
+                  </a>
+                ) : (
+                  <Button onClick={handleDownloadAsZip} disabled>
+                    Sin cronograma
+                  </Button>
+                )
+              }
             >
               <ActivityViewer
                 name="Agenda"
@@ -283,16 +297,6 @@ export default function EventView({ defaultEventUV, onReply }) {
                 forCoordinator={user?.isCoordinator}
               ></ActivityViewer>
               <br />
-              {eventUV?.chronogram && (
-                <Button>
-                  <a
-                    href={FILE_URL.concat(eventUV?.chronogram.file)}
-                    //target="_blank"
-                  >
-                    Descargar cronograma
-                  </a>
-                </Button>
-              )}
             </CardEventSection>
           </Stack>
           <Stack gap={"5px"} direction={{ md: "row", xs: "column" }}>
@@ -302,8 +306,20 @@ export default function EventView({ defaultEventUV, onReply }) {
               flex={3}
               editable={userCanEdit}
               onUpdate={updateEvent}
+              onUploadFile={uploadFile}
+              secondaryAction={
+                eventUV?.publicity?.length > 0 ? (
+                  <Button onClick={handleDownloadAsZip}>
+                    Descargar material ({eventUV?.publicity?.length})
+                  </Button>
+                ) : (
+                  <Button onClick={handleDownloadAsZip} disabled>
+                    Sin material publicitario
+                  </Button>
+                )
+              }
             >
-              {user?.isCoordinator && (
+              {userCanEdit && (
                 <Stack direction={"row"} gap={1} flexWrap={"wrap"}>
                   <Typography>
                     <b>Medios:</b>
@@ -314,13 +330,8 @@ export default function EventView({ defaultEventUV, onReply }) {
                 </Stack>
               )}
               <br />
-              {eventUV?.publicity?.length > 0 && (
-                <Button onClick={handleDownloadAsZip}>
-                  Descargar material promocional
-                </Button>
-              )}
             </CardEventSection>
-            {eventUV?.additional && user?.isCoordinator && (
+            {eventUV?.additional && userCanEdit && (
               <CardEventSection
                 eventUV={eventUV}
                 title={"Adicional"}

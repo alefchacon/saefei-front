@@ -9,6 +9,7 @@ export default function ButtonResponsive({
   onClick,
   type = "button",
   responsive = true,
+  fixed,
 }) {
   const isMobile = useIsMobile();
   const { loading } = useLoading();
@@ -16,8 +17,8 @@ export default function ButtonResponsive({
   const configuration =
     isMobile && responsive
       ? {
-          position: "absolute !important",
-          top: 10,
+          position: "fixed !important",
+          top: 15,
           right: 30,
           zIndex: 100,
           gap: 2,

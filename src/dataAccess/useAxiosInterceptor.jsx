@@ -3,7 +3,7 @@ import { SnackbarContext } from "../components/providers/SnackbarProvider";
 import { api } from "./api";
 import { LoadingContext } from "../components/providers/LoadingProvider";
 import { useContext } from "react";
-import * as AUTH_KEYS from "../stores/AUTH_KEYS";
+import * as AUTH_KEYS from "../stores/authKeys";
 
 export const useAxiosInterceptors = () => {
   const { openSnackbar } = useContext(SnackbarContext);

@@ -42,6 +42,11 @@ import DomainIcon from "@mui/icons-material/Domain";
 import PeopleIcon from "@mui/icons-material/People";
 import { Routes, Route } from "react-router-dom";
 import PresidiumForm from "./OptionalForms/PresidiumForm";
+import Message from "../../components/Message";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import isAuthenticated from "../../features/auth/businessLogic/isAuthenticated";
+import LoginIcon from "@mui/icons-material/Login";
+import { usePage } from "../../components/providers/PageProvider";
 export default function EventForm({}) {
   const { getReservationsAvailableToUser } = useReservations();
   const { getUser } = useAuth();
@@ -50,6 +55,7 @@ export default function EventForm({}) {
   const { loading } = useLoading();
   const [userReservations, setUserReservations] = useState([]);
   const [showWelcome, setShowWelcome] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getReservationsAvailableToUser(getUser()?.id).then((response) => {
@@ -69,17 +75,70 @@ export default function EventForm({}) {
     );
   }
 
+  const noReservationsMessage = (
+    <Message
+      title={"No ha reservado espacios"}
+      content={
+        "Para notificar su evento, debe contar con reservaciones aprobadas por la administración de la facultad."
+      }
+      center
+    >
+      <Button
+        variant="contained"
+        disableElevation
+        sx={{ maxWidth: "fit-content" }}
+        startIcon={<LocationOnIcon />}
+        onClick={() => navigate(ROUTE_RESERVE)}
+      >
+        Reservar un espacio
+      </Button>
+    </Message>
+  );
+
+  const welcomeMessage = (
+    <Message
+      title={"Bienvenido"}
+      content={
+        <div>
+          Este es el formulario de Notificación de Eventos Académicos de la
+          Facultad de Estadística e Informática de la Universidad Veracruzana.
+          <br />
+          <br />
+          Este formulario ha sido diseñado para facilitar el proceso de
+          notificación y coordinación de eventos académicos dentro de nuestra
+          facultad. A través de este formulario, los organizadores pueden
+          notificar a la facultad sobre un evento que deseé llevar a cabo y
+          solicitar los recursos necesarios para su realización. 
+          <br />
+          <br />
+          Si usted es el organizador, por favor, complete la notificación con la
+          información requerida de manera precisa y detallada. Le pedimos enviar
+          su notificación, en la medida de lo posible, con{" "}
+          <b>al menos 2 semanas de antelación</b> a la fecha de inicio
+          programada para su evento. Una vez que haya enviado la notificación,
+          la Coordinación de Eventos Académicos revisará su notificación y se
+          comunicará con usted para confirmar los detalles y brindar el apoyo
+          necesario.
+        </div>
+      }
+    >
+      <Stack className="button-row">
+        <Button
+          sx={{ maxWidth: "fit-content" }}
+          onClick={() => setShowWelcome(false)}
+        >
+          Continuar
+        </Button>
+      </Stack>
+    </Message>
+  );
+
   if (!loading && userReservations.length < 1) {
-    return <NoReservationsPage id={"no-reservations"} />;
+    return noReservationsMessage;
   }
 
   if (showWelcome) {
-    return (
-      <WelcomePage
-        id={"welcome"}
-        onSectionChange={() => setShowWelcome(false)}
-      />
-    );
+    return welcomeMessage;
   }
 
   return (
@@ -136,7 +195,7 @@ export default function EventForm({}) {
   );
 }
 import { useNavigate, useLocation } from "react-router-dom";
-import { ROUTE_RESERVE } from "../../stores/ROUTES";
+import { ROUTE_RESERVE } from "../../stores/routes";
 import useIsMobile from "../../components/hooks/useIsMobile";
 
 function StepForm({ userReservations }) {
@@ -160,7 +219,7 @@ function StepForm({ userReservations }) {
   };
 
   const currentStep = parseInt(
-    new URLSearchParams(location.search).get("paso") || "1",
+    new URLSearchParams(location.search).get("paso") || 0,
     10
   );
 
@@ -222,7 +281,6 @@ function StepForm({ userReservations }) {
 
   return (
     <Page
-      showHeader={!isMobile}
       onSectionChange={handleSectionChange}
       className={"section"}
       id={"notificar-evento"}
@@ -370,7 +428,10 @@ function StepForm({ userReservations }) {
           <AdditionalForm />
         </Stack>
       </StepperCustom>
-      {/*---- ADDITIONAL FORMS ----*/}
+      <br />
+      <br />
+      <br />
+      <br />
     </Page>
   );
 }
@@ -448,65 +509,5 @@ function EndStep({ values, onStepChange }) {
       ></SectionButton>
       <Modal></Modal>
     </Stack>
-  );
-}
-
-function NoReservationsPage() {
-  const navigate = useNavigate();
-  const isMobile = useIsMobile();
-  return (
-    <Page showHeader={!isMobile}>
-      <Typography variant="h4">No ha reservado espacios</Typography>
-      <Typography>
-        Para notificar su evento, debe contar con reservaciones aprobadas por la
-        administración de la facultad.
-      </Typography>
-      <br />
-      <br />
-      <Button
-        sx={{ maxWidth: "fit-content" }}
-        startIcon={<DomainIcon />}
-        onClick={() => navigate(ROUTE_RESERVE)}
-      >
-        Reservar un espacio
-      </Button>
-    </Page>
-  );
-}
-
-function WelcomePage({ onSectionChange }) {
-  return (
-    <Page>
-      <Typography variant="h4">Bienvenido</Typography>
-
-      <Typography>
-        Este es el formulario de Notificación de Eventos Académicos de la
-        Facultad de Estadística e Informática de la Universidad Veracruzana.
-        <br />
-        <br />
-        Este formulario ha sido diseñado para facilitar el proceso de
-        notificación y coordinación de eventos académicos dentro de nuestra
-        facultad. A través de este formulario, los organizadores pueden
-        notificar a la facultad sobre un evento que deseé llevar a cabo y
-        solicitar los recursos necesarios para su realización. 
-        <br />
-        <br />
-        Si usted es el organizador, por favor, complete la notificación con la
-        información requerida de manera precisa y detallada. Le pedimos enviar
-        su notificación, en la medida de lo posible, con{" "}
-        <b>al menos 2 semanas de antelación</b> a la fecha de inicio programada
-        para su evento. Una vez que haya enviado la notificación, la
-        Coordinación de Eventos Académicos revisará su notificación y se
-        comunicará con usted para confirmar los detalles y brindar el apoyo
-        necesario.
-      </Typography>
-      <br />
-      <br />
-      <Stack className="button-row">
-        <Button sx={{ maxWidth: "fit-content" }} onClick={onSectionChange}>
-          Continuar
-        </Button>
-      </Stack>
-    </Page>
   );
 }

@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { User } from "../domain/user";
-import * as AUTH_KEYS from "../../../stores/AUTH_KEYS";
+import * as AUTH_KEYS from "../../../stores/authKeys";
 
 export default function useAuth() {
   const getUser = useCallback(() => {

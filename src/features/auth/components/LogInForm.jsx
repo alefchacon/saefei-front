@@ -10,7 +10,7 @@ import useAuth from "../businessLogic/useAuth";
 import logIn from "../businessLogic/logIn";
 import { useModal } from "../../../components/providers/ModalProvider";
 
-export default function LogInForm({ onLogin }) {
+export default function LogInForm({ onLogin, children }) {
   const isMobile = useIsMobile();
   const { closeModal } = useModal();
   const handleLogIn = async (values) => {
@@ -39,6 +39,7 @@ export default function LogInForm({ onLogin }) {
           <Form>
             <Stack gap={"20px"}>
               <Logo></Logo>
+              {children}
               <br />
               <TextField
                 id="email"

@@ -22,7 +22,7 @@ import { useFormikContext } from "formik";
 import useIsMobile from "../../../components/hooks/useIsMobile";
 import TruncatingText from "../../../components/TruncatingText";
 
-export default function ScheduleForm({ selectedUserReservations }) {
+export default function ScheduleForm({ forEditing, selectedUserReservations }) {
   const isMobile = useIsMobile();
   const { openModal, closeModal, Modal } = useModal();
   const { values, setFieldValue, setFieldTouched } = useFormikContext();
@@ -144,6 +144,17 @@ export default function ScheduleForm({ selectedUserReservations }) {
     setFieldValue("activities", newActivities);
   };
 
+  const handleChronogramChange = (files = new FileList()) => {
+    const chronogramChanged = files.item(0)?.name !== values.chronogram?.name;
+
+    if (forEditing && chronogramChanged) {
+      values["updatedChronogram"] = files;
+    }
+
+    console.log(values);
+    setFieldValue("chronogram", files);
+  };
+
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <Stack gap={5}>
@@ -211,7 +222,7 @@ export default function ScheduleForm({ selectedUserReservations }) {
           </FormLabel>
           <UploadButton
             values={values.chronogram}
-            onChange={(files) => setFieldValue("chronogram", files)}
+            onChange={handleChronogramChange}
           ></UploadButton>
         </Stack>
       </Stack>

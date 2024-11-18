@@ -21,5 +21,25 @@ export class User {
 
     return Object.values(this.roles).some(role => role.id === 1);
   }
+  get isAdministrator(){
+
+    if (!Boolean(this.roles)){
+      return false;
+    }
+
+    return Object.values(this.roles).some(role => role.id === 2);
+  }
+
+  get topRole(){
+    if (this.isCoordinator){
+      return "COORDINADOR"
+    }
+    
+    if (this.isAdministrator){
+      return "ADMINISTRATOR"
+    }
+
+    return "ORGANIZADOR DE EVENTOS"
+  }
   
 }

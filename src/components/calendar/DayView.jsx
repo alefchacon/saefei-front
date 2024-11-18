@@ -2,7 +2,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import moment from "moment";
 import CardCalendarEvent from "../../features/events/components/CardCalendarEvent";
-import SPACES from "../../stores/SPACES";
+import SPACES from "../../stores/spaces";
 import ReservationGroup from "../../features/reservations/components/ReservationGroup";
 
 export default function DayView({ forEvents, items, selectedDate }) {

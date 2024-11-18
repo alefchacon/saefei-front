@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import moment from "moment";
 import useApi from "../../../dataAccess/useApi";
-import STATUS from "../../../stores/STATUS";
+import STATUS from "../../../stores/status";
 export const useReservations = () => {
   const [apiWrapper] = useApi();
 
@@ -21,11 +21,6 @@ export const useReservations = () => {
   };
 
   const getReservationsByMonth = async (date = moment()) => {
-    console.log(`reservaciones?
-      anio[eq]=${date.format("YYYY")}
-      &mes[eq]=${date.format("MM")}
-      &idEstado[gte]=${STATUS.ACCEPTED}
-      &idEstado[lte]=${STATUS.EVALUATED}`);
     return apiWrapper.get(`reservaciones?
       anio[eq]=${date.format("YYYY")}
       &mes[eq]=${date.format("MM")}
@@ -62,11 +57,13 @@ export const useReservations = () => {
     const body = {
       reply: reply,
     };
+
     const response = await apiWrapper.put(
       `reservaciones/rechazar/${reservation.id}`,
       body
     );
-    return response;
+
+    //return response;
   };
 
   return {

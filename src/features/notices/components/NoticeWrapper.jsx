@@ -21,35 +21,33 @@ export default function NoticeWrapper({
   onClick,
 }) {
   return (
-    <CardActionArea onClick={onClick}>
-      <Stack
-        className="notice-wrapper card shadow"
-        padding={"10px"}
-        direction={"column"}
-        sx={{
-          boxShadow: selected ? "10px 0 1px 0 var(--blue) inset" : "",
-        }}
-        maxWidth={"100%"}
-      >
-        <Stack direction={"row"}>
-          <Stack minWidth={"50px"} alignItems={"center"}>
-            {ICONS[noticeType]}
-          </Stack>
-          <Stack
-            flex={15}
-            flexWrap={"wrap"}
-            maxWidth={"100%"}
-            position={"relative"}
-            gap={"10px"}
-          >
-            <Typography>{name}</Typography>
+    <Stack
+      className="notice-wrapper card shadow"
+      padding={"10px"}
+      direction={"column"}
+      sx={{
+        boxShadow: selected ? "10px 0 1px 0 var(--blue) inset" : "",
+      }}
+      maxWidth={"100%"}
+    >
+      <Stack direction={"row"}>
+        <Stack minWidth={"50px"} alignItems={"center"}>
+          {ICONS[noticeType]}
+        </Stack>
+        <Stack
+          flex={15}
+          flexWrap={"wrap"}
+          maxWidth={"100%"}
+          position={"relative"}
+          gap={"10px"}
+        >
+          <Typography>{name}</Typography>
 
-            <Divider></Divider>
+          <Divider></Divider>
 
-            {children}
-          </Stack>
+          {children}
         </Stack>
       </Stack>
-    </CardActionArea>
+    </Stack>
   );
 }

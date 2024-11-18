@@ -4,10 +4,20 @@ import Slide from "@mui/material/Slide";
 import { useLoading } from "./providers/LoadingProvider";
 import Fade from "@mui/material/Fade";
 import { useNavigate, useLocation } from "react-router-dom";
-import * as SCROLL_DIRECTIONS from "../stores/SCROLL_DIRECTIONS";
+import * as SCROLL_DIRECTIONS from "../stores/scrollDirections";
 import Divider from "@mui/material/Divider";
-import { useState, useEffect, useRef, useCallback } from "react";
+import Button from "@mui/material/Button";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  createContext,
+  useContext,
+} from "react";
 import LinearProgress from "@mui/material/LinearProgress";
+import usePageControl from "./hooks/usePageControl";
+import { usePage } from "./providers/PageProvider";
 
 export default function Page({
   title,
@@ -36,10 +46,10 @@ export default function Page({
   const conditionalPadding = () =>
     disablePadding ? { md: "10px 40px", sx: "0" } : "";
 
-  const divRef = useRef(null);
+  const { pageRef } = usePage();
 
   const handleScroll = useCallback(async () => {
-    const { scrollTop, scrollHeight, clientHeight } = divRef.current;
+    const { scrollTop, scrollHeight, clientHeight } = pageRef.current;
 
     const userScrolledAtAll = scrollTop !== 0;
     setScrolled(userScrolledAtAll);
@@ -81,7 +91,7 @@ export default function Page({
   }
 
   useEffect(() => {
-    const divElement = divRef?.current;
+    const divElement = pageRef?.current;
     divElement?.addEventListener("scroll", handleScroll);
 
     return () => {
@@ -111,11 +121,13 @@ export default function Page({
         skeleton
       ) : (
         <>
-          <Stack position={"relative"}>
-            <LoadingBar></LoadingBar>
-          </Stack>
+          {!disableLoading && (
+            <Stack position={"relative"}>
+              <LoadingBar></LoadingBar>
+            </Stack>
+          )}
           <Stack
-            ref={divRef}
+            ref={pageRef}
             id={"content"}
             className={`body ${
               disablePadding ? "" : "side-padding top-padding"

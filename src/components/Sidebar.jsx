@@ -17,7 +17,7 @@ import SchoolIcon from "@mui/icons-material/School";
 import FolderSharedIcon from "@mui/icons-material/FolderShared";
 import { styled } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
-import * as ROUTES from "../stores/ROUTES";
+import * as ROUTES from "../stores/routes";
 import MenuIcon from "@mui/icons-material/Menu";
 import Badge from "@mui/material/Badge";
 import IconButton from "@mui/material/IconButton";

@@ -1,14 +1,14 @@
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
-import { ROUTE_CALENDAR_EVENTS } from "../../../stores/ROUTES";
-import isAuthenticated from "../businessLogic/isAuthenticated";
+import { ROUTE_CALENDAR_EVENTS } from "../../../stores/routes";
 
 export default function AuthGuard({
   children,
   profile,
   technicalPersonOnly,
   visitorOnly,
+  isAuthenticated,
 }) {
   let location = useLocation();
 

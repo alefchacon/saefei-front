@@ -4,7 +4,7 @@ import { useLayoutEffect } from "react";
 import useNotices from "../../features/notices/businessLogic/useNotices";
 import CardActionArea from "@mui/material/CardActionArea";
 import { useNavigate } from "react-router-dom";
-import { ROUTE_EVENT } from "../../stores/ROUTES";
+import { ROUTE_EVENT } from "../../stores/routes";
 import { useState, useContext, createContext } from "react";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
@@ -14,9 +14,9 @@ import { TransitionGroup } from "react-transition-group";
 import useIsMobile from "../../components/hooks/useIsMobile";
 import CardActions from "@mui/material/CardActions";
 import useAuth from "../../features/auth/businessLogic/useAuth";
-import NoContent from "../../components/NoContent";
 import { useLoading } from "../../components/providers/LoadingProvider";
 import CardList from "../../components/CardList";
+import Message from "../../components/Message";
 
 export default function NoticesCoordinator({ onLoad, notices }) {
   const { markAsRead } = useNotices();
@@ -47,28 +47,33 @@ export default function NoticesCoordinator({ onLoad, notices }) {
   }
 
   if (
-    !Boolean(notices?.coordinatorNotices) ||
-    notices?.coordinatorNotices?.length < 1
+    !Boolean(notices?.noticesCoordinator) ||
+    notices?.noticesCoordinator?.length < 1
   ) {
-    return <NoContent label="Todas las notificaciones se han atendido" />;
+    return <Message center title={"No hay notificaciones"} />;
   }
 
   if (isMobile) {
     return (
       <CardList label={"Notificaciones de evento"}>
-        {notices.coordinatorNotices?.map((notice, index) => (
-          <CardActionArea
-            key={index}
-            onClick={() => navigate(`${ROUTE_EVENT}/${notice.event.id}`)}
-          >
-            <NoticeWrapper
-              noticeType={notice.type?.id}
-              name={notice.type?.name}
-            >
-              <CardEvent event={notice.event} disablePadding wrapped />
-            </NoticeWrapper>
-          </CardActionArea>
-        ))}
+        <TransitionGroup>
+          {notices.noticesCoordinator?.map((notice, index) => (
+            <Slide direction="left" key={index} mountOnEnter unmountOnExit>
+              <CardActionArea
+                key={index}
+                onClick={() => navigate(`${ROUTE_EVENT}/${notice.event.id}`)}
+                sx={{ margin: "5px 0" }}
+              >
+                <NoticeWrapper
+                  noticeType={notice.type?.id}
+                  name={notice.type?.name}
+                >
+                  <CardEvent event={notice.event} disablePadding wrapped />
+                </NoticeWrapper>
+              </CardActionArea>
+            </Slide>
+          ))}
+        </TransitionGroup>
       </CardList>
     );
   }
@@ -89,12 +94,11 @@ export default function NoticesCoordinator({ onLoad, notices }) {
           padding={"0"}
         >
           <TransitionGroup>
-            {notices.coordinatorNotices?.map((notice, index) => (
+            {notices.noticesCoordinator?.map((notice, index) => (
               <Slide direction="left" key={index} mountOnEnter unmountOnExit>
-                <Stack>
+                <CardActionArea onClick={() => setSelectedNotice(notice)}>
                   <NoticeWrapper
                     key={index}
-                    onClick={() => setSelectedNotice(notice)}
                     noticeType={notice.type?.id}
                     name={notice.type?.name}
                     onReply={() => markAsRead(notice)}
@@ -105,7 +109,7 @@ export default function NoticesCoordinator({ onLoad, notices }) {
                       <Button>Marcar como leído</Button>
                     </CardActions>
                   </NoticeWrapper>
-                </Stack>
+                </CardActionArea>
               </Slide>
             ))}
           </TransitionGroup>

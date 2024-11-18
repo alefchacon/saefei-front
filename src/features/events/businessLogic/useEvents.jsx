@@ -1,9 +1,14 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import moment from "moment";
 import useApi from "../../../dataAccess/useApi";
-import STATUS from "../../../stores/STATUS";
+import STATUS from "../../../stores/status";
 import EventSerializer from "../domain/eventSerializer";
 import Event from "../domain/event";
+
+const formDataConfig = {
+  headers: { "Content-Type": "multipart/form-data" },
+};
+
 export const useEvents = () => {
   const [eventUV, setEventUV] = useState({});
   const [events, setEvents] = useState([]);
@@ -25,14 +30,12 @@ export const useEvents = () => {
 
   const getEvent = useCallback(async (idEvent = 0) => {
     const response = await apiWrapper.get(`eventos/${idEvent}`);
-    console.log(response.data.data);
     setEventUV(new Event(response.data.data));
   });
 
   const storeEvent = useCallback(async (eventUV) => {
     const data = new EventSerializer(eventUV);
-    console.log(eventUV);
-    console.log(data);
+
     const formData = new FormData();
 
     if (Boolean(data.publicidad)) {
@@ -92,7 +95,6 @@ export const useEvents = () => {
   };
 
   const updateEvent = async (eventUV) => {
-    console.log(eventUV);
     const response = await apiWrapper.put(
       `eventos/${eventUV.id}`,
       new EventSerializer(eventUV)
@@ -104,6 +106,29 @@ export const useEvents = () => {
     return response;
   };
 
+  const uploadFile = async (
+    files = new FileList(),
+    idTipoArchivo,
+    idEvento
+  ) => {
+    const formData = new FormData();
+
+    if (files instanceof FileList) {
+      for (let i = 0; i < files.length; i++) {
+        formData.append(`archivo[${i}]`, files.item(i));
+      }
+    } else {
+      formData.append(`archivo[0]`, files);
+    }
+    formData.append("idTipoArchivo", idTipoArchivo);
+    formData.append("idEvento", idEvento);
+    const response = await apiWrapper.post(
+      `archivos/`,
+      formData,
+      formDataConfig
+    );
+  };
+
   return {
     events,
     eventUV,
@@ -112,5 +137,6 @@ export const useEvents = () => {
     updateEvent,
     getEvents,
     getCalendarEvents,
+    uploadFile,
   };
 };

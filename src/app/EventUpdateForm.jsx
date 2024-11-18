@@ -18,7 +18,7 @@ import DecorationForm from "./Notify/OptionalForms/DecorationForm";
 import BroadcastForm from "./Notify/OptionalForms/BroadcastForm";
 import AdditionalForm from "./Notify/OptionalForms/AdditionalForm";
 import { Formik, Form } from "formik";
-import { ROUTE_CALENDAR_EVENTS } from "../stores/ROUTES";
+import { ROUTE_CALENDAR_EVENTS } from "../stores/routes";
 
 export default function EventUpdateForm({ defaultEventUV, onReply }) {
   const isMobile = useIsMobile();

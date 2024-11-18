@@ -6,7 +6,7 @@ import CalendarCustom from "../components/calendar/CalendarCustom";
 import { useReservations } from "../features/reservations/businessLogic/useReservations";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
-import { ROUTE_RESERVE } from "../stores/ROUTES";
+import { ROUTE_RESERVE } from "../stores/routes";
 import useIsMobile from "../components/hooks/useIsMobile";
 import DayViewWrapper from "../components/calendar/DayViewWrapper";
 import DayView from "../components/calendar/DayView";

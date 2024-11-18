@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useSnackbar } from "../components/providers/SnackbarProvider";
 import { useLoading } from "../components/providers/LoadingProvider";
-import { TOKEN_KEY } from "../stores/AUTH_KEYS";
+import { TOKEN_KEY } from "../stores/authKeys";
 export default function useApi() {
   const { openSnackbar } = useSnackbar();
   const { setLoading } = useLoading();

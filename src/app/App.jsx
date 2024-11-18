@@ -13,7 +13,7 @@ import { Notices } from "./Notices/Notices";
 import "moment/dist/locale/es-mx";
 import moment from "moment";
 import { Routes, Route } from "react-router-dom";
-import * as ROUTES from "../stores/ROUTES";
+import * as ROUTES from "../stores/routes";
 import EventForm from "./Notify/EventForm";
 import Events from "./Events";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -26,7 +26,9 @@ import getNoticeAmount from "../features/notices/businessLogic/getNoticeAmount";
 import useAuth from "../features/auth/businessLogic/useAuth";
 import AuthGuard from "../features/auth/components/AuthGuard";
 import isAuthenticated from "../features/auth/businessLogic/isAuthenticated";
-
+import TaskEndScreen from "../components/TaskEndScreen";
+import getUser from "../features/auth/businessLogic/getUser";
+import Profile from "./Profile";
 const theme = createTheme({
   palette: {
     primary: {
@@ -57,7 +59,8 @@ function App() {
   const isMobile = useIsMobile();
   const [count, setCount] = useState(0);
   const [noticeAmount, setNoticeAmount] = useState(null);
-  const user = useAuth().getUser();
+  const isAuthenticated = Boolean(getUser());
+
   useLayoutEffect(() => {
     if (isAuthenticated) {
       getNoticeAmount().then((response) => setNoticeAmount(response));
@@ -101,7 +104,7 @@ function App() {
               <Route
                 path={ROUTES.ROUTE_INBOX}
                 element={
-                  <AuthGuard>
+                  <AuthGuard isAuthenticated={isAuthenticated}>
                     <Notices />
                   </AuthGuard>
                 }
@@ -132,7 +135,11 @@ function App() {
               ></Route>{" "}
               <Route
                 path={`${ROUTES.ROUTE_NOTIFY}/:paso?`}
-                element={<EventForm />}
+                element={
+                  <AuthGuard isAuthenticated={isAuthenticated}>
+                    <EventForm />
+                  </AuthGuard>
+                }
               ></Route>{" "}
               <Route
                 path={`${ROUTES.ROUTE_SEARCH_EVENTS}`}
@@ -141,18 +148,18 @@ function App() {
               <Route
                 path={`${ROUTES.ROUTE_MY_EVENTS}`}
                 element={
-                  <AuthGuard>
-                    <Events userEvents />
+                  <AuthGuard isAuthenticated={isAuthenticated}>
+                    <Profile></Profile>
                   </AuthGuard>
                 }
               ></Route>{" "}
-              <Route
-                path={`/test`}
-                element={isMobile ? <Stack>Mobile</Stack> : <NoContent />}
-              ></Route>{" "}
+              <Route path={`/test`} element={<TaskEndScreen />}></Route>{" "}
             </Routes>
           </Stack>
-          <Bottombar noticeAmount={noticeAmount}></Bottombar>
+          <Bottombar
+            noticeAmount={noticeAmount}
+            isAuthenticated={isAuthenticated}
+          ></Bottombar>
         </Stack>
       </ThemeProvider>
     </>

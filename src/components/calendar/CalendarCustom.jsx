@@ -18,7 +18,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
-import { ROUTE_RESERVE } from "../../stores/ROUTES";
+import { ROUTE_RESERVE } from "../../stores/routes";
 const mLocalizer = momentLocalizer(moment);
 
 const coloredDateCellWrapper = ({ children }) =>
@@ -119,7 +119,7 @@ export default function CalendarCustom({
         justifyContent={"space-between"}
         alignItems={"center"}
         direction={"row"}
-        padding={"0 20px 20px 20px"}
+        padding={"0 20px 0px 20px"}
       >
         {" "}
         <Stack gap={1} direction={"row"}>
