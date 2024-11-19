@@ -1,9 +1,16 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import moment from "moment";
 import useApi from "../../../dataAccess/useApi";
-import STATUS from "../../../stores/STATUS";
+import STATUS from "../../../stores/status";
 import EventSerializer from "../domain/eventSerializer";
+import Event from "../domain/event";
+
+const formDataConfig = {
+  headers: { "Content-Type": "multipart/form-data" },
+};
+
 export const useEvents = () => {
+  const [eventUV, setEventUV] = useState({});
   const [events, setEvents] = useState([]);
   const [apiWrapper] = useApi();
   const isLoadingRef = useRef(false);
@@ -23,42 +30,42 @@ export const useEvents = () => {
 
   const getEvent = useCallback(async (idEvent = 0) => {
     const response = await apiWrapper.get(`eventos/${idEvent}`);
-    return response;
+    setEventUV(new Event(response.data.data));
   });
 
   const storeEvent = useCallback(async (eventUV) => {
     const data = new EventSerializer(eventUV);
+
     const formData = new FormData();
 
-    const { publicidad } = data;
-    for (let i = 0; i < publicidad.length; i++) {
-      formData.append(`publicidad[${i}]`, publicidad[i]);
+    if (Boolean(data.publicidad)) {
+      const { publicidad } = data;
+      for (let i = 0; i < publicidad.length; i++) {
+        formData.append(`publicidad[${i}]`, publicidad[i]);
+      }
+      delete data.publicidad;
     }
-    delete data.publicidad;
 
-    const { cronograma } = data;
-    for (let i = 0; i < cronograma.length; i++) {
-      formData.append(`cronograma[${i}]`, cronograma[i]);
+    if (Boolean(data.cronograma)) {
+      const { cronograma } = data;
+      for (let i = 0; i < cronograma.length; i++) {
+        formData.append(`cronograma[${i}]`, cronograma[i]);
+      }
+      delete data.cronograma;
     }
-    delete data.cronograma;
 
     Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, value);
+      if (Array.isArray(value)) {
+        formData.append(key, JSON.stringify(value));
+      } else {
+        formData.append(key, value);
+      }
     });
     formData.append("idEstado", 1);
 
     const response = await apiWrapper.post(`eventos`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-  });
-
-  const updateEvent = useCallback(async (eventUV) => {
-    console.log(eventUV);
-    const response = await apiWrapper.put(
-      `eventos/${eventUV.id}`,
-      new EventSerializer(eventUV)
-    );
-    return response;
   });
 
   const getEvents = async (filters, newSearch = false) => {
@@ -82,12 +89,54 @@ export const useEvents = () => {
     setMeta(response.data.meta);
     isLoadingRef.current = false;
   };
+  const getCalendarEvents = async (dateFilter) => {
+    const query = `calendario?${dateFilter}`;
+    return await apiWrapper.get(query);
+  };
+
+  const updateEvent = async (eventUV) => {
+    const response = await apiWrapper.put(
+      `eventos/${eventUV.id}`,
+      new EventSerializer(eventUV)
+    );
+    if (response.status === 200) {
+      setEventUV((prev) => ({ ...prev, ...response.data.data }));
+      console.log(eventUV);
+    }
+    return response;
+  };
+
+  const uploadFile = async (
+    files = new FileList(),
+    idTipoArchivo,
+    idEvento
+  ) => {
+    const formData = new FormData();
+
+    if (files instanceof FileList) {
+      for (let i = 0; i < files.length; i++) {
+        formData.append(`archivo[${i}]`, files.item(i));
+      }
+    } else {
+      formData.append(`archivo[0]`, files);
+    }
+    formData.append("idTipoArchivo", idTipoArchivo);
+    formData.append("idEvento", idEvento);
+    const response = await apiWrapper.post(
+      `archivos/`,
+      formData,
+      formDataConfig
+    );
+  };
 
   return {
     events,
+    eventUV,
     getEvent,
     storeEvent,
     updateEvent,
     getEvents,
+    getCalendarEvents,
+    uploadFile,
   };
 };

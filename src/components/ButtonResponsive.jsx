@@ -1,29 +1,32 @@
 import { Button } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-
+import { useLoading } from "./providers/LoadingProvider";
 import useIsMobile from "./hooks/useIsMobile";
 export default function ButtonResponsive({
   children,
   variant = "contained",
-  loading = false,
+  isLoading = null,
   onClick,
   type = "button",
-  responsive,
+  responsive = true,
+  fixed,
 }) {
   const isMobile = useIsMobile();
+  const { loading } = useLoading();
 
-  const config = isMobile
-    ? {
-        position: "absolute !important",
-        top: 10,
-        right: 30,
-        zIndex: 100,
-        gap: 2,
-      }
-    : {
-        gap: 2,
-        maxWidth: "fit-content",
-      };
+  const configuration =
+    isMobile && responsive
+      ? {
+          position: "fixed !important",
+          top: 15,
+          right: 30,
+          zIndex: 100,
+          gap: 2,
+        }
+      : {
+          gap: 2,
+          maxWidth: "fit-content",
+        };
 
   return (
     <Button
@@ -31,8 +34,8 @@ export default function ButtonResponsive({
       variant={variant}
       type={type}
       onClick={onClick}
-      disabled={loading}
-      sx={config}
+      disabled={isLoading || loading}
+      sx={configuration}
     >
       {children}
       {loading && <CircularProgress size={"20px"} />}

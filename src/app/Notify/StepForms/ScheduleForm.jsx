@@ -19,8 +19,11 @@ import CardActivity from "../../../features/events/components/CardActivity";
 import { v4 as uuidv4 } from "uuid";
 
 import { useFormikContext } from "formik";
+import useIsMobile from "../../../components/hooks/useIsMobile";
+import TruncatingText from "../../../components/TruncatingText";
 
-export default function ScheduleForm({ selectedUserReservations }) {
+export default function ScheduleForm({ forEditing, selectedUserReservations }) {
+  const isMobile = useIsMobile();
   const { openModal, closeModal, Modal } = useModal();
   const { values, setFieldValue, setFieldTouched } = useFormikContext();
 
@@ -30,7 +33,7 @@ export default function ScheduleForm({ selectedUserReservations }) {
   const openAddActivityModal = (idReservacion = 0) => {
     openModal(
       "Agregar actividad",
-      <Stack minWidth={"500px"} gap={"var(--field-gap)"}>
+      <Stack gap={"var(--field-gap)"}>
         <TextField
           inputRef={newActivityNameRef}
           label={"Nombre de la actividad"}
@@ -63,11 +66,12 @@ export default function ScheduleForm({ selectedUserReservations }) {
             name: newActivityNameRef.current.value,
             time: moment(newActivityTimeRef.current.value, "HH:mm"),
           };
+          console.log(newActivity);
           setFieldValue("activities", [...values.activities, newActivity]);
         }}
         variant="contained"
       >
-        Agregar actividad
+        <TruncatingText>Agregar actividad</TruncatingText>
       </Button>,
       true
     );
@@ -140,6 +144,17 @@ export default function ScheduleForm({ selectedUserReservations }) {
     setFieldValue("activities", newActivities);
   };
 
+  const handleChronogramChange = (files = new FileList()) => {
+    const chronogramChanged = files.item(0)?.name !== values.chronogram?.name;
+
+    if (forEditing && chronogramChanged) {
+      values["updatedChronogram"] = files;
+    }
+
+    console.log(values);
+    setFieldValue("chronogram", files);
+  };
+
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <Stack gap={5}>
@@ -156,7 +171,7 @@ export default function ScheduleForm({ selectedUserReservations }) {
           </FormLabel>
           <br />
           <Stack>
-            {selectedUserReservations.map((reservation, index) => (
+            {selectedUserReservations?.map((reservation, index) => (
               <AccordionCustom
                 key={index}
                 header={
@@ -169,7 +184,8 @@ export default function ScheduleForm({ selectedUserReservations }) {
                     <CardReservation
                       key={index}
                       reservation={reservation}
-                      activitySchedule={false}
+                      reservationSchedule
+                      simpleSchedule
                     />
                     <Button
                       onClick={(event) => {
@@ -206,7 +222,7 @@ export default function ScheduleForm({ selectedUserReservations }) {
           </FormLabel>
           <UploadButton
             values={values.chronogram}
-            onChange={(files) => setFieldValue("chronogram", files)}
+            onChange={handleChronogramChange}
           ></UploadButton>
         </Stack>
       </Stack>

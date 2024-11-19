@@ -14,6 +14,8 @@ export default function ActivityViewer({
   maxLines = 2,
   reservations,
   children,
+  editable = false,
+  forCoordinator,
 }) {
   const { Modal, closeModal, openModal } = useModal();
 
@@ -34,7 +36,7 @@ export default function ActivityViewer({
           }
         >
           {reservation.activities.map((activity, index) => (
-            <CardActivity key={index} activity={activity} />
+            <CardActivity key={index} activity={activity} editable={editable} />
           ))}
         </Stack>
       ))}
@@ -55,7 +57,8 @@ export default function ActivityViewer({
               key={index}
               reservation={reservation}
               activitySchedule
-              reservationSchedule
+              reservationSchedule={forCoordinator}
+              simpleSchedule={!forCoordinator}
             ></CardReservation>
           ))}
         </Stack>

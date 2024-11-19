@@ -39,8 +39,14 @@ import { useEvents } from "../../features/events/businessLogic/useEvents";
 import { useLoading } from "../../components/providers/LoadingProvider";
 import EventFormSkeleton from "./StepForms/EventFormSkeleton";
 import DomainIcon from "@mui/icons-material/Domain";
+import PeopleIcon from "@mui/icons-material/People";
 import { Routes, Route } from "react-router-dom";
-
+import PresidiumForm from "./OptionalForms/PresidiumForm";
+import Message from "../../components/Message";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import isAuthenticated from "../../features/auth/businessLogic/isAuthenticated";
+import LoginIcon from "@mui/icons-material/Login";
+import { usePage } from "../../components/providers/PageProvider";
 export default function EventForm({}) {
   const { getReservationsAvailableToUser } = useReservations();
   const { getUser } = useAuth();
@@ -49,9 +55,10 @@ export default function EventForm({}) {
   const { loading } = useLoading();
   const [userReservations, setUserReservations] = useState([]);
   const [showWelcome, setShowWelcome] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getReservationsAvailableToUser(getUser().id).then((response) => {
+    getReservationsAvailableToUser(getUser()?.id).then((response) => {
       setUserReservations(response.data.data);
     });
   }, []);
@@ -59,6 +66,80 @@ export default function EventForm({}) {
   const handleSubmit = (values, actions) => {
     storeEvent(values);
   };
+
+  if (loading) {
+    return (
+      <Page>
+        <EventFormSkeleton />;
+      </Page>
+    );
+  }
+
+  const noReservationsMessage = (
+    <Message
+      title={"No ha reservado espacios"}
+      content={
+        "Para notificar su evento, debe contar con reservaciones aprobadas por la administración de la facultad."
+      }
+      center
+    >
+      <Button
+        variant="contained"
+        disableElevation
+        sx={{ maxWidth: "fit-content" }}
+        startIcon={<LocationOnIcon />}
+        onClick={() => navigate(ROUTE_RESERVE)}
+      >
+        Reservar un espacio
+      </Button>
+    </Message>
+  );
+
+  const welcomeMessage = (
+    <Message
+      title={"Bienvenido"}
+      content={
+        <div>
+          Este es el formulario de Notificación de Eventos Académicos de la
+          Facultad de Estadística e Informática de la Universidad Veracruzana.
+          <br />
+          <br />
+          Este formulario ha sido diseñado para facilitar el proceso de
+          notificación y coordinación de eventos académicos dentro de nuestra
+          facultad. A través de este formulario, los organizadores pueden
+          notificar a la facultad sobre un evento que deseé llevar a cabo y
+          solicitar los recursos necesarios para su realización. 
+          <br />
+          <br />
+          Si usted es el organizador, por favor, complete la notificación con la
+          información requerida de manera precisa y detallada. Le pedimos enviar
+          su notificación, en la medida de lo posible, con{" "}
+          <b>al menos 2 semanas de antelación</b> a la fecha de inicio
+          programada para su evento. Una vez que haya enviado la notificación,
+          la Coordinación de Eventos Académicos revisará su notificación y se
+          comunicará con usted para confirmar los detalles y brindar el apoyo
+          necesario.
+        </div>
+      }
+    >
+      <Stack className="button-row">
+        <Button
+          sx={{ maxWidth: "fit-content" }}
+          onClick={() => setShowWelcome(false)}
+        >
+          Continuar
+        </Button>
+      </Stack>
+    </Message>
+  );
+
+  if (!loading && userReservations.length < 1) {
+    return noReservationsMessage;
+  }
+
+  if (showWelcome) {
+    return welcomeMessage;
+  }
 
   return (
     <>
@@ -89,11 +170,14 @@ export default function EventForm({}) {
           //RecordsForm
           records: "",
 
+          //PresidiumForm
+          presidium: "",
+
           //DecorationForm
           decoration: "",
 
           //TechRequirementsForm
-          technicalRequirements: "",
+          computerCenterRequirements: "",
           needsLivestream: "",
 
           //ExternalParticipantsForm
@@ -111,9 +195,12 @@ export default function EventForm({}) {
   );
 }
 import { useNavigate, useLocation } from "react-router-dom";
-import { ROUTE_RESERVE } from "../../stores/ROUTES";
+import { ROUTE_RESERVE } from "../../stores/routes";
+import useIsMobile from "../../components/hooks/useIsMobile";
 
 function StepForm({ userReservations }) {
+  const isMobile = useIsMobile();
+
   const [activeSectionId, setActiveSectionId] = useState(
     userReservations.length > 0 ? "principal" : "no-reservations"
   );
@@ -132,7 +219,7 @@ function StepForm({ userReservations }) {
   };
 
   const currentStep = parseInt(
-    new URLSearchParams(location.search).get("paso") || "1",
+    new URLSearchParams(location.search).get("paso") || 0,
     10
   );
 
@@ -192,8 +279,6 @@ function StepForm({ userReservations }) {
     handleStepChange(3);
   };
 
-  console.log(activeSectionId);
-
   return (
     <Page
       onSectionChange={handleSectionChange}
@@ -203,15 +288,8 @@ function StepForm({ userReservations }) {
       skeleton={<EventFormSkeleton />}
       header={activeSectionId !== 0}
       onGoBack={currentStep > 3 && handleReturnToMandatory}
+      title={"Notificar evento"}
     >
-      {userReservations.length < 1 ? (
-        <NoReservationsPage id={"no-reservations"} />
-      ) : (
-        <WelcomePage
-          id={"welcome"}
-          onSectionChange={() => handleSectionChange("principal")}
-        />
-      )}
       <StepperCustom
         id={"principal"}
         title="Notificar evento"
@@ -306,6 +384,17 @@ function StepForm({ userReservations }) {
         <Stack
           optional
           className="step-optional"
+          id={"presidium"}
+          title={"Presidium"}
+        >
+          <PresidiumForm
+            values={values}
+            onFieldValueChange={setFieldValue}
+          ></PresidiumForm>
+        </Stack>
+        <Stack
+          optional
+          className="step-optional"
           id={"decoracion"}
           title={"Decoración"}
         >
@@ -339,7 +428,10 @@ function StepForm({ userReservations }) {
           <AdditionalForm />
         </Stack>
       </StepperCustom>
-      {/*---- ADDITIONAL FORMS ----*/}
+      <br />
+      <br />
+      <br />
+      <br />
     </Page>
   );
 }
@@ -376,22 +468,29 @@ function EndStep({ values, onStepChange }) {
       ></SectionButton>
       <SectionButton
         onClick={() => onStepChange(6)}
+        icon={<PeopleIcon sx={iconSX} />}
+        configured={Boolean(values.presidium)}
+        name="Presidium"
+        description="Describa la participación de invitados especiales."
+      ></SectionButton>
+      <SectionButton
+        onClick={() => onStepChange(7)}
         configured={values.decoration}
         icon={<AutoAwesomeIcon sx={iconSX} />}
         name="Decoración"
         description="Pida sus personificadores, banderas y demás."
       ></SectionButton>
       <SectionButton
-        onClick={() => onStepChange(7)}
+        onClick={() => onStepChange(8)}
         icon={<SettingsIcon sx={iconSX} />}
         configured={Boolean(
-          values.technicalRequirements || values.needsLivestream
+          values.computerCenterRequirements || values.needsLivestream
         )}
         name="Requisitos técnicos"
         description="Solicite asistencia del Centro de Cómputo (equipo de cómputo, transmisión en vivo...) "
       ></SectionButton>
       <SectionButton
-        onClick={() => onStepChange(8)}
+        onClick={() => onStepChange(9)}
         configured={Boolean(
           values.numParticipantsExternal > 0 ||
             values.needsParking ||
@@ -402,74 +501,13 @@ function EndStep({ values, onStepChange }) {
         description="¿Asistirán personas ajenas a la FEI? Cuéntenos aquí."
       ></SectionButton>
       <SectionButton
-        onClick={() => onStepChange(9)}
+        onClick={() => onStepChange(10)}
         configured={Boolean(values.additional)}
         icon={<QuestionMarkIcon sx={iconSX} />}
         name="Requisitos adicionales"
-        description="¿Nos faltó pedirle algo? Pídalo aquí."
+        description="¿Nos faltó preguntarle algo? Aquí lo puede pedir."
       ></SectionButton>
       <Modal></Modal>
     </Stack>
-  );
-}
-
-function NoReservationsPage() {
-  const navigate = useNavigate();
-
-  return (
-    <>
-      <br />
-      <Typography variant="h4">No ha reservado espacios</Typography>
-      <br />
-      <Typography>
-        Para notificar su evento, debe contar con reservaciones aprobadas por la
-        administración de la facultad.
-      </Typography>
-      <br />
-      <br />
-      <Button
-        sx={{ maxWidth: "fit-content" }}
-        startIcon={<DomainIcon />}
-        onClick={() => navigate(ROUTE_RESERVE)}
-      >
-        Reservar un espacio
-      </Button>
-    </>
-  );
-}
-
-function WelcomePage({ onSectionChange }) {
-  return (
-    <>
-      <br />
-      <Typography variant="h4">Bienvenido</Typography>
-      <br />
-      <Typography>
-        Este es el formulario de Notificación de Eventos Académicos de la
-        Facultad de Estadística e Informática de la Universidad Veracruzana.
-        <br />
-        <br />
-        Este formulario ha sido diseñado para facilitar el proceso de
-        notificación y coordinación de eventos académicos dentro de nuestra
-        facultad. A través de este formulario, los organizadores pueden
-        notificar a la facultad sobre un evento que deseé llevar a cabo y
-        solicitar los recursos necesarios para su realización. 
-        <br />
-        <br />
-        Si usted es el organizador, por favor, complete la notificación con la
-        información requerida de manera precisa y detallada. Le pedimos enviar
-        su notificación, en la medida de lo posible, con{" "}
-        <b>al menos 2 semanas de antelación</b> a la fecha de inicio programada
-        para su evento. Una vez que haya enviado la notificación, la
-        Coordinación de Eventos Académicos revisará su notificación y se
-        comunicará con usted para confirmar los detalles y brindar el apoyo
-        necesario.
-      </Typography>
-      <br />
-      <br />
-      <Button sx={{ maxWidth: "fit-content" }} onClick={onSectionChange}>
-        Continuar
-      </Button>
-    </>
   );
 }

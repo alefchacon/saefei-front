@@ -4,16 +4,26 @@ import Slide from "@mui/material/Slide";
 import { useLoading } from "./providers/LoadingProvider";
 import Fade from "@mui/material/Fade";
 import { useNavigate, useLocation } from "react-router-dom";
-import * as SCROLL_DIRECTIONS from "../stores/SCROLL_DIRECTIONS";
+import * as SCROLL_DIRECTIONS from "../stores/scrollDirections";
+import Divider from "@mui/material/Divider";
+import Button from "@mui/material/Button";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  createContext,
+  useContext,
+} from "react";
+import LinearProgress from "@mui/material/LinearProgress";
+import usePageControl from "./hooks/usePageControl";
+import { usePage } from "./providers/PageProvider";
 
-import { useState, useEffect, useRef, useCallback } from "react";
 export default function Page({
   title,
   children,
   flex,
   header = true,
-  activeSectionId = "principal",
-  onSectionChange,
   className,
   skeleton,
   onGoBack,
@@ -24,6 +34,8 @@ export default function Page({
   onScroll,
   onScrollUp,
   onScrollDown,
+  disableDivider,
+  showHeader = true,
 }) {
   const { loading } = useLoading();
   const navigate = useNavigate();
@@ -31,22 +43,13 @@ export default function Page({
   const [scrolled, setScrolled] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
 
-  const handleReturnToFirstSection = () => {
-    onSectionChange("principal");
-  };
-
-  const currentSection = children.find(
-    (child) => child.props.id === activeSectionId
-  );
-
   const conditionalPadding = () =>
-    disablePadding ? { md: "0px 40px", sx: "0" } : "";
+    disablePadding ? { md: "10px 40px", sx: "0" } : "";
 
-  const divRef = useRef(null);
+  const { pageRef } = usePage();
 
   const handleScroll = useCallback(async () => {
-    const { scrollTop, scrollHeight, clientHeight } = divRef.current;
-    //console.log(scrollTop);
+    const { scrollTop, scrollHeight, clientHeight } = pageRef.current;
 
     const userScrolledAtAll = scrollTop !== 0;
     setScrolled(userScrolledAtAll);
@@ -70,8 +73,25 @@ export default function Page({
     }
   });
 
+  function LoadingBar() {
+    return (
+      <Stack
+        sx={{
+          position: "absolute",
+          top: 0,
+          zIndex: 100,
+          width: "100%",
+        }}
+      >
+        <LinearProgress
+          className={`${loading ? "show" : "hide"}`}
+        ></LinearProgress>
+      </Stack>
+    );
+  }
+
   useEffect(() => {
-    const divElement = divRef?.current;
+    const divElement = pageRef?.current;
     divElement?.addEventListener("scroll", handleScroll);
 
     return () => {
@@ -84,30 +104,40 @@ export default function Page({
       id="page"
       className={`page ${className}`}
       flex={flex}
-      bgcolor={bgcolor}
+      bgcolor={"transparent"}
     >
-      {header && (
-        <Header
-          disableLoading={disableLoading}
-          disablePadding={disablePadding}
-          onGoBack={onGoBack}
-          onSectionChange={handleReturnToFirstSection}
-          sectionedPage={activeSectionId !== "principal"}
-          title={title ?? currentSection?.props.title}
-          scrolled={scrolled}
-        ></Header>
+      {header && showHeader && (
+        <Stack>
+          <Header
+            disableLoading={disableLoading}
+            disablePadding={disablePadding}
+            onGoBack={onGoBack}
+            title={title}
+            scrolled={scrolled}
+          ></Header>
+        </Stack>
       )}
       {loading && skeleton ? (
         skeleton
       ) : (
-        <Stack
-          ref={divRef}
-          id={"content"}
-          className={`body ${disablePadding ? "" : "side-padding top-padding"}`}
-          padding={conditionalPadding}
-        >
-          {currentSection}
-        </Stack>
+        <>
+          {!disableLoading && (
+            <Stack position={"relative"}>
+              <LoadingBar></LoadingBar>
+            </Stack>
+          )}
+          <Stack
+            ref={pageRef}
+            id={"content"}
+            className={`body ${
+              disablePadding ? "" : "side-padding top-padding"
+            }`}
+            padding={conditionalPadding}
+            position={"relative"}
+          >
+            {children}
+          </Stack>
+        </>
       )}
     </Stack>
   );

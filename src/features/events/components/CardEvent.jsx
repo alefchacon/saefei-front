@@ -12,12 +12,12 @@ export default function CardEvent({
   disablePadding,
   className,
   onClick,
+  wrapped,
 }) {
   return (
     <Stack
-      className={`card ${className}`}
+      className={`${wrapped ? "" : "card"} ${className}`}
       sx={{ padding: disablePadding ? "" : "20px" }}
-      bgcolor={"transparent"}
     >
       <Stack paddingBottom={"20px"}>
         <Typography
@@ -40,6 +40,7 @@ export default function CardEvent({
             row
             activitySchedule
             reservation={reservation}
+            simpleSchedule
             key={index}
           ></CardReservation>
         ))}

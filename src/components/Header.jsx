@@ -7,6 +7,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useLocation } from "react-router-dom";
 import { useLoading } from "./providers/LoadingProvider";
+import { useNavigate } from "react-router-dom";
 
 export default function Header({
   title = "",
@@ -25,7 +26,15 @@ export default function Header({
     location.pathname.split("/").length > 2 || Boolean(onGoBack);
 
   const conditionalPadding = disablePadding ? "base-padding" : `side-padding`;
-  const scrollState = scrolled ? "shadow" : ``;
+
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate(-1);
+    if (onGoBack) {
+      onGoBack();
+    }
+  };
 
   return (
     <>
@@ -34,22 +43,22 @@ export default function Header({
         role="header"
         display={"flex"}
         flexDirection={"column"}
-        zIndex={5}
-        className={`${conditionalPadding} ${scrollState}`}
+        zIndex={0}
+        className={`${conditionalPadding}`}
         justifyContent={"space-between"}
-        paddingTop={{ md: "2rem", xs: "0.5rem" }}
-        paddingBottom={{ md: "10px", xs: "10px" }}
+        paddingTop={{ md: "2rem", xs: "16px" }}
+        paddingBottom={{ md: "10px", xs: "16px" }}
         borderBottom={{ xs: "1px solid var(--bg)", md: "none" }}
         position={"sticky"}
         top={"0"}
-        bgcolor={"white"}
+        bgcolor={"transparent"}
       >
         <Stack direction={"row"} gap={2} minWidth={"100%"}>
           {canGoBack && (
             <IconButton
               id="go-back-button"
-              onClick={onGoBack}
-              sx={{ maxHeight: "fit-content" }}
+              onClick={handleGoBack}
+              sx={{ maxHeight: "fit-content", padding: 0 }}
             >
               <ArrowBackIcon></ArrowBackIcon>
             </IconButton>
@@ -76,11 +85,6 @@ export default function Header({
           </Stack>
         </Stack>
       </Stack>
-      {loading && !disableLoading ? (
-        <LinearProgress sx={{ height: "5px" }}></LinearProgress>
-      ) : (
-        <Stack bgcolor={"transparent"} height={"5px"}></Stack>
-      )}
     </>
   );
 }

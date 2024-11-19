@@ -9,12 +9,17 @@ import StepLabel from "@mui/material/StepLabel";
 import { useFormikContext } from "formik";
 import Alert from "@mui/material/Alert";
 import ButtonResponsive from "./ButtonResponsive";
+import useIsMobile from "./hooks/useIsMobile";
+import { usePage } from "./providers/PageProvider";
+
 export default function StepperCustom({
   children,
   currentStep = 0,
   onStepChange,
   endButton,
 }) {
+  const { scrollToTop } = usePage();
+  const isMobile = useIsMobile();
   const { validate, validateForm, dirty, validateField, errors } =
     useFormikContext();
   const [triedNextWithErrors, setTriedNextWithErrors] = React.useState(false);
@@ -43,10 +48,12 @@ export default function StepperCustom({
 
   const handleNext = () => {
     handleStepChange(currentStep + 1);
+    scrollToTop();
   };
 
   const handleBack = () => {
     handleStepChange(currentStep - 1);
+    scrollToTop();
   };
 
   const handleStepSelect = (stepIndex) => () => {
@@ -97,7 +104,7 @@ export default function StepperCustom({
                       color="inherit"
                       onClick={handleStepSelect(index)}
                     >
-                      <StepLabel>{child.props.title}</StepLabel>
+                      {!isMobile && <StepLabel>{child.props.title}</StepLabel>}
                     </StepButton>
                   )}
                 </Step>
@@ -121,7 +128,7 @@ export default function StepperCustom({
           mandatoryButtons
         ) : (
           <Stack alignItems={"end"}>
-            <ButtonResponsive variant="text" onClick={handleReturnToMandatory}>
+            <ButtonResponsive fixed onClick={handleReturnToMandatory}>
               Guardar
             </ButtonResponsive>
           </Stack>

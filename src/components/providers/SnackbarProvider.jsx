@@ -34,11 +34,7 @@ export function SnackbarProvider({ children }) {
   const action = (
     <Fragment>
       {content}
-      {/*
-      <Button color="secondary" size="small" onClick={handleUndo}>
-        DESHACER
-      </Button>
-        */}
+
       <IconButton
         size="small"
         aria-label="close"
@@ -58,6 +54,7 @@ export function SnackbarProvider({ children }) {
           marginTop: 7,
         }}
         open={open}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
         onClose={handleClose}
         autoHideDuration={6000}
         message={message}

@@ -1,5 +1,5 @@
 import * as yup from 'yup'
-import { MESSAGES_FIELD } from '../../../stores/MESSAGES'
+import { MESSAGES_FIELD } from '../../../stores/messages'
 
 export const eventSchema = yup.object().shape({
   name: yup

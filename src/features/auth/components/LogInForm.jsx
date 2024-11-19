@@ -7,14 +7,17 @@ import useIsMobile from "../../../components/hooks/useIsMobile";
 import Logo from "../../../components/Logo";
 import { Formik, Form } from "formik";
 import useAuth from "../businessLogic/useAuth";
-import { useModal } from "../../../components/hooks/useModal";
-export default function LogInForm({ onLogin }) {
-  const { logIn } = useAuth();
-  const isMobile = useIsMobile();
+import logIn from "../businessLogic/logIn";
+import { useModal } from "../../../components/providers/ModalProvider";
 
+export default function LogInForm({ onLogin, children }) {
+  const isMobile = useIsMobile();
+  const { closeModal } = useModal();
   const handleLogIn = async (values) => {
     const response = await logIn(values);
+
     if (response.status === 200) {
+      closeModal();
       onLogin();
     }
   };
@@ -36,6 +39,7 @@ export default function LogInForm({ onLogin }) {
           <Form>
             <Stack gap={"20px"}>
               <Logo></Logo>
+              {children}
               <br />
               <TextField
                 id="email"
@@ -59,9 +63,15 @@ export default function LogInForm({ onLogin }) {
             </Stack>
             <br />
             <br />
-            <ButtonResponsive type="submit" loading={isSubmitting}>
-              Entrar
-            </ButtonResponsive>
+            <Stack className="button-row">
+              <ButtonResponsive
+                type="submit"
+                loading={isSubmitting}
+                responsive={false}
+              >
+                Entrar
+              </ButtonResponsive>
+            </Stack>
           </Form>
         )}
       </Formik>

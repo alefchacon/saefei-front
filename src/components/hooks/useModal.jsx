@@ -25,26 +25,29 @@ export const useModal = () => {
   const [isResponsive, setIsResponsive] = useState(false);
   const [minWidth, setMinWidth] = useState("200px");
 
-  const openModal = useCallback(
-    (title, content, actions, responsive, minWidth, noBackdrop = false) => {
-      console.log(title);
-      setTitle(title);
-      setContent(content);
-      setActions(actions);
-      setIsOpen(true);
-      setIsResponsive(responsive);
-      setMinWidth(minWidth);
-      setNoBackdrop(noBackdrop);
-    },
-    []
-  );
+  const openModal = (
+    title,
+    content,
+    actions,
+    responsive,
+    minWidth = "200px",
+    noBackdrop = false
+  ) => {
+    setTitle(title);
+    setContent(content);
+    setActions(actions);
+    setIsOpen(true);
+    setIsResponsive(responsive);
+    setMinWidth(minWidth);
+    setNoBackdrop(noBackdrop);
+  };
 
-  const closeModal = useCallback(() => {
+  const closeModal = () => {
     setIsOpen(false);
     setContent(null);
-  }, []);
+  };
 
-  const Modal = useCallback(() => {
+  const Modal = () => {
     if (!isOpen) {
       return null;
     }
@@ -108,7 +111,7 @@ export const useModal = () => {
         </Dialog>
       </>
     );
-  });
+  };
 
   return { openModal, closeModal, Modal };
 };

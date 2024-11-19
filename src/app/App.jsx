@@ -1,40 +1,34 @@
-import { useState } from "react";
-import reactLogo from "../assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useState, useLayoutEffect } from "react";
 import "./App.css";
 
-import { Card, dividerClasses } from "@mui/material";
-import { Box } from "@mui/material";
 import { Typography } from "@mui/material";
-import { IconButton } from "@mui/material";
-import { Divider } from "@mui/material";
-import { CardActionArea } from "@mui/material";
-import TodayIcon from "@mui/icons-material/Today";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Stack from "@mui/material/Stack";
-import CardHeader from "@mui/material/CardHeader";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ReservationForm from "./ReservationForm";
-import SchoolIcon from "@mui/icons-material/School";
 
-import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Bottombar from "../components/Bottombar";
-import Reservations from "./Reservations";
+import CalendarReservations from "./CalendarReservations";
 import EventView from "./EventView";
-import { NoticesDesktop } from "./NoticesDesktop";
-import NoticesMobile from "./NoticesMobile";
-
+import { Notices } from "./Notices/Notices";
 import "moment/dist/locale/es-mx";
 import moment from "moment";
-import LinearProgress from "@mui/material/LinearProgress";
 import { Routes, Route } from "react-router-dom";
-import * as ROUTES from "../stores/ROUTES";
+import * as ROUTES from "../stores/routes";
 import EventForm from "./Notify/EventForm";
 import Events from "./Events";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useIsMobile from "../components/hooks/useIsMobile";
-
+import EventUpdateForm from "./EventUpdateForm";
+import CalendarEvents from "./CalendarEvents";
+import { useAxiosInterceptors } from "../dataAccess/useAxiosInterceptor";
+import NoContent from "../components/NoContent";
+import getNoticeAmount from "../features/notices/businessLogic/getNoticeAmount";
+import useAuth from "../features/auth/businessLogic/useAuth";
+import AuthGuard from "../features/auth/components/AuthGuard";
+import isAuthenticated from "../features/auth/businessLogic/isAuthenticated";
+import TaskEndScreen from "../components/TaskEndScreen";
+import getUser from "../features/auth/businessLogic/getUser";
+import Profile from "./Profile";
 const theme = createTheme({
   palette: {
     primary: {
@@ -59,16 +53,25 @@ const theme = createTheme({
 });
 
 function App() {
+  useAxiosInterceptors();
+
   moment.locale("es-mx");
   const isMobile = useIsMobile();
   const [count, setCount] = useState(0);
+  const [noticeAmount, setNoticeAmount] = useState(null);
+  const isAuthenticated = Boolean(getUser());
 
+  useLayoutEffect(() => {
+    if (isAuthenticated) {
+      getNoticeAmount().then((response) => setNoticeAmount(response));
+    }
+  }, []);
   return (
     <>
       <ThemeProvider theme={theme}>
         <Stack
           role={"main"}
-          sx={{ backgroundColor: "white" }}
+          sx={{ backgroundColor: "var(--bg)" }}
           display={"flex"}
           flexDirection={{ md: "row", xs: "column" }}
           height={"100%"}
@@ -88,7 +91,7 @@ function App() {
             <Typography color="white">Universidad Veracruzana</Typography>
           </Stack>
 
-          <Sidebar />
+          <Sidebar noticeAmount={noticeAmount} />
 
           <Stack
             className="flex-2"
@@ -100,7 +103,11 @@ function App() {
             <Routes>
               <Route
                 path={ROUTES.ROUTE_INBOX}
-                element={isMobile ? <NoticesMobile /> : <NoticesDesktop />}
+                element={
+                  <AuthGuard isAuthenticated={isAuthenticated}>
+                    <Notices />
+                  </AuthGuard>
+                }
               ></Route>
               <Route
                 path={ROUTES.ROUTE_RESERVE}
@@ -108,28 +115,51 @@ function App() {
               ></Route>
               <Route
                 path={ROUTES.ROUTE_CALENDAR_RESERVATIONS}
-                element={<Reservations></Reservations>}
+                element={<CalendarReservations></CalendarReservations>}
+              ></Route>
+              <Route
+                path={ROUTES.ROUTE_CALENDAR_EVENTS}
+                element={<CalendarEvents></CalendarEvents>}
               ></Route>
               <Route
                 path={`${ROUTES.ROUTE_EVENT}/:idEvento?`}
                 element={<EventView></EventView>}
               ></Route>
               <Route
+                path={`${ROUTES.ROUTE_EVENT}/:idEvento?`}
+                element={<EventView></EventView>}
+              ></Route>
+              <Route
+                path={`${ROUTES.ROUTE_EVENT}/:idEvento?${ROUTES.ROUTE_EDIT}/:idSeccion?`}
+                element={<EventUpdateForm></EventUpdateForm>}
+              ></Route>{" "}
+              <Route
                 path={`${ROUTES.ROUTE_NOTIFY}/:paso?`}
-                element={<EventForm />}
+                element={
+                  <AuthGuard isAuthenticated={isAuthenticated}>
+                    <EventForm />
+                  </AuthGuard>
+                }
               ></Route>{" "}
               <Route
                 path={`${ROUTES.ROUTE_SEARCH_EVENTS}`}
                 element={<Events />}
               ></Route>{" "}
               <Route
-                path={`/test`}
+                path={`${ROUTES.ROUTE_MY_EVENTS}`}
                 element={
-                  isMobile ? <Stack>Mobile</Stack> : <Stack>Desktop</Stack>
+                  <AuthGuard isAuthenticated={isAuthenticated}>
+                    <Profile></Profile>
+                  </AuthGuard>
                 }
               ></Route>{" "}
+              <Route path={`/test`} element={<TaskEndScreen />}></Route>{" "}
             </Routes>
           </Stack>
+          <Bottombar
+            noticeAmount={noticeAmount}
+            isAuthenticated={isAuthenticated}
+          ></Bottombar>
         </Stack>
       </ThemeProvider>
     </>

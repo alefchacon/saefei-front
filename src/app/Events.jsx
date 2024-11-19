@@ -4,7 +4,7 @@ import CardEvent from "../features/events/components/CardEvent";
 import { useLayoutEffect } from "react";
 import CardActionArea from "@mui/material/CardActionArea";
 import { useNavigate } from "react-router-dom";
-import { ROUTE_EVENT } from "../stores/ROUTES";
+import { ROUTE_EVENT } from "../stores/routes";
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
@@ -17,11 +17,10 @@ import useAuth from "../features/auth/businessLogic/useAuth";
 import { useEvents } from "../features/events/businessLogic/useEvents";
 import useIsMobile from "../components/hooks/useIsMobile";
 import moment from "moment";
-import { ROLE_COORDINATOR } from "../stores/ROLES";
 
-import * as FILTERS from "../stores/FILTERS_EVENT";
+import * as FILTERS from "../stores/filtersEvent";
 
-export default function Events() {
+export default function Events({ userEvents = false, noPage = false }) {
   const { events, getEvents } = useEvents();
   const navigate = useNavigate();
   const user = useAuth().getUser();
@@ -35,7 +34,7 @@ export default function Events() {
   //If the filters change, launch a brand new search:
   useLayoutEffect(() => {
     fetchNextPage(true);
-  }, [filters]);
+  }, [filters, userEvents]);
 
   const fetchNextPage = async (newSearch = false) => {
     const includeDate = filters.searchbar === "";
@@ -64,8 +63,10 @@ export default function Events() {
   const getFilters = (includeDate = true) => {
     const filterArray = [`orden=${filters.order}`, `q=${filters.searchbar}`];
 
-    if (includeDate) {
+    if (includeDate && !userEvents) {
       filterArray.push(`fecha=${moment(filters.date).format("YYYY-MM")}`);
+    } else if (userEvents) {
+      filterArray.push(`delUsuario=${true}`);
     }
 
     return filterArray;
@@ -78,14 +79,9 @@ export default function Events() {
     }));
   };
 
-  return (
-    <Page
-      title={"Eventos"}
-      onBottomReached={fetchNextPage}
-      bgcolor="white"
-      disablePadding
-    >
-      <Stack id={"principal"} className="right-padding" gap={1}>
+  const eventList = (
+    <>
+      <Stack id={"principal"} gap={1}>
         <Stack id={"filters"} padding={"10px"} gap={"20px"}>
           <SearchField
             onSearch={handleSearchbarChange}
@@ -98,25 +94,27 @@ export default function Events() {
             justifyContent={"space-between"}
           >
             <Stack
-              direction={{ xs: "column", md: "row" }}
+              direction={"row"}
               gap={"1vw"}
               width={"100%"}
               justifyContent={"space-between"}
             >
               <Stack direction={"row"} gap={"1vw"}>
-                <LocalizationProvider dateAdapter={AdapterMoment}>
-                  <DatePicker
-                    label="Mes"
-                    name="selected-months"
-                    value={filters.date}
-                    onAccept={handleDateChange}
-                    views={["month", "year"]}
-                    sx={{ maxWidth: "170px" }}
-                    slotProps={{
-                      textField: { variant: "standard", fullWidth: false },
-                    }}
-                  />
-                </LocalizationProvider>
+                {!userEvents && (
+                  <LocalizationProvider dateAdapter={AdapterMoment}>
+                    <DatePicker
+                      label="Mes"
+                      name="selected-months"
+                      value={filters.date}
+                      onAccept={handleDateChange}
+                      views={["month", "year"]}
+                      sx={{ maxWidth: "170px" }}
+                      slotProps={{
+                        textField: { variant: "standard", fullWidth: false },
+                      }}
+                    />
+                  </LocalizationProvider>
+                )}
                 <SelectCustom
                   variant="standard"
                   label="Orden"
@@ -132,7 +130,7 @@ export default function Events() {
                 </SelectCustom>
               </Stack>
 
-              {user.rol?.id === ROLE_COORDINATOR.id && (
+              {user?.isCoordinator && (
                 <Button variant="contained" disableElevation>
                   {isMobile ? "Reporte" : "Generar reporte"}
                 </Button>
@@ -141,17 +139,38 @@ export default function Events() {
           </Stack>
         </Stack>
         <br />
-        {events.map((eventUV, index) => (
-          <CardActionArea
-            key={index}
-            onClick={() => navigate(`${ROUTE_EVENT}/${eventUV.id}`)}
-          >
-            <CardEvent event={eventUV} className={"card shadow"} />
-          </CardActionArea>
-        ))}
+        <CardList>
+          {events.map((eventUV, index) => (
+            <CardActionArea
+              key={index}
+              onClick={() => navigate(`${ROUTE_EVENT}/${eventUV.id}`)}
+            >
+              <CardEvent event={eventUV} />
+            </CardActionArea>
+          ))}
+        </CardList>
       </Stack>
       <CardList label="Reservaciones"></CardList>
-      <CardList></CardList>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+    </>
+  );
+
+  return (
+    <Page
+      title={`Eventos ${userEvents ? `de ${user?.fullname}` : ""}`}
+      onBottomReached={fetchNextPage}
+      disablePadding={isMobile}
+      disableLoading={noPage}
+      bgcolor="white"
+      showHeader={!isMobile}
+    >
+      {eventList}
     </Page>
   );
 }

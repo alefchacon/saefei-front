@@ -16,6 +16,7 @@ function CustomTabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
       padding={"20px"}
+      overflow={"auto"}
     >
       {children}
     </Stack>
@@ -54,7 +55,9 @@ export default function ChipTabs({ children }) {
           />
         ))}
       </Stack>
-      <CustomTabPanel value={value}>{children[value]}</CustomTabPanel>
+      <CustomTabPanel index={value} value={value}>
+        {children[value]}
+      </CustomTabPanel>
     </Box>
   );
 }

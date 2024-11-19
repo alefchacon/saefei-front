@@ -5,9 +5,11 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
+import { useLoading } from "./providers/LoadingProvider";
 
 export default function SearchField({ onSearch, onDeleteQuery }) {
   const [query, setQuery] = useState("");
+  const { isLoading } = useLoading();
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -39,8 +41,9 @@ export default function SearchField({ onSearch, onDeleteQuery }) {
         p: "2px 4px",
         display: "flex",
         alignItems: "center",
-        backgroundColor: "var(--bg)",
+        backgroundColor: "var(--bg-hover)",
       }}
+      elevation={0}
     >
       <InputBase
         sx={{ ml: 1, flex: 1 }}

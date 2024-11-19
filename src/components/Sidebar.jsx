@@ -16,24 +16,24 @@ import AddAlertIcon from "@mui/icons-material/AddAlert";
 import SchoolIcon from "@mui/icons-material/School";
 import FolderSharedIcon from "@mui/icons-material/FolderShared";
 import { styled } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import * as ROUTES from "../stores/ROUTES";
+import { useNavigate, useLocation } from "react-router-dom";
+import * as ROUTES from "../stores/routes";
 import MenuIcon from "@mui/icons-material/Menu";
 import Badge from "@mui/material/Badge";
 import IconButton from "@mui/material/IconButton";
-import { useModal } from "./hooks/useModal";
 import LoginIcon from "@mui/icons-material/Login";
 import LogInForm from "../features/auth/components/LogInForm";
 import useAuth from "../features/auth/businessLogic/useAuth";
-import useNotices from "../features/notices/businessLogic/useNotices";
 import Logo from "../components/Logo";
 import ChipCustom from "./Chip";
-export default function Sidebar() {
-  const [selectedIndex, setSelectedIndex] = useState(1);
-  const { Modal, openModal, closeModal } = useModal();
-  const user = useAuth().getUser();
-  const { getNoticeCount, noticeAmount } = useNotices();
+import { useModal } from "./providers/ModalProvider";
 
+export default function Sidebar({ noticeAmount }) {
+  const [selectedIndex, setSelectedIndex] = useState(1);
+  const { openModal, closeModal } = useModal();
+  const user = useAuth().getUser();
+
+  const location = useLocation();
   const navigate = useNavigate();
 
   const handleListItemClick = (event, index, route) => {
@@ -42,14 +42,14 @@ export default function Sidebar() {
   };
 
   const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
-    borderRadius: "10px",
+    borderRadius: "0px",
     display: "flex",
     color: "inherit",
     "&.Mui-selected": {
-      backgroundColor: "white",
-      color: "var(--blue)",
-      boxShadow: "0 0 2px 0px rgba(0,0,0,0.2)",
+      backgroundColor: "var(--blue2)",
+      boxShadow: "0 0 2px 0px rgba(0,0,0,0.5)",
     },
+    padding: "8px 24px",
   }));
 
   const showLoginModal = () => {
@@ -59,12 +59,58 @@ export default function Sidebar() {
   const handleLogin = () => {
     closeModal();
   };
-  useLayoutEffect(() => {
-    getNoticeCount();
-  }, []);
 
   const toggleGrow = () => setGrown(!grown);
   const [grown, setGrown] = useState(true);
+
+  function AuthOptions() {
+    if (!user) {
+      return (
+        <CustomListItemButton onClick={showLoginModal}>
+          <ListItemIcon sx={{ color: "inherit" }}>
+            <LoginIcon></LoginIcon>
+          </ListItemIcon>
+          <ListItemText primary="Entrar" />
+        </CustomListItemButton>
+      );
+    }
+
+    return (
+      <>
+        <CustomListItemButton className="asdf" onClick={showLoginModal}>
+          <ListItemIcon sx={{ color: "inherit" }}>
+            <LoginIcon></LoginIcon>
+          </ListItemIcon>
+          <Stack className={grown ? "appear" : "disappear"}>
+            <b>{user.fullname}</b>
+            <ChipCustom label={user.job} color={"white"}></ChipCustom>
+          </Stack>
+        </CustomListItemButton>
+
+        <CustomListItemButton
+          selected={location.pathname.includes(ROUTES.ROUTE_INBOX)}
+          onClick={(event) => handleListItemClick(event, 0, ROUTES.ROUTE_INBOX)}
+        >
+          <ListItemIcon sx={{ color: "inherit" }}>
+            <InboxIcon />
+          </ListItemIcon>
+          <ListItemText primary="Bandeja" />
+          {grown && <Badge badgeContent={noticeAmount} color="error"></Badge>}
+        </CustomListItemButton>
+        <CustomListItemButton
+          selected={location.pathname.includes(ROUTES.ROUTE_MY_EVENTS)}
+          onClick={(event) =>
+            handleListItemClick(event, 1, ROUTES.ROUTE_MY_EVENTS)
+          }
+        >
+          <ListItemIcon sx={{ color: "inherit" }}>
+            <FolderSharedIcon></FolderSharedIcon>
+          </ListItemIcon>
+          <ListItemText primary="Mis eventos" />
+        </CustomListItemButton>
+      </>
+    );
+  }
 
   return (
     <>
@@ -78,74 +124,30 @@ export default function Sidebar() {
         }}
         className={grown ? `grow` : "shrink"}
         display={{ xs: "none", md: "flex" }}
-        padding={"10px 20px 50px 20px"}
-        borderRadius={"0 10px 10px 0"}
+        padding={"10px 0px 50px 0px"}
       >
         <br />
-        <Stack
-          direction={"row"}
-          alignItems={"start"}
-          gap={2}
-          paddingLeft={"10px"}
-        >
+        <Stack direction={"row"} alignItems={"start"} gap={2}>
           <IconButton
-            sx={{ color: "inherit", width: "fit-content" }}
+            sx={{
+              color: "inherit",
+              width: "fit-content",
+              padding: "0 0 0 24px",
+            }}
             onClick={toggleGrow}
           >
             <MenuIcon></MenuIcon>
           </IconButton>
-          <Logo className={grown ? "appear" : "disappear"}></Logo>
+          {grown && <Logo className={grown ? "appear" : "disappear"}></Logo>}
         </Stack>
         <br />
         <List component="nav" aria-label="main mailbox folders">
-          {user ? (
-            <CustomListItemButton onClick={showLoginModal}>
-              <ListItemIcon sx={{ color: "inherit" }}>
-                <LoginIcon></LoginIcon>
-              </ListItemIcon>
-              <Stack className={grown ? "appear" : "disappear"}>
-                <b>{user.fullname}</b>
-
-                <ChipCustom label={user.job} color={"white"}></ChipCustom>
-              </Stack>
-            </CustomListItemButton>
-          ) : (
-            <CustomListItemButton onClick={showLoginModal}>
-              <ListItemIcon sx={{ color: "inherit" }}>
-                <LoginIcon></LoginIcon>
-              </ListItemIcon>
-              <ListItemText primary="Entrar" />
-            </CustomListItemButton>
-          )}
-
-          <CustomListItemButton
-            selected={selectedIndex === 0}
-            onClick={(event) =>
-              handleListItemClick(event, 0, ROUTES.ROUTE_INBOX)
-            }
-          >
-            <ListItemIcon sx={{ color: "inherit" }}>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary="Bandeja" />
-            {grown && <Badge badgeContent={noticeAmount} color="error"></Badge>}
-          </CustomListItemButton>
-          <CustomListItemButton
-            selected={selectedIndex === 1}
-            onClick={(event) =>
-              handleListItemClick(event, 1, ROUTES.ROUTE_MY_EVENTS)
-            }
-          >
-            <ListItemIcon sx={{ color: "inherit" }}>
-              <FolderSharedIcon></FolderSharedIcon>
-            </ListItemIcon>
-            <ListItemText primary="Mis eventos" />
-          </CustomListItemButton>
+          <AuthOptions></AuthOptions>
         </List>
-        <Divider />
+        <Divider sx={{ backgroundColor: "rgba(255,255,255,0.3)" }} />
         <List component="nav" aria-label="secondary mailbox folder">
           <CustomListItemButton
-            selected={selectedIndex === 2}
+            selected={location.pathname.includes(ROUTES.ROUTE_SEARCH_EVENTS)}
             onClick={(event) =>
               handleListItemClick(event, 2, ROUTES.ROUTE_SEARCH_EVENTS)
             }
@@ -156,7 +158,7 @@ export default function Sidebar() {
             <ListItemText primary="Buscar eventos" />
           </CustomListItemButton>
           <CustomListItemButton
-            selected={selectedIndex === 3}
+            selected={location.pathname.includes(ROUTES.ROUTE_CALENDAR_EVENTS)}
             onClick={(event) =>
               handleListItemClick(event, 3, ROUTES.ROUTE_CALENDAR_EVENTS)
             }
@@ -167,7 +169,9 @@ export default function Sidebar() {
             <ListItemText primary="Calendario de eventos" />
           </CustomListItemButton>
           <CustomListItemButton
-            selected={selectedIndex === 4}
+            selected={location.pathname.includes(
+              ROUTES.ROUTE_CALENDAR_RESERVATIONS
+            )}
             onClick={(event) =>
               handleListItemClick(event, 4, ROUTES.ROUTE_CALENDAR_RESERVATIONS)
             }
@@ -179,7 +183,7 @@ export default function Sidebar() {
             <ListItemText primary="Reservaciones de espacios" />
           </CustomListItemButton>
           <CustomListItemButton
-            selected={selectedIndex === 5}
+            selected={location.pathname.includes(ROUTES.ROUTE_NOTIFY)}
             onClick={(event) =>
               handleListItemClick(event, 5, `${ROUTES.ROUTE_NOTIFY}?paso=0`)
             }
@@ -191,7 +195,6 @@ export default function Sidebar() {
           </CustomListItemButton>
         </List>
       </Stack>
-      <Modal></Modal>
     </>
   );
 }

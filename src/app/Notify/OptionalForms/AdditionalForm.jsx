@@ -14,7 +14,7 @@ export default function AdditionalForm({}) {
           relacionada con el evento.
         </FormLabel>
         <TextField
-          value={values.additional}
+          value={values?.additional}
           onChange={(e) => setFieldValue("additional", e.target.value)}
           placeholder="Escriba su respuesta"
           variant="filled"

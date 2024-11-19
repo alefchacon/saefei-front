@@ -14,8 +14,9 @@ function CustomTabPanel(props) {
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
-      padding={{ md: "20px", xs: "0px" }}
-      overflow={"hidden"}
+      height={"100%"}
+      padding={{ md: "", xs: "5px 0" }}
+      overflow={"auto"}
     >
       {children}
     </Stack>
@@ -53,10 +54,12 @@ export default function TabsCustom({ children }) {
     <Stack
       sx={{
         width: "100%",
-        maxHeight: "100%",
+        height: "100%",
       }}
     >
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+      <Box
+        sx={{ borderBottom: 1, borderColor: "divider", marginBottom: "10px" }}
+      >
         <Tabs
           className={"sticky"}
           value={value}
