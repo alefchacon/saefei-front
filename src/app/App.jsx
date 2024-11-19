@@ -29,6 +29,9 @@ import isAuthenticated from "../features/auth/businessLogic/isAuthenticated";
 import TaskEndScreen from "../components/TaskEndScreen";
 import getUser from "../features/auth/businessLogic/getUser";
 import Profile from "./Profile";
+import { useLocation } from "react-router-dom";
+import { useModal } from "../components/providers/ModalProvider";
+import LogInForm from "../features/auth/components/LogInForm";
 const theme = createTheme({
   palette: {
     primary: {
@@ -54,6 +57,10 @@ const theme = createTheme({
 
 function App() {
   useAxiosInterceptors();
+  const location = useLocation();
+  const state = location.state;
+
+  const { openModal, closeModal } = useModal();
 
   moment.locale("es-mx");
   const isMobile = useIsMobile();
@@ -66,6 +73,25 @@ function App() {
       getNoticeAmount().then((response) => setNoticeAmount(response));
     }
   }, []);
+
+  const showLoginModal = (message = "") => {
+    openModal(
+      "Entrar",
+      <LogInForm onLogin={handleLogin}>{message}</LogInForm>,
+      "",
+      true
+    );
+  };
+  const handleLogin = () => {
+    closeModal();
+  };
+
+  useLayoutEffect(() => {
+    if (state?.askLogIn) {
+      showLoginModal(state?.message);
+    }
+  }, [state?.askLogIn]);
+
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -159,6 +185,7 @@ function App() {
           <Bottombar
             noticeAmount={noticeAmount}
             isAuthenticated={isAuthenticated}
+            onLogIn={showLoginModal}
           ></Bottombar>
         </Stack>
       </ThemeProvider>

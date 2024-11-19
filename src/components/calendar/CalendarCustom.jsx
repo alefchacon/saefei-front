@@ -28,18 +28,6 @@ const coloredDateCellWrapper = ({ children }) =>
     },
   });
 
-const eventWrapper = ({ children }) => {
-  return cloneElement(Children.only(children), {
-    style: {
-      backgroundColor: "var(--blue)",
-      borderRadius: "100px",
-      fontFamily: "roboto condensed",
-      padding: "0 10px",
-      fontWeight: "500",
-    },
-  });
-};
-
 const StyledDatePicker = styled(DatePicker)(({ theme }) => ({
   "& .MuiInputBase-input": {
     fontSize: "16px",
@@ -66,6 +54,7 @@ export default function CalendarCustom({
   items,
   forEvents,
   actionButton,
+  eventWrapper,
   ...props
 }) {
   const [selectedMonth, setSelectedMonth] = useState(moment());
@@ -119,7 +108,7 @@ export default function CalendarCustom({
         justifyContent={"space-between"}
         alignItems={"center"}
         direction={"row"}
-        padding={"0 20px 0px 20px"}
+        padding={"0 20px"}
       >
         {" "}
         <Stack gap={1} direction={"row"}>
@@ -178,6 +167,7 @@ export default function CalendarCustom({
     >
       <Calendar
         titleAccessor={forEvents ? "name" : (item) => item.space.name}
+        resourceIdAccessor={"id"}
         startAccessor={"date"}
         endAccessor={"date"}
         components={components}

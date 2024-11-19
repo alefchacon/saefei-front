@@ -1,28 +1,18 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
 import Badge from "@mui/material/Badge";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import BottomNavigation from "@mui/material/BottomNavigation";
-import BottomNavigationAction from "@mui/material/BottomNavigationAction";
-import RestoreIcon from "@mui/icons-material/Restore";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AddAlertIcon from "@mui/icons-material/AddAlert";
-import DomainIcon from "@mui/icons-material/Domain";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import InboxIcon from "@mui/icons-material/Inbox";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate, useLocation } from "react-router-dom";
 import * as ROUTES from "../stores/routes";
-import { styled } from "@mui/material/styles";
-import LogInForm from "../features/auth/components/LogInForm";
 import { useModal } from "./providers/ModalProvider";
 import { useTheme } from "@emotion/react";
-import { IconButton, ListItem } from "@mui/material";
 import ListItemButton from "@mui/material/ListItemButton";
 import LoginIcon from "@mui/icons-material/Login";
-import Alert from "@mui/material/Alert";
+import AddLocationIcon from "@mui/icons-material/AddLocation";
 
 function NavOption({
   route = null,
@@ -65,42 +55,26 @@ function NavOption({
           }}
         ></Badge>
       )}
-      {icon}
-      <Typography variant="caption">{label}</Typography>
+      <Stack
+        bgcolor={selected ? "var(--selected)" : ""}
+        padding={"5px 20px"}
+        borderRadius={"100px"}
+      >
+        {icon}
+      </Stack>
+      <Typography variant="caption" fontWeight={selected ? 600 : 400}>
+        {label}
+      </Typography>
     </ListItemButton>
   );
 }
 
-export default function Bottombar({ noticeAmount, isAuthenticated }) {
+export default function Bottombar({ noticeAmount, isAuthenticated, onLogIn }) {
   const navigate = useNavigate();
   const { openModal, closeModal } = useModal();
 
-  const showLoginModal = (message = "") => {
-    openModal(
-      "Entrar",
-      <LogInForm onLogin={handleLogin}>{message}</LogInForm>,
-      "",
-      true
-    );
-  };
-  const handleLogin = () => {
-    closeModal();
-  };
-
   const iconSize = {
     fontSize: "28px",
-  };
-
-  const handleNavigateToNotify = () => {
-    if (isAuthenticated) {
-      navigate(ROUTES.ROUTE_NOTIFY);
-    } else {
-      showLoginModal(
-        <Alert severity="info">
-          Debe iniciar sesión para poder notificar su evento
-        </Alert>
-      );
-    }
   };
 
   return (
@@ -118,13 +92,13 @@ export default function Bottombar({ noticeAmount, isAuthenticated }) {
       <NavOption
         label="Notificar"
         route={ROUTES.ROUTE_NOTIFY}
-        onClick={handleNavigateToNotify}
+        onClick={() => navigate(ROUTES.ROUTE_NOTIFY)}
         icon={<AddAlertIcon sx={iconSize} />}
       />
       <NavOption
         label="Reservar"
         route={ROUTES.ROUTE_CALENDAR_RESERVATIONS}
-        icon={<LocationOnIcon sx={iconSize} />}
+        icon={<AddLocationIcon sx={iconSize} />}
         onClick={() => navigate(ROUTES.ROUTE_CALENDAR_RESERVATIONS)}
       />
       <NavOption
@@ -154,7 +128,7 @@ export default function Bottombar({ noticeAmount, isAuthenticated }) {
         <NavOption
           label="Entrar"
           icon={<LoginIcon sx={iconSize} />}
-          onClick={showLoginModal}
+          onClick={onLogIn}
         />
       )}
     </Stack>

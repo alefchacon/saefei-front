@@ -24,7 +24,7 @@ export const useReservations = () => {
     return apiWrapper.get(`reservaciones?
       anio[eq]=${date.format("YYYY")}
       &mes[eq]=${date.format("MM")}
-      &idEstado[gte]=${STATUS.ACCEPTED}
+      &idEstado[eq]=${STATUS.ACCEPTED}
       &idEstado[lte]=${STATUS.EVALUATED}`);
   };
 

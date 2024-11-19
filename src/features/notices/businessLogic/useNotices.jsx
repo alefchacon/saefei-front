@@ -21,6 +21,7 @@ export default function useNotices() {
   const markAsRead = useCallback(async (noticeToMark) => {
     noticeToMark.visto = 1;
 
+    /*
     const response = await apiWrapper.put(
       `avisos/${noticeToMark.id}/`,
       noticeToMark
@@ -29,6 +30,7 @@ export default function useNotices() {
     if (response.status !== 200) {
       throw new Error("Error al actualizar el aviso");
     }
+      */
 
     const arrayKeyValue = Object.entries(notices).find(([arrayName, array]) =>
       array.some((notice) => notice.id === noticeToMark.id)

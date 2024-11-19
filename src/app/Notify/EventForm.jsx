@@ -64,7 +64,11 @@ export default function EventForm({}) {
   }, []);
 
   const handleSubmit = (values, actions) => {
-    storeEvent(values);
+    storeEvent(values).then((response) => {
+      if (response.status === 201) {
+        navigate("/test");
+      }
+    });
   };
 
   if (loading) {

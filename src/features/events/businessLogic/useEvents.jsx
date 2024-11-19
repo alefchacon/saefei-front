@@ -63,7 +63,7 @@ export const useEvents = () => {
     });
     formData.append("idEstado", 1);
 
-    const response = await apiWrapper.post(`eventos`, formData, {
+    return await apiWrapper.post(`eventos`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
   });
@@ -122,11 +122,7 @@ export const useEvents = () => {
     }
     formData.append("idTipoArchivo", idTipoArchivo);
     formData.append("idEvento", idEvento);
-    const response = await apiWrapper.post(
-      `archivos/`,
-      formData,
-      formDataConfig
-    );
+    return await apiWrapper.post(`archivos/`, formData, formDataConfig);
   };
 
   return {

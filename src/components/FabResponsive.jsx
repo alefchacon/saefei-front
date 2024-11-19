@@ -6,6 +6,7 @@ export default function FabResponsive({
   label = "Label",
   variant = "circular",
   onClick,
+  children,
 }) {
   const isMobile = useIsMobile();
 
@@ -18,7 +19,7 @@ export default function FabResponsive({
           sx={{ position: "fixed", bottom: 90, right: 20 }}
           onClick={onClick}
         >
-          <Typography>{label}</Typography>
+          {children}
         </Fab>
       ) : (
         ""

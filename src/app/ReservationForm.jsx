@@ -20,7 +20,9 @@ import { useReservations } from "../features/reservations/businessLogic/useReser
 import FormControl from "@mui/material/FormControl";
 import * as yup from "yup";
 import { MESSAGES_FIELD } from "../stores/messages";
-import { useModal } from "../components/hooks/useModal";
+import { useNavigate } from "react-router-dom";
+import { useModal } from "../components/providers/ModalProvider";
+
 import ButtonResponsive from "../components/ButtonResponsive";
 import Select from "../components/Select";
 import Fade from "@mui/material/Fade";
@@ -74,27 +76,34 @@ const checkOverlap = (proposedReservation, existingReservation) => {
 };
 
 export default function ReservationForm() {
-  const { openModal, closeModal, Modal } = useModal();
+  const { openModal, closeModal } = useModal();
   const { addReservation } = useReservations();
   const user = useAuth().getUser();
+  const navigate = useNavigate();
 
   const handleSubmit = async (values, actions) => {
-    const response = await addReservation(values);
+    //const response = await addReservation(values);
+    const response = { status: 201 };
     if (response.status === 201) {
       openModal(
         "Reservación enviada",
-        <DialogContentText>
+        <div>
           Gracias por reservar su espacio. La administración de la facultad
           revisará su reservación y le responderá si puede realizarse a su
-          correo electrónico.
-        </DialogContentText>,
-        <>
-          <Button onClick={() => handleMoreReservations(actions)}>
-            Hacer más reservaciones
-          </Button>
-          <Button onClick={closeModal}>Regresar al calendario</Button>
-        </>,
-        false
+          correo electrónico
+          <Stack className="button-column">
+            <Button
+              onClick={() => {
+                closeModal();
+                navigate("/test");
+              }}
+            >
+              Regresar al calendario
+            </Button>
+          </Stack>
+        </div>,
+        "",
+        true
       );
     }
   };
@@ -175,14 +184,12 @@ export default function ReservationForm() {
                 <Stack>
                   <ProposedScheduleForm />
                   <br />
-                  <ButtonResponsive type="submit">Reservar</ButtonResponsive>
                 </Stack>
               </Fade>
             </Form>
           </LocalizationProvider>
         )}
       </Formik>
-      <Modal></Modal>
     </Page>
   );
 }
@@ -334,6 +341,11 @@ const ProposedScheduleForm = ({}) => {
               },
             }}
           ></TextField>
+          <Stack className="button-row">
+            <Button type="submit" variant="contained" disableElevation>
+              Reservar espacio
+            </Button>
+          </Stack>
         </FormControl>
       </Stack>
     )

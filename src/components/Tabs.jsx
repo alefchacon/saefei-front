@@ -57,15 +57,15 @@ export default function TabsCustom({ children }) {
         height: "100%",
       }}
     >
-      <Box
-        sx={{ borderBottom: 1, borderColor: "divider", marginBottom: "10px" }}
-      >
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           className={"sticky"}
           value={value}
           onChange={handleChange}
           aria-label="tabs"
           role="tablist"
+          variant="scrollable"
+          scrollButtons="auto"
         >
           {children.map((child, index) => (
             <Tab key={index} label={child.props.label} {...a11yProps(0)} />

@@ -5,13 +5,19 @@ import Page from "../components/Page";
 import CalendarCustom from "../components/calendar/CalendarCustom";
 import { useReservations } from "../features/reservations/businessLogic/useReservations";
 import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 import { ROUTE_RESERVE } from "../stores/routes";
 import useIsMobile from "../components/hooks/useIsMobile";
 import DayViewWrapper from "../components/calendar/DayViewWrapper";
 import DayView from "../components/calendar/DayView";
 import { useModal } from "../components/providers/ModalProvider";
-
+import AddLocationIcon from "@mui/icons-material/AddLocation";
+import FabResponsive from "../components/FabResponsive";
+import {
+  getSpaceColorBySpaceName,
+  SPACE_COLORS,
+} from "../stores/spaceProperties";
 export default function CalendarReservations() {
   const [selectedDate, setSelectedDate] = useState(moment());
   const [reservations, setReservations] = useState([]);
@@ -34,10 +40,16 @@ export default function CalendarReservations() {
     fetchReservations();
   }, []);
 
+  const test = {
+    backgroundColor: "red",
+    color: "green",
+  };
+
   const spaceWrapper = ({ children }) => {
+    const spaceName = children.props.children.props.children;
     return cloneElement(Children.only(children), {
       style: {
-        backgroundColor: "var(--blue)",
+        ...getSpaceColorBySpaceName(spaceName),
         borderRadius: "100px",
         fontFamily: "roboto condensed",
         padding: "0 10px",
@@ -48,13 +60,23 @@ export default function CalendarReservations() {
 
   const actionButton = (
     <Link to={ROUTE_RESERVE} style={{ height: "100%", display: "flex" }}>
-      <Button
-        disableElevation
-        onClick={() => console.log("asdf")}
-        variant="contained"
-      >
-        Reservar espacios
-      </Button>
+      {isMobile ? (
+        <FabResponsive label="responder notificación" variant="extended">
+          <Stack
+            direction={"row"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            gap={"10px"}
+          >
+            <AddLocationIcon></AddLocationIcon>
+            Reservar espacio
+          </Stack>
+        </FabResponsive>
+      ) : (
+        <Button disableElevation variant="contained">
+          Reservar espacio
+        </Button>
+      )}
     </Link>
   );
 

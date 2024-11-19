@@ -14,7 +14,15 @@ export default function AuthGuard({
 
   if (!isAuthenticated) {
     return (
-      <Navigate to={ROUTE_CALENDAR_EVENTS} state={{ from: location }} replace />
+      <Navigate
+        to={ROUTE_CALENDAR_EVENTS}
+        state={{
+          from: location,
+          askLogIn: true,
+          message: "Por favor, inicie sesión",
+        }}
+        replace
+      />
     );
   }
 
