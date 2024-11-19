@@ -8,6 +8,8 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { useLocation } from "react-router-dom";
 import { useLoading } from "./providers/LoadingProvider";
 import { useNavigate } from "react-router-dom";
+import useIsMobile from "./hooks/useIsMobile";
+import DialogTitle from "@mui/material/DialogTitle";
 
 export default function Header({
   title = "",
@@ -22,6 +24,7 @@ export default function Header({
 }) {
   const location = useLocation();
   const { loading } = useLoading();
+  const isMobile = useIsMobile();
   const canGoBack =
     location.pathname.split("/").length > 2 || Boolean(onGoBack);
 
@@ -58,7 +61,7 @@ export default function Header({
             <IconButton
               id="go-back-button"
               onClick={handleGoBack}
-              sx={{ maxHeight: "fit-content", padding: 0 }}
+              sx={{ maxHeight: "fit-content", padding: "8px" }}
             >
               <ArrowBackIcon></ArrowBackIcon>
             </IconButton>
@@ -85,6 +88,7 @@ export default function Header({
           </Stack>
         </Stack>
       </Stack>
+      {isMobile && <Divider></Divider>}
     </>
   );
 }

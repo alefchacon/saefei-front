@@ -11,7 +11,7 @@
   --selected: #dedfff;
   --blue: #18529D;
   --blue2: #356eb8;
-  --blue-dark: #84afe6;
+  --light-blue: #c9e0ff;
   --light-green: #e6f7e2;
   --green: #269E18;
   --yellow: #9E6F18;
@@ -105,13 +105,21 @@ p{
   min-height: fit-content;
 }
 
+.button-column{
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+  padding-top: 40px;
+}
+
 .button-row{
   display: flex;
   flex-direction: row !important;
   justify-content: end;
   gap: 20px;
   align-items: end;
-  padding-top: 20px;
+  padding-top: 40px;
 }
 
 #content{
@@ -160,7 +168,7 @@ p{
 .side-padding{
   padding-bottom: 0rem;
   padding-left: clamp(10px,10%, 100px);
-  padding-right: clamp(10px, 30%, 800px) 
+  padding-right: clamp(10px, 30%, 800px);
 }
 
 .base-padding{
@@ -251,10 +259,12 @@ p{
 } 
 
 @media only screen and (max-width: 936px) {
-  
+  .base-padding{
+    padding: 0 24px;
+  }
   
   .side-padding{
-    padding: 16px 16px;
+    padding: 24px 24px;
   }
   
   #header{

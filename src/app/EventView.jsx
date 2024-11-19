@@ -28,6 +28,7 @@ import CardEventSection from "../features/events/components/CardEventSection";
 import useAuth from "../features/auth/businessLogic/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ROUTE_EDIT } from "../stores/routes";
+import SendIcon from "@mui/icons-material/Send";
 export default function EventView({ defaultEventUV, onReply, disableLoading }) {
   const isMobile = useIsMobile();
   const { getUser } = useAuth();
@@ -166,7 +167,7 @@ export default function EventView({ defaultEventUV, onReply, disableLoading }) {
         }
       >
         <Stack
-          gap={"5px"}
+          gap={"8px"}
           id={"principal"}
           position={"relative"}
           paddingBottom={{ md: "", xs: "200px" }}
@@ -351,11 +352,23 @@ export default function EventView({ defaultEventUV, onReply, disableLoading }) {
               </CardEventSection>
             )}
           </Stack>
-          <FabResponsive
-            label="responder notificación"
-            variant="extended"
-            onClick={showReplyModal}
-          ></FabResponsive>
+          {user?.isCoordinator && (
+            <FabResponsive
+              label="responder notificación"
+              variant="extended"
+              onClick={showReplyModal}
+            >
+              <Stack
+                direction={"row"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                gap={"10px"}
+              >
+                <SendIcon></SendIcon>
+                Responder
+              </Stack>
+            </FabResponsive>
+          )}
           {!isMobile && <ResponsePanel></ResponsePanel>}
         </Stack>
       </Page>

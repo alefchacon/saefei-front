@@ -70,11 +70,14 @@ export default function Modal({
         maxWidth={"md"}
         slotProps={{
           backdrop: {
-            style: { backgroundColor: noBackdrop ? "transparent" : "" },
+            style: {
+              backgroundColor: noBackdrop ? "transparent" : "",
+              color: "red",
+            },
           },
         }}
       >
-        <DialogTitle>
+        <DialogTitle sx={{ padding: "24px 16px" }}>
           {goFullscreen ? (
             <MobileTitle>{title}</MobileTitle>
           ) : (

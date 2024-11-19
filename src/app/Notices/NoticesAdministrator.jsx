@@ -21,7 +21,7 @@ import ButtonResponsive from "../../components/ButtonResponsive";
 import { useRef } from "react";
 import { useReservations } from "../../features/reservations/businessLogic/useReservations";
 import CardActionArea from "@mui/material/CardActionArea";
-
+import { useNavigate } from "react-router-dom";
 export default function NoticesAdministrator({
   onLoad,
   notices,
@@ -33,36 +33,38 @@ export default function NoticesAdministrator({
   const user = getUser();
   const replyRef = useRef(null);
   const { acceptReservation, rejectReservation } = useReservations();
+  const navigate = useNavigate();
 
   useLayoutEffect(() => {
     if (onLoad) {
       onLoad();
     }
-  }, []);
-
-  const handleReply = (updatedEvent) => {
-    if (updatedEvent.id === selectedNotice.id) {
-      markAsRead(selectedNotice);
-      setSelectedNotice(null);
+    if (notices.noticesAdministrator.length < 1) {
+      navigate("/test");
     }
-  };
+  }, [notices.noticesAdministrator]);
 
   if (!user.isAdministrator) {
     return;
   }
 
   const handleReject = async (notice, reply) => {
+    /*
     const response = await rejectReservation(notice.reservation, reply);
     if (response.status === 200) {
       await onNoticeUpdate(notice);
-    }
+      }*/
+    await onNoticeUpdate(notice);
   };
 
   const handleAccept = async (notice) => {
+    /*
     const response = await acceptReservation(notice.reservation);
     if (response.status === 200) {
       await onNoticeUpdate(notice);
     }
+      */
+    await onNoticeUpdate(notice);
   };
 
   if (

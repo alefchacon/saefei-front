@@ -9,6 +9,7 @@ import { Formik, Form } from "formik";
 import useAuth from "../businessLogic/useAuth";
 import logIn from "../businessLogic/logIn";
 import { useModal } from "../../../components/providers/ModalProvider";
+import Alert from "@mui/material/Alert";
 
 export default function LogInForm({ onLogin, children }) {
   const isMobile = useIsMobile();
@@ -39,7 +40,7 @@ export default function LogInForm({ onLogin, children }) {
           <Form>
             <Stack gap={"20px"}>
               <Logo></Logo>
-              {children}
+              {children && <Alert severity="info">{children}</Alert>}
               <br />
               <TextField
                 id="email"

@@ -2,9 +2,15 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Page from "./Page";
 
-export default function Message({ title, content, children, center = false }) {
+export default function Message({
+  showHeader = false,
+  title,
+  content,
+  children,
+  center = false,
+}) {
   return (
-    <Page>
+    <Page showHeader={showHeader}>
       <Stack
         height={"100%"}
         justifyContent={"center"}

@@ -15,6 +15,8 @@ import { useModal } from "../components/providers/ModalProvider";
 import CardCalendarEvent from "../features/events/components/CardCalendarEvent";
 import DayViewWrapper from "../components/calendar/DayViewWrapper";
 import DayView from "../components/calendar/DayView";
+import FabResponsive from "../components/FabResponsive";
+import AddAlertIcon from "@mui/icons-material/AddAlert";
 
 export default function CalendarEvents() {
   const [selectedDate, setSelectedDate] = useState(moment());
@@ -40,10 +42,11 @@ export default function CalendarEvents() {
     fetchEvents();
   }, []);
 
-  const spaceWrapper = ({ children }) => {
+  const eventWrapper = ({ children }) => {
     return cloneElement(Children.only(children), {
       style: {
-        backgroundColor: "var(--blue)",
+        backgroundColor: "var(--selected)",
+        color: "var(--blue)",
         borderRadius: "100px",
         fontFamily: "roboto condensed",
         padding: "0 10px",
@@ -54,9 +57,23 @@ export default function CalendarEvents() {
 
   const actionButton = (
     <Link to={ROUTE_NOTIFY} style={{ height: "100%", display: "flex" }}>
-      <Button disableElevation variant="contained">
-        Notificar evento
-      </Button>
+      {isMobile ? (
+        <FabResponsive label="responder notificación" variant="extended">
+          <Stack
+            direction={"row"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            gap={"10px"}
+          >
+            <AddAlertIcon></AddAlertIcon>
+            Notificar evento
+          </Stack>
+        </FabResponsive>
+      ) : (
+        <Button disableElevation variant="contained">
+          Notificar evento
+        </Button>
+      )}
     </Link>
   );
 
@@ -79,8 +96,8 @@ export default function CalendarEvents() {
       onDateSelect={handleDateSelect}
       onMonthChange={handleMonthChange}
       items={events}
-      eventWrapper={spaceWrapper}
-      //actionButton={actionButton}
+      eventWrapper={eventWrapper}
+      actionButton={actionButton}
     ></CalendarCustom>
   );
 
