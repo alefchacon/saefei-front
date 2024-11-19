@@ -86,6 +86,7 @@ export default function Bottombar({ noticeAmount, isAuthenticated, onLogIn }) {
         bottom: 0,
         backgroundColor: "var(--card)",
       }}
+      flex={1}
       direction={"row"}
       display={{ xs: "flex", md: "none" }}
     >

@@ -156,8 +156,6 @@ export default function Events({ userEvents = false, noPage = false }) {
       <br />
       <br />
       <br />
-      <br />
-      <br />
     </>
   );
 

@@ -95,92 +95,99 @@ function App() {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <Stack
-          role={"main"}
-          sx={{ backgroundColor: "var(--bg)" }}
-          display={"flex"}
-          flexDirection={{ md: "row", xs: "column" }}
-          height={"100%"}
-          width={"100%"}
-          position={"relative"}
-        >
+        <Stack height={"100%"}>
           <Stack
-            position={"absolute"}
-            right={0}
-            bgcolor={"var(--dark)"}
-            padding={"0.2px 20px 0.2px 50px"}
-            borderRadius={"0 10px 0 20px"}
-            display={{ md: "block", xs: "none" }}
-            sx={{ opacity: 0.5 }}
-            zIndex={1000}
+            role={"main"}
+            sx={{ backgroundColor: "var(--bg)" }}
+            flexDirection={{ md: "row", xs: "column" }}
+            flex={20}
+            position={"relative"}
           >
-            <Typography color="white">Universidad Veracruzana</Typography>
-          </Stack>
+            <Stack
+              position={"absolute"}
+              right={0}
+              bgcolor={"var(--dark)"}
+              padding={"0.2px 20px 0.2px 50px"}
+              borderRadius={"0 10px 0 20px"}
+              display={{ md: "block", xs: "none" }}
+              sx={{ opacity: 0.5 }}
+              zIndex={1000}
+            >
+              <Typography color="white">Universidad Veracruzana</Typography>
+            </Stack>
 
-          <Sidebar noticeAmount={noticeAmount} />
+            <Sidebar noticeAmount={noticeAmount} />
 
-          <Stack
-            className="flex-2"
-            sx={{
-              position: "relative",
-              backgroundColor: "transparent",
-            }}
-          >
-            <Routes>
-              <Route
-                path={ROUTES.ROUTE_INBOX}
-                element={
-                  <AuthGuard isAuthenticated={isAuthenticated}>
-                    <Notices />
-                  </AuthGuard>
-                }
-              ></Route>
-              <Route
-                path={ROUTES.ROUTE_RESERVE}
-                element={<ReservationForm></ReservationForm>}
-              ></Route>
-              <Route
-                path={ROUTES.ROUTE_CALENDAR_RESERVATIONS}
-                element={<CalendarReservations></CalendarReservations>}
-              ></Route>
-              <Route
-                path={ROUTES.ROUTE_CALENDAR_EVENTS}
-                element={<CalendarEvents></CalendarEvents>}
-              ></Route>
-              <Route
-                path={`${ROUTES.ROUTE_EVENT}/:idEvento?`}
-                element={<EventView></EventView>}
-              ></Route>
-              <Route
-                path={`${ROUTES.ROUTE_EVENT}/:idEvento?`}
-                element={<EventView></EventView>}
-              ></Route>
-              <Route
-                path={`${ROUTES.ROUTE_EVENT}/:idEvento?${ROUTES.ROUTE_EDIT}/:idSeccion?`}
-                element={<EventUpdateForm></EventUpdateForm>}
-              ></Route>{" "}
-              <Route
-                path={`${ROUTES.ROUTE_NOTIFY}/:paso?`}
-                element={
-                  <AuthGuard isAuthenticated={isAuthenticated}>
-                    <EventForm />
-                  </AuthGuard>
-                }
-              ></Route>{" "}
-              <Route
-                path={`${ROUTES.ROUTE_SEARCH_EVENTS}`}
-                element={<Events />}
-              ></Route>{" "}
-              <Route
-                path={`${ROUTES.ROUTE_MY_EVENTS}`}
-                element={
-                  <AuthGuard isAuthenticated={isAuthenticated}>
-                    <Profile></Profile>
-                  </AuthGuard>
-                }
-              ></Route>{" "}
-              <Route path={`/test`} element={<TaskEndScreen />}></Route>{" "}
-            </Routes>
+            <Stack
+              className="flex-2"
+              sx={{
+                position: "relative",
+                backgroundColor: "transparent",
+              }}
+            >
+              <Routes>
+                <Route
+                  path={ROUTES.ROUTE_INBOX}
+                  element={
+                    <AuthGuard isAuthenticated={isAuthenticated}>
+                      <Notices />
+                    </AuthGuard>
+                  }
+                ></Route>
+                <Route
+                  path={ROUTES.ROUTE_RESERVE}
+                  element={<ReservationForm></ReservationForm>}
+                ></Route>
+                <Route
+                  path={ROUTES.ROUTE_CALENDAR_RESERVATIONS}
+                  element={<CalendarReservations></CalendarReservations>}
+                ></Route>
+                <Route
+                  path={ROUTES.ROUTE_CALENDAR_EVENTS}
+                  element={<CalendarEvents></CalendarEvents>}
+                ></Route>
+                <Route
+                  path={`${ROUTES.ROUTE_EVENT}/:idEvento?`}
+                  element={<EventView></EventView>}
+                ></Route>
+                <Route
+                  path={`${ROUTES.ROUTE_EVENT}/:idEvento?`}
+                  element={<EventView></EventView>}
+                ></Route>
+                <Route
+                  path={`${ROUTES.ROUTE_EVENT}/:idEvento?${ROUTES.ROUTE_EDIT}/:idSeccion?`}
+                  element={<EventUpdateForm></EventUpdateForm>}
+                ></Route>{" "}
+                <Route
+                  path={`${ROUTES.ROUTE_NOTIFY}/:paso?`}
+                  element={
+                    <AuthGuard isAuthenticated={isAuthenticated}>
+                      <EventForm />
+                    </AuthGuard>
+                  }
+                ></Route>{" "}
+                <Route
+                  path={`${ROUTES.ROUTE_SEARCH_EVENTS}`}
+                  element={<Events />}
+                ></Route>{" "}
+                <Route
+                  path={`${ROUTES.ROUTE_MY_EVENTS}`}
+                  element={
+                    <AuthGuard isAuthenticated={isAuthenticated}>
+                      <Profile></Profile>
+                    </AuthGuard>
+                  }
+                ></Route>{" "}
+                <Route path={`/test`} element={<TaskEndScreen />}></Route>{" "}
+              </Routes>
+            </Stack>
+            {/*
+          <Bottombar
+          noticeAmount={noticeAmount}
+          isAuthenticated={isAuthenticated}
+          onLogIn={showLoginModal}
+          ></Bottombar>
+          */}
           </Stack>
           <Bottombar
             noticeAmount={noticeAmount}

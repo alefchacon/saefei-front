@@ -3,7 +3,7 @@ import { TOKEN_KEY } from "../stores/authKeys";
 const token = localStorage.getItem(TOKEN_KEY);
 console.log(token)
 const api = axios.create({
-  baseURL: "http://localhost:8000/api/",
+  baseURL: "http://100.26.161.147/api/",
   headers: {
     "Content-Type": "application/json",
     Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}`,
