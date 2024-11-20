@@ -6,8 +6,12 @@ import getUser from "../features/auth/businessLogic/getUser";
 import Button from "@mui/material/Button";
 import logOut from "../features/auth/businessLogic/logOut";
 
+//MOCK
+import mockGetUser from "../mockBackend/mockGetUser";
+
 export default function Profile({ userEvents = false, noPage = false }) {
-  const user = getUser();
+  //const user = getUser();
+  const user = mockGetUser();
   const isMobile = useIsMobile();
 
   const handleLogOut = async () => {
@@ -21,7 +25,6 @@ export default function Profile({ userEvents = false, noPage = false }) {
           <div>
             {user?.fullname}
             <br />
-            <ChipCustom label={user.topRole} />
           </div>
           <Button onClick={handleLogOut}>Salir</Button>
         </div>

@@ -22,7 +22,7 @@ export default function CalendarEvents() {
   const [selectedDate, setSelectedDate] = useState(moment());
   const [events, setEvents] = useState([]);
   const { getCalendarEvents } = useEvents();
-  const { mockGetCalendarEvents } = useMockEvents();
+  const { mockGetCalendarEvents, mockEvents } = useMockEvents();
   const { openModal } = useModal();
 
   const isMobile = useIsMobile();
@@ -87,7 +87,7 @@ export default function CalendarEvents() {
     if (isMobile) {
       openModal(
         `Eventos del ${selectedDate.format("D [de] MMMM [de] YYYY")}`,
-        <DayView items={events} selectedDate={selectedDate} forEvents />,
+        <DayView items={mockEvents} selectedDate={selectedDate} forEvents />,
         "",
         true
       );
@@ -100,7 +100,7 @@ export default function CalendarEvents() {
       forEvents
       onDateSelect={handleDateSelect}
       onMonthChange={handleMonthChange}
-      items={events}
+      items={mockEvents}
       eventWrapper={eventWrapper}
       actionButton={actionButton}
     ></CalendarCustom>

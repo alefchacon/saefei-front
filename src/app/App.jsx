@@ -32,6 +32,10 @@ import Profile from "./Profile";
 import { useLocation } from "react-router-dom";
 import { useModal } from "../components/providers/ModalProvider";
 import LogInForm from "../features/auth/components/LogInForm";
+
+//MOCK
+import mockGetUser from "../mockBackend/mockGetUser";
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -66,7 +70,9 @@ function App() {
   const isMobile = useIsMobile();
   const [count, setCount] = useState(0);
   const [noticeAmount, setNoticeAmount] = useState(null);
-  const isAuthenticated = Boolean(getUser());
+  //
+  //const isAuthenticated = Boolean(getUser());
+  const isAuthenticated = Boolean(mockGetUser());
 
   useLayoutEffect(() => {
     if (isAuthenticated) {

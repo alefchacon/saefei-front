@@ -1328,7 +1328,7 @@ const calendarEvents =
       },
       {
           "id": null,
-          "name": "Boehm, Wintheiser and Zemlak",
+          "name": "Seminario de Ciencias Computacionales",
           "createdAt": null,
           "date": "2024-11-14",
           "start": "15:16:04",
@@ -1531,8 +1531,8 @@ const calendarEvents =
           }
       },
       {
-          "id": null,
-          "name": "Flatley-Blanda",
+          "id": 69,
+          "name": "Seminario de Investigación en Ingeniería de Software",
           "createdAt": null,
           "date": "2024-11-02",
           "start": "02:05:56",

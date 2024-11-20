@@ -31,6 +31,8 @@ import Page from "../components/Page";
 import SPACES from "../stores/spaces";
 import ChipReservation from "../features/reservations/components/ChipReservation";
 import useAuth from "../features/auth/businessLogic/useAuth";
+import useMockReservations from "../mockBackend/useMockReservations";
+
 const checkOverlap = (proposedReservation, existingReservation) => {
   const proposedReservationOverlapsAll =
     proposedReservation.start?.isSameOrBefore(
@@ -39,6 +41,7 @@ const checkOverlap = (proposedReservation, existingReservation) => {
     ) &&
     proposedReservation.end?.isSameOrAfter(existingReservation.end, "minute");
 
+  console.log(existingReservation.end);
   const proposedReservationOverlapsStart =
     proposedReservation.start?.isSameOrBefore(
       existingReservation.start,
@@ -196,6 +199,7 @@ export default function ReservationForm() {
 
 const ProposedScheduleForm = ({}) => {
   const { getReservationsBySpaceDate } = useReservations();
+  const { mockGetReservationsBySpaceDate } = useMockReservations();
 
   const [reservationsAccepted, setReservationsAccepted] = useState([]);
   const { values, setFieldValue, handleChange, errors, touched } =
@@ -211,8 +215,17 @@ const ProposedScheduleForm = ({}) => {
   const fetchReservations = async () => {
     setReady(false);
 
+    /*
     getReservationsBySpaceDate(values.idEspacio, moment(values.date))
       .then((reservations) => {
+        setReservationsAccepted(reservations);
+        setReady(true);
+      })
+      .catch((error) => setReady(false));
+      */
+    mockGetReservationsBySpaceDate(values.idEspacio, moment(values.date))
+      .then((reservations) => {
+        console.log(reservations);
         setReservationsAccepted(reservations);
         setReady(true);
       })
@@ -342,7 +355,12 @@ const ProposedScheduleForm = ({}) => {
             }}
           ></TextField>
           <Stack className="button-row">
-            <Button type="submit" variant="contained" disableElevation>
+            <Button
+              type="submit"
+              variant="contained"
+              disableElevation
+              disabled={values?.overlaps}
+            >
               Reservar espacio
             </Button>
           </Stack>

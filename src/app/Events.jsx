@@ -17,19 +17,24 @@ import useAuth from "../features/auth/businessLogic/useAuth";
 import { useEvents } from "../features/events/businessLogic/useEvents";
 import useIsMobile from "../components/hooks/useIsMobile";
 import moment from "moment";
-
+import useMockEvents from "../mockBackend/useMockEvents";
 import * as FILTERS from "../stores/filtersEvent";
+import mockGetUser from "../mockBackend/mockGetUser";
 
 export default function Events({ userEvents = false, noPage = false }) {
-  const { events, getEvents } = useEvents();
+  const { mockGetCalendarEvents, mockEvents } = useMockEvents();
   const navigate = useNavigate();
-  const user = useAuth().getUser();
+  //const user = useAuth().getUser();
+  const user = mockGetUser();
+
   const isMobile = useIsMobile();
   const [filters, setFilters] = useState({
     date: moment(),
     order: FILTERS.FILTER_EVENT_DATE,
     searchbar: "",
   });
+
+  //const { events, getEvents } = useEvents();
 
   //If the filters change, launch a brand new search:
   useLayoutEffect(() => {
@@ -38,7 +43,13 @@ export default function Events({ userEvents = false, noPage = false }) {
 
   const fetchNextPage = async (newSearch = false) => {
     const includeDate = filters.searchbar === "";
-    getEvents(getFilters(includeDate), newSearch);
+    //getEvents(getFilters(includeDate), newSearch);
+    const idUsuario = userEvents ? user.id : 0;
+    await mockGetCalendarEvents("", idUsuario);
+  };
+
+  const mockHandleSearchbarChange = (newSearchbarValue = "") => {
+    mockGetCalendarEvents(newSearchbarValue);
   };
 
   const handleSearchbarChange = (newSearchbarValue) => {
@@ -84,10 +95,10 @@ export default function Events({ userEvents = false, noPage = false }) {
       <Stack id={"principal"} gap={1}>
         <Stack id={"filters"} padding={"10px"} gap={"20px"}>
           <SearchField
-            onSearch={handleSearchbarChange}
+            onSearch={mockHandleSearchbarChange}
             onDeleteQuery={resetName}
           ></SearchField>
-
+          {/*
           <Stack
             direction={"row"}
             alignItems={"center"}
@@ -137,10 +148,11 @@ export default function Events({ userEvents = false, noPage = false }) {
               )}
             </Stack>
           </Stack>
+          */}
         </Stack>
         <br />
         <CardList>
-          {events.map((eventUV, index) => (
+          {mockEvents.map((eventUV, index) => (
             <CardActionArea
               key={index}
               onClick={() => navigate(`${ROUTE_EVENT}/${eventUV.id}`)}

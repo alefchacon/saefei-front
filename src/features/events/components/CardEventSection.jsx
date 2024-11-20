@@ -114,7 +114,7 @@ export default function CardEventSection({
   const showEditModal = (sectionTitle = "asdf", sectionData) => {
     openModal(`Editar ${sectionTitle}`, editModalBody(), "", true);
   };
-  const hasChanges = eventUV.changes?.some((change) =>
+  const hasChanges = eventUV?.changes?.some((change) =>
     change.columns.some((column) => fieldKeys.includes(column))
   );
   const changeButtons = (

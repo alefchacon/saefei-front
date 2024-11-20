@@ -21,7 +21,7 @@ import Page from "../../components/Page";
 import SectionButton from "../../components/SectionButton";
 import { useReservations } from "../../features/reservations/businessLogic/useReservations";
 import useAuth from "../../features/auth/businessLogic/useAuth";
-import { useModal } from "../../components/hooks/useModal";
+import { useModal } from "../../components/providers/ModalProvider";
 import { eventSchema } from "../../features/events/validation/eventSchema";
 
 import GeneralForm from "./StepForms/GeneralForm";
@@ -47,28 +47,67 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import isAuthenticated from "../../features/auth/businessLogic/isAuthenticated";
 import LoginIcon from "@mui/icons-material/Login";
 import { usePage } from "../../components/providers/PageProvider";
+import useMockReservations from "../../mockBackend/useMockReservations";
+import mockGetUser from "../../mockBackend/mockGetUser";
+import useMockLoading from "../../mockBackend/mockLoading";
+
 export default function EventForm({}) {
   const { getReservationsAvailableToUser } = useReservations();
+  const mockLoading = useMockLoading();
+  const { mockGetReservationsAvailableToUser } = useMockReservations();
   const { getUser } = useAuth();
   const { storeEvent } = useEvents();
-  const user = getUser();
+  //const user = getUser();
+  const user = mockGetUser();
   const { loading } = useLoading();
   const [userReservations, setUserReservations] = useState([]);
   const [showWelcome, setShowWelcome] = useState(true);
   const navigate = useNavigate();
+  const { openModal, closeModal } = useModal();
 
   useEffect(() => {
+    /*
     getReservationsAvailableToUser(getUser()?.id).then((response) => {
       setUserReservations(response.data.data);
     });
+    */
+    mockGetReservationsAvailableToUser(getUser()?.id).then((response) => {
+      setUserReservations(response);
+    });
   }, []);
 
-  const handleSubmit = (values, actions) => {
+  const handleSubmit = async (values, actions) => {
+    /*
     storeEvent(values).then((response) => {
       if (response.status === 201) {
         navigate("/test");
       }
     });
+    */
+    const response = { status: 201 };
+    if (response.status === 201) {
+      await mockLoading(600);
+      openModal(
+        "Evento notificado",
+        <div>
+          Gracias por notificar su evento. La Coordinación de Eventos la FEI se
+          pondrá en contacto con usted en breve para apoyarle en la realización
+          de su evento.
+          <Stack className="button-column">
+            <Button
+              onClick={() => {
+                closeModal();
+                navigate("/test");
+              }}
+            >
+              Regresar al calendario
+            </Button>
+          </Stack>
+        </div>,
+        "",
+        true
+      );
+    }
   };
 
   if (loading) {
@@ -324,6 +363,7 @@ function StepForm({ userReservations }) {
           */
           fields={["name", "description", "reservations"]}
         >
+          {/*
           <Button
             onClick={() => {
               validateForm();
@@ -333,6 +373,7 @@ function StepForm({ userReservations }) {
           >
             testin
           </Button>
+              */}
           <GeneralForm userReservations={userReservations}></GeneralForm>
         </Stack>
         <Stack className="step" title="Agenda" id={"agenda"}>
@@ -444,7 +485,6 @@ function Fuck() {}
 
 function EndStep({ values, onStepChange }) {
   const iconSX = { height: "1.2em !important", width: "1.2em !important" };
-  const { Modal } = useModal();
 
   return (
     <Stack gap={2}>
@@ -511,7 +551,6 @@ function EndStep({ values, onStepChange }) {
         name="Requisitos adicionales"
         description="¿Nos faltó preguntarle algo? Aquí lo puede pedir."
       ></SectionButton>
-      <Modal></Modal>
     </Stack>
   );
 }

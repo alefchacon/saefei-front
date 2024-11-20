@@ -29,28 +29,42 @@ import useAuth from "../features/auth/businessLogic/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ROUTE_EDIT } from "../stores/routes";
 import SendIcon from "@mui/icons-material/Send";
+import useMockEvents from "../mockBackend/useMockEvents";
+import getUser from "../features/auth/businessLogic/getUser";
+import mockGetUser from "../mockBackend/mockGetUser";
 export default function EventView({ defaultEventUV, onReply, disableLoading }) {
+  //const user = getUser();
+  const user = mockGetUser();
+
   const isMobile = useIsMobile();
   const { getUser } = useAuth();
-  const user = getUser();
+
   const navigate = useNavigate();
   const location = useLocation();
 
   const { Modal, openModal, closeModal } = useModal();
-  const { getEvent, eventUV, updateEvent, uploadFile } = useEvents();
   const { idEvento } = useParams();
 
+  //const { getEvent, eventUV, updateEvent, uploadFile } = useEvents();
+  const { mockGetEvent, eventUV, mockUploadFile } = useMockEvents();
+  const uploadFile = null;
+  const updateEvent = null;
   useEffect(() => {
+    //fetchEvent(getEvent);
+    fetchEvent(mockGetEvent);
+  }, [defaultEventUV]);
+
+  const fetchEvent = (fetchFunction) => {
     if (idEvento) {
-      getEvent(idEvento);
+      fetchFunction(idEvento);
     }
     if (defaultEventUV) {
-      getEvent(defaultEventUV.id);
+      fetchFunction(defaultEventUV.id);
     }
     if (isMobile) {
       closeModal();
     }
-  }, [defaultEventUV]);
+  };
 
   const handleDownloadAsZip = () => {
     downloadAsZip(
@@ -77,7 +91,8 @@ export default function EventView({ defaultEventUV, onReply, disableLoading }) {
     }
   };
 
-  const userCanEdit = user?.isCoordinator || eventUV.idUsuario === user?.id;
+  //const userCanEdit = user?.isCoordinator || eventUV?.idUsuario === user?.id;
+  const userCanEdit = true;
 
   function ResponsePanel() {
     return (
@@ -155,11 +170,11 @@ export default function EventView({ defaultEventUV, onReply, disableLoading }) {
         disablePadding
         title={
           <Stack direction={"row"} width={"100%"} justifyContent={"start"}>
-            <Stack width={"100%"}>
+            <Stack width={"100%"} gap={"6px"}>
               {eventUV?.name}
-              <Stack direction={"column"}>
+              <Stack direction={"row"} gap={"8px"}>
                 <Typography fontSize={15}>
-                  por <b>{`${eventUV?.user?.fullname}`}</b>
+                  por <b>{`${eventUV?.user?.fullname}`}</b>{" "}
                 </Typography>
               </Stack>
             </Stack>
@@ -306,8 +321,8 @@ export default function EventView({ defaultEventUV, onReply, disableLoading }) {
               eventUV={eventUV}
               flex={3}
               editable={userCanEdit}
-              onUpdate={updateEvent}
-              onUploadFile={uploadFile}
+              onUpdate={mockUploadFile}
+              onUploadFile={mockUploadFile}
               secondaryAction={
                 eventUV?.publicity?.length > 0 ? (
                   <Button onClick={handleDownloadAsZip}>

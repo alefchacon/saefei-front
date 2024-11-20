@@ -13,6 +13,7 @@ import CardActions from "@mui/material/CardActions";
 import Message from "../../components/Message";
 import CardList from "../../components/CardList";
 import CardReservation from "../../features/reservations/components/CardReservation";
+import mockGetUser from "../../mockBackend/mockGetUser";
 import getUser from "../../features/auth/businessLogic/getUser";
 import { useModal } from "../../components/providers/ModalProvider";
 import Typography from "@mui/material/Typography";
@@ -30,7 +31,8 @@ export default function NoticesAdministrator({
   const { openModal } = useModal();
   const [selectedNotice, setSelectedNotice] = useState(null);
   const isMobile = useIsMobile();
-  const user = getUser();
+  //const user = getUser();
+  const user = mockGetUser();
   const replyRef = useRef(null);
   const { acceptReservation, rejectReservation } = useReservations();
   const navigate = useNavigate();
@@ -40,7 +42,7 @@ export default function NoticesAdministrator({
       onLoad();
     }
     if (notices.noticesAdministrator.length < 1) {
-      navigate("/test");
+      //navigate("/test");
     }
   }, [notices.noticesAdministrator]);
 

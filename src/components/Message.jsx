@@ -16,7 +16,9 @@ export default function Message({
         justifyContent={"center"}
         alignItems={center ? "center" : ""}
       >
-        <Typography variant="h4">{title}</Typography>
+        <Typography variant="h4" textAlign={center ? "center" : ""}>
+          {title}
+        </Typography>
         <br />
         <Typography textAlign={center ? "center" : "left"}>
           {content}

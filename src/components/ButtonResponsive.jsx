@@ -18,7 +18,7 @@ export default function ButtonResponsive({
     isMobile && responsive
       ? {
           position: "fixed !important",
-          top: 15,
+          top: 25,
           right: 30,
           zIndex: 100,
           gap: 2,
