@@ -1,3 +1,3 @@
-const API_URL = "http://seabackaucd.space/api/";
+const API_URL = "https://seaback2.space/api/";
 
 export default API_URL;
