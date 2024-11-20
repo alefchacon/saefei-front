@@ -8,7 +8,7 @@ export default function useApi() {
   const token = localStorage.getItem(TOKEN_KEY);
 
   const api = axios.create({
-    baseURL: "http://100.26.161.147/api/",
+    baseURL: "http://localhost:8000/api/",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,

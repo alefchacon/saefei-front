@@ -18,12 +18,14 @@ import {
   getSpaceColorBySpaceName,
   SPACE_COLORS,
 } from "../stores/spaceProperties";
+import useMockReservations from "../mockBackend/useMockReservations";
 export default function CalendarReservations() {
   const [selectedDate, setSelectedDate] = useState(moment());
   const [reservations, setReservations] = useState([]);
   const { getReservationsByMonth } = useReservations();
   const isMobile = useIsMobile();
   const { openModal } = useModal();
+  const { mockGetReservations } = useMockReservations();
 
   const handleMonthChange = async (newDate) => {
     const momentDate = moment(newDate);
@@ -31,9 +33,12 @@ export default function CalendarReservations() {
   };
 
   const fetchReservations = async (date = moment()) => {
+    /*
     getReservationsByMonth(date).then((response) =>
       setReservations(response.data.data)
     );
+    */
+    setReservations(await mockGetReservations());
   };
 
   useEffect(() => {

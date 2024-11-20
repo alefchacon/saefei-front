@@ -17,11 +17,12 @@ import DayViewWrapper from "../components/calendar/DayViewWrapper";
 import DayView from "../components/calendar/DayView";
 import FabResponsive from "../components/FabResponsive";
 import AddAlertIcon from "@mui/icons-material/AddAlert";
-
+import useMockEvents from "../mockBackend/useMockEvents";
 export default function CalendarEvents() {
   const [selectedDate, setSelectedDate] = useState(moment());
   const [events, setEvents] = useState([]);
   const { getCalendarEvents } = useEvents();
+  const { mockGetCalendarEvents } = useMockEvents();
   const { openModal } = useModal();
 
   const isMobile = useIsMobile();
@@ -33,9 +34,13 @@ export default function CalendarEvents() {
 
   const fetchEvents = async (date = moment()) => {
     const dateFilter = `fecha=${moment(date).format("YYYY-MM")}`;
+    /*
     getCalendarEvents(dateFilter).then((response) =>
       setEvents(response.data.data)
     );
+    */
+
+    setEvents(await mockGetCalendarEvents());
   };
 
   useEffect(() => {
