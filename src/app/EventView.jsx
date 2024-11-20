@@ -15,7 +15,7 @@ import downloadAsZip from "../util/downloadAsZip";
 import Page from "../components/Page";
 import TextField from "@mui/material/TextField";
 //MOVE THIS TO SOME KIND OF ENV FILE!! >:D
-const FILE_URL = "http://localhost:8000/api/file/";
+import FILE_URL from "../stores/fileUrl";
 import useIsMobile from "../components/hooks/useIsMobile";
 import ButtonResponsive from "../components/ButtonResponsive";
 import { SCROLL_UP } from "../stores/scrollDirections";

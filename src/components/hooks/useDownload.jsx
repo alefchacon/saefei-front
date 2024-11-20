@@ -1,6 +1,5 @@
 import { useCallback } from "react";
-const FILE_URL = "http://localhost:8000/storage/";
-
+import FILE_URL from "../../stores/fileUrl";
 export default function useDownload() {
   const download = useCallback(async (object) => {
     try {

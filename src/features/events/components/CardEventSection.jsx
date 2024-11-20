@@ -4,8 +4,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
 import TabsCustom from "../../../components/Tabs";
-const FILE_URL = "http://localhost:8000/api/file/";
-
+import FILE_URL from "../../../stores/fileUrl";
 import AdditionalForm from "../../../app/Notify/OptionalForms/AdditionalForm";
 import BroadcastForm from "../../../app/Notify/OptionalForms/BroadcastForm";
 import TechRequirementsForm from "../../../app/Notify/OptionalForms/TechRequirementsForm";

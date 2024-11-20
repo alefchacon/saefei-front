@@ -1,7 +1,8 @@
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
-const FILE_URL = "http://localhost:8000/api/file/";
+import FILE_URL from '../stores/fileUrl';
+
 export default async function downloadAsZip(files, zipName = "files"){
   const zip = new JSZip();
 
