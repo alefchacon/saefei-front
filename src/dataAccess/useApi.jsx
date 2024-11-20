@@ -8,7 +8,7 @@ export default function useApi() {
   const token = localStorage.getItem(TOKEN_KEY);
 
   const api = axios.create({
-    baseURL: "http://seaback2.space/api/",
+    baseURL: "https://seaback2.space/api/",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
