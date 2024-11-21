@@ -5,7 +5,7 @@ import Page from "../../components/Page";
 import CardEvent from "../../features/events/components/CardEvent";
 import TabsCustom from "../../components/Tabs";
 import NoticeWrapper from "../../features/notices/components/NoticeWrapper";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useEffect } from "react";
 import useNotices from "../../features/notices/businessLogic/useNotices";
 import CardActionArea from "@mui/material/CardActionArea";
 import { useNavigate } from "react-router-dom";
@@ -44,7 +44,7 @@ export function Notices({ onLoad }) {
   const isMobile = useIsMobile();
   const user = getUser();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     getNotices();
     if (onLoad) {
       onLoad();

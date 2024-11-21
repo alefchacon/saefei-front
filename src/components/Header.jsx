@@ -30,9 +30,10 @@ export default function Header({
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate(-1);
     if (onGoBack) {
       onGoBack();
+    } else {
+      navigate(-1);
     }
   };
 

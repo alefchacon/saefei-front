@@ -58,7 +58,7 @@ const theme = createTheme({
 function App() {
   useAxiosInterceptors();
   const location = useLocation();
-  const state = location.state;
+  const state = location?.state;
 
   const { openModal, closeModal } = useModal();
 
@@ -190,11 +190,13 @@ function App() {
           ></Bottombar>
           */}
           </Stack>
-          <Bottombar
-            noticeAmount={noticeAmount}
-            isAuthenticated={isAuthenticated}
-            onLogIn={showLoginModal}
-          ></Bottombar>
+          {!location.pathname.includes(ROUTES.ROUTE_NOTIFY) && (
+            <Bottombar
+              noticeAmount={noticeAmount}
+              isAuthenticated={isAuthenticated}
+              onLogIn={showLoginModal}
+            ></Bottombar>
+          )}
         </Stack>
       </ThemeProvider>
     </>

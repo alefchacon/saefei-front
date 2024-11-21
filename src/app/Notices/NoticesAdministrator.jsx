@@ -1,15 +1,11 @@
-import CardEvent from "../../features/events/components/CardEvent";
 import NoticeWrapper from "../../features/notices/components/NoticeWrapper";
 import { useLayoutEffect } from "react";
-import useNotices from "../../features/notices/businessLogic/useNotices";
 import { useState, useContext, createContext } from "react";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import EventView from "../EventView";
 import Slide from "@mui/material/Slide";
 import { TransitionGroup } from "react-transition-group";
 import useIsMobile from "../../components/hooks/useIsMobile";
-import CardActions from "@mui/material/CardActions";
 import Message from "../../components/Message";
 import CardList from "../../components/CardList";
 import CardReservation from "../../features/reservations/components/CardReservation";
@@ -17,16 +13,12 @@ import getUser from "../../features/auth/businessLogic/getUser";
 import { useModal } from "../../components/providers/ModalProvider";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import ButtonResponsive from "../../components/ButtonResponsive";
 import { useRef } from "react";
 import { useReservations } from "../../features/reservations/businessLogic/useReservations";
 import CardActionArea from "@mui/material/CardActionArea";
 import { useNavigate } from "react-router-dom";
-export default function NoticesAdministrator({
-  onLoad,
-  notices,
-  onNoticeUpdate,
-}) {
+//
+export default function NoticesAdministrator({ notices, onNoticeUpdate }) {
   const { openModal } = useModal();
   const [selectedNotice, setSelectedNotice] = useState(null);
   const isMobile = useIsMobile();
@@ -36,11 +28,8 @@ export default function NoticesAdministrator({
   const navigate = useNavigate();
 
   useLayoutEffect(() => {
-    if (onLoad) {
-      onLoad();
-    }
     if (notices.noticesAdministrator.length < 1) {
-      navigate("/test");
+      //navigate("/test");
     }
   }, [notices.noticesAdministrator]);
 
@@ -65,6 +54,7 @@ export default function NoticesAdministrator({
     }
       */
     await onNoticeUpdate(notice);
+    console.log(notices.noticesAdministrator.length);
   };
 
   if (

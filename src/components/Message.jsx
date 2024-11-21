@@ -11,7 +11,11 @@ export default function Message({
 }) {
   return (
     <Page showHeader={showHeader} disableLoading>
-      <Stack justifyContent={"center"} alignItems={center ? "center" : ""}>
+      <Stack
+        justifyContent={"center"}
+        alignItems={center ? "center" : ""}
+        height={"100%"}
+      >
         <Typography variant="h4">{title}</Typography>
         <br />
         <Typography textAlign={center ? "center" : "left"}>

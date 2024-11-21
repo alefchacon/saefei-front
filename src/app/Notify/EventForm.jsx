@@ -189,7 +189,7 @@ export default function EventForm({}) {
   );
 }
 import { useNavigate, useLocation } from "react-router-dom";
-import { ROUTE_RESERVE } from "../../stores/routes";
+import { ROUTE_CALENDAR_EVENTS, ROUTE_RESERVE } from "../../stores/routes";
 import useIsMobile from "../../components/hooks/useIsMobile";
 
 function StepForm({ userReservations }) {
@@ -275,6 +275,14 @@ function StepForm({ userReservations }) {
 
   const isInOptionalStep = currentStep > 3;
 
+  const decideHowFarBackToGo = () => {
+    if (isInOptionalStep) {
+      navigate(-1);
+    } else {
+      navigate(ROUTE_CALENDAR_EVENTS);
+    }
+  };
+
   return (
     <Page
       onSectionChange={handleSectionChange}
@@ -283,8 +291,8 @@ function StepForm({ userReservations }) {
       activeSectionId={activeSectionId}
       skeleton={<EventFormSkeleton />}
       header={activeSectionId !== 0}
-      onGoBack={isInOptionalStep && handleReturnToMandatory}
-      showHeader={isInOptionalStep}
+      onGoBack={decideHowFarBackToGo}
+      showHeader={true}
       title={"Notificar evento"}
     >
       <StepperCustom
@@ -416,8 +424,6 @@ function StepForm({ userReservations }) {
           <AdditionalForm />
         </Stack>
       </StepperCustom>
-      <br />
-      <br />
       <br />
       <br />
     </Page>
