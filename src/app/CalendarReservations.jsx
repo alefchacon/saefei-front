@@ -54,6 +54,7 @@ export default function CalendarReservations() {
         fontFamily: "roboto condensed",
         padding: "0 10px",
         fontWeight: "500",
+        fontSize: "12px",
       },
     });
   };

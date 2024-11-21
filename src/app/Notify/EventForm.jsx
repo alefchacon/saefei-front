@@ -324,15 +324,6 @@ function StepForm({ userReservations }) {
           */
           fields={["name", "description", "reservations"]}
         >
-          <Button
-            onClick={() => {
-              validateForm();
-              console.log(values);
-              console.log(errors);
-            }}
-          >
-            testin
-          </Button>
           <GeneralForm userReservations={userReservations}></GeneralForm>
         </Stack>
         <Stack className="step" title="Agenda" id={"agenda"}>

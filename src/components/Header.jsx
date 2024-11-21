@@ -6,7 +6,6 @@ import Stack from "@mui/material/Stack";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useLocation } from "react-router-dom";
-import { useLoading } from "./providers/LoadingProvider";
 import { useNavigate } from "react-router-dom";
 import useIsMobile from "./hooks/useIsMobile";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -16,14 +15,12 @@ export default function Header({
   description = "",
   children,
   disablePadding = false,
-  disableLoading = false,
   sectionedPage = false,
   onGoBack,
   onSectionChange,
   scrolled = true,
 }) {
   const location = useLocation();
-  const { loading } = useLoading();
   const isMobile = useIsMobile();
   const canGoBack =
     location.pathname.split("/").length > 2 || Boolean(onGoBack);

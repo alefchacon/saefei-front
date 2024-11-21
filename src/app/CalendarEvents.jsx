@@ -17,7 +17,7 @@ import DayViewWrapper from "../components/calendar/DayViewWrapper";
 import DayView from "../components/calendar/DayView";
 import FabResponsive from "../components/FabResponsive";
 import AddAlertIcon from "@mui/icons-material/AddAlert";
-
+import TruncatingText from "../components/TruncatingText";
 export default function CalendarEvents() {
   const [selectedDate, setSelectedDate] = useState(moment());
   const [events, setEvents] = useState([]);
@@ -51,30 +51,21 @@ export default function CalendarEvents() {
         fontFamily: "roboto condensed",
         padding: "0 10px",
         fontWeight: "500",
+        fontSize: "12px",
       },
     });
   };
 
   const actionButton = (
-    <Link to={ROUTE_NOTIFY} style={{ height: "100%", display: "flex" }}>
-      {isMobile ? (
-        <FabResponsive label="responder notificación" variant="extended">
-          <Stack
-            direction={"row"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            gap={"10px"}
-          >
-            <AddAlertIcon></AddAlertIcon>
-            Notificar evento
-          </Stack>
-        </FabResponsive>
-      ) : (
-        <Button disableElevation variant="contained">
-          Notificar evento
-        </Button>
+    <>
+      {!isMobile && (
+        <Link to={ROUTE_NOTIFY} style={{ height: "100%", display: "flex" }}>
+          <Button disableElevation variant="contained">
+            <TruncatingText>Notificar evento</TruncatingText>
+          </Button>
+        </Link>
       )}
-    </Link>
+    </>
   );
 
   const handleDateSelect = (dateString, items) => {

@@ -72,7 +72,6 @@ export function Notices({ onLoad }) {
           onNoticeUpdate={markAsRead}
         ></NoticesAdministrator>
       </TabsCustom>
-      <CardList></CardList>
     </Page>
   );
 }

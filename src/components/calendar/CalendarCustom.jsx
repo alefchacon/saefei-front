@@ -20,6 +20,7 @@ import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_RESERVE } from "../../stores/routes";
 const mLocalizer = momentLocalizer(moment);
+import useIsMobile from "../hooks/useIsMobile";
 
 const coloredDateCellWrapper = ({ children }) =>
   cloneElement(Children.only(children), {
@@ -57,6 +58,7 @@ export default function CalendarCustom({
   eventWrapper,
   ...props
 }) {
+  const isMobile = useIsMobile();
   const [selectedMonth, setSelectedMonth] = useState(moment());
   const navigate = useNavigate();
   const { components, defaultDate, max, views } = useMemo(
@@ -108,7 +110,7 @@ export default function CalendarCustom({
         justifyContent={"space-between"}
         alignItems={"center"}
         direction={"row"}
-        padding={"0 20px"}
+        padding={"0px 20px"}
       >
         {" "}
         <Stack gap={1} direction={"row"}>
@@ -120,6 +122,7 @@ export default function CalendarCustom({
               views={["month", "year"]}
             />
           </LocalizationProvider>
+
           <IconButton
             color="primary"
             onClick={handleNavigateBack}
@@ -149,7 +152,7 @@ export default function CalendarCustom({
 
   const TouchCellWrapper = ({ children, value, onSelectSlot }) => {
     return cloneElement(Children.only(children), {
-      onTouchEnd: () => onSelectSlot(value),
+      onTouchStart: () => onSelectSlot(value),
       className: "date-cell",
     });
   };

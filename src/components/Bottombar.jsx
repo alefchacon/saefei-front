@@ -13,6 +13,7 @@ import { useTheme } from "@emotion/react";
 import ListItemButton from "@mui/material/ListItemButton";
 import LoginIcon from "@mui/icons-material/Login";
 import AddLocationIcon from "@mui/icons-material/AddLocation";
+import Divider from "@mui/material/Divider";
 
 function NavOption({
   route = null,
@@ -40,6 +41,7 @@ function NavOption({
         justifyContent: "center",
         color: selected ? theme.palette.primary.main : "",
         position: "relative",
+        padding: "2px 0",
       }}
       onClick={handleClick}
     >
@@ -57,7 +59,7 @@ function NavOption({
       )}
       <Stack
         bgcolor={selected ? "var(--selected)" : ""}
-        padding={"5px 20px"}
+        padding={"2px 20px"}
         borderRadius={"100px"}
       >
         {icon}
@@ -74,7 +76,7 @@ export default function Bottombar({ noticeAmount, isAuthenticated, onLogIn }) {
   const { openModal, closeModal } = useModal();
 
   const iconSize = {
-    fontSize: "28px",
+    fontSize: "24px",
   };
 
   return (
@@ -83,6 +85,7 @@ export default function Bottombar({ noticeAmount, isAuthenticated, onLogIn }) {
         width: "100%",
         borderTop: "1px solid lightgray",
         position: "sticky",
+        zIndex: 9001,
         bottom: 0,
         backgroundColor: "var(--card)",
       }}

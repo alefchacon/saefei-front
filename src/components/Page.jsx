@@ -106,6 +106,11 @@ export default function Page({
       flex={flex}
       bgcolor={"transparent"}
     >
+      {!disableLoading && (
+        <Stack position={"relative"}>
+          <LoadingBar></LoadingBar>
+        </Stack>
+      )}
       {header && showHeader && (
         <Stack>
           <Header
@@ -121,11 +126,6 @@ export default function Page({
         skeleton
       ) : (
         <>
-          {!disableLoading && (
-            <Stack position={"relative"}>
-              <LoadingBar></LoadingBar>
-            </Stack>
-          )}
           <Stack
             ref={pageRef}
             id={"content"}

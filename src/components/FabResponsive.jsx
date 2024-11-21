@@ -16,7 +16,7 @@ export default function FabResponsive({
         <Fab
           variant={variant}
           color="primary"
-          sx={{ position: "fixed", bottom: 90, right: 20 }}
+          sx={{ position: "fixed", bottom: 80, right: 20 }}
           onClick={onClick}
         >
           {children}
