@@ -114,10 +114,7 @@ export default function CalendarCustom({
       >
         {" "}
         <Stack gap={1} direction={"row"}>
-          <LocalizationProvider
-            dateAdapter={AdapterMoment}
-            dateFormats={"MMM. 'YY"}
-          >
+          <LocalizationProvider dateAdapter={AdapterMoment}>
             <StyledDatePicker
               name="selected-months"
               value={moment(date)}
@@ -156,9 +153,9 @@ export default function CalendarCustom({
     }
   };
 
-  const TouchCellWrapper = ({ children, value, onSelectSlot }) => {
+  const TouchCellWrapper = ({ children, date, onSelectSlot }) => {
     return cloneElement(Children.only(children), {
-      onTouchStart: () => onSelectSlot(value),
+      onTouchEnd: () => onSelectSlot(date),
       className: "date-cell",
     });
   };

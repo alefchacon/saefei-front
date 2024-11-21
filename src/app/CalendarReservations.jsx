@@ -80,8 +80,9 @@ export default function CalendarReservations() {
     </Link>
   );
 
-  const handleDateSelect = (dateString) => {
+  const handleDateSelect = (dateString, items) => {
     const selectedDate = moment(new Date(dateString));
+    console.log(items);
     if (isMobile) {
       openModal(
         `Reservaciones del ${selectedDate.format("D [de] MMMM [de] YYYY")}`,
