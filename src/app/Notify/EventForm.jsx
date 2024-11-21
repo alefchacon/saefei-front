@@ -100,7 +100,7 @@ export default function EventForm({}) {
   );
 
   const welcomeMessage = (
-    <div>
+    <Page showHeader={false}>
       <Typography variant="h4">Bienvenido</Typography>
       Este es el formulario de Notificación de Eventos Académicos de la Facultad
       de Estadística e Informática de la Universidad Veracruzana.
@@ -120,8 +120,6 @@ export default function EventForm({}) {
       para su evento. Una vez que haya enviado la notificación, la Coordinación
       de Eventos Académicos revisará su notificación y se comunicará con usted
       para confirmar los detalles y brindar el apoyo necesario.
-      <br />
-      <br />
       <Stack className="button-row">
         <Button
           sx={{ maxWidth: "fit-content" }}
@@ -130,15 +128,11 @@ export default function EventForm({}) {
           Continuar
         </Button>
       </Stack>
-    </div>
+    </Page>
   );
 
   if (!loading && userReservations.length < 1) {
     return noReservationsMessage;
-  }
-
-  if (showWelcome) {
-    return welcomeMessage;
   }
 
   return (

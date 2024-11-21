@@ -100,7 +100,8 @@ function App() {
             role={"main"}
             sx={{ backgroundColor: "var(--bg)" }}
             flexDirection={{ md: "row", xs: "column" }}
-            flex={20}
+            flex={17}
+            maxHeight={"100%"}
             position={"relative"}
           >
             <Stack
