@@ -273,6 +273,8 @@ function StepForm({ userReservations }) {
     handleStepChange(3);
   };
 
+  const isInOptionalStep = currentStep > 3;
+
   return (
     <Page
       onSectionChange={handleSectionChange}
@@ -281,7 +283,8 @@ function StepForm({ userReservations }) {
       activeSectionId={activeSectionId}
       skeleton={<EventFormSkeleton />}
       header={activeSectionId !== 0}
-      onGoBack={currentStep > 3 && handleReturnToMandatory}
+      onGoBack={isInOptionalStep && handleReturnToMandatory}
+      showHeader={isInOptionalStep}
       title={"Notificar evento"}
     >
       <StepperCustom
