@@ -100,32 +100,28 @@ export default function EventForm({}) {
   );
 
   const welcomeMessage = (
-    <Message
-      title={"Bienvenido"}
-      content={
-        <div>
-          Este es el formulario de Notificación de Eventos Académicos de la
-          Facultad de Estadística e Informática de la Universidad Veracruzana.
-          <br />
-          <br />
-          Este formulario ha sido diseñado para facilitar el proceso de
-          notificación y coordinación de eventos académicos dentro de nuestra
-          facultad. A través de este formulario, los organizadores pueden
-          notificar a la facultad sobre un evento que deseé llevar a cabo y
-          solicitar los recursos necesarios para su realización. 
-          <br />
-          <br />
-          Si usted es el organizador, por favor, complete la notificación con la
-          información requerida de manera precisa y detallada. Le pedimos enviar
-          su notificación, en la medida de lo posible, con{" "}
-          <b>al menos 2 semanas de antelación</b> a la fecha de inicio
-          programada para su evento. Una vez que haya enviado la notificación,
-          la Coordinación de Eventos Académicos revisará su notificación y se
-          comunicará con usted para confirmar los detalles y brindar el apoyo
-          necesario.
-        </div>
-      }
-    >
+    <div>
+      <Typography variant="h4">Bienvenido</Typography>
+      Este es el formulario de Notificación de Eventos Académicos de la Facultad
+      de Estadística e Informática de la Universidad Veracruzana.
+      <br />
+      <br />
+      Este formulario ha sido diseñado para facilitar el proceso de notificación
+      y coordinación de eventos académicos dentro de nuestra facultad. A través
+      de este formulario, los organizadores pueden notificar a la facultad sobre
+      un evento que deseé llevar a cabo y solicitar los recursos necesarios para
+      su realización. 
+      <br />
+      <br />
+      Si usted es el organizador, por favor, complete la notificación con la
+      información requerida de manera precisa y detallada. Le pedimos enviar su
+      notificación, en la medida de lo posible, con{" "}
+      <b>al menos 2 semanas de antelación</b> a la fecha de inicio programada
+      para su evento. Una vez que haya enviado la notificación, la Coordinación
+      de Eventos Académicos revisará su notificación y se comunicará con usted
+      para confirmar los detalles y brindar el apoyo necesario.
+      <br />
+      <br />
       <Stack className="button-row">
         <Button
           sx={{ maxWidth: "fit-content" }}
@@ -134,7 +130,7 @@ export default function EventForm({}) {
           Continuar
         </Button>
       </Stack>
-    </Message>
+    </div>
   );
 
   if (!loading && userReservations.length < 1) {
