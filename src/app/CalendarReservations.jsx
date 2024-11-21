@@ -64,13 +64,12 @@ export default function CalendarReservations() {
       {isMobile ? (
         <FabResponsive label="responder notificación" variant="extended">
           <Stack
-            direction={"row"}
+            direction={"column"}
             justifyContent={"center"}
             alignItems={"center"}
-            gap={"10px"}
           >
             <AddLocationIcon></AddLocationIcon>
-            Reservar espacio
+            <Typography variant="caption">Reservar</Typography>
           </Stack>
         </FabResponsive>
       ) : (

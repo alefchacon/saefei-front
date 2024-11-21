@@ -46,8 +46,8 @@ export default function Header({
         zIndex={0}
         className={`${conditionalPadding}`}
         justifyContent={"space-between"}
-        paddingTop={{ md: "2rem", xs: "16px" }}
-        paddingBottom={{ md: "10px", xs: "16px" }}
+        paddingTop={{ md: "2rem", xs: "3px" }}
+        paddingBottom={{ md: "10px", xs: "3px" }}
         borderBottom={{ xs: "1px solid var(--bg)", md: "none" }}
         position={"sticky"}
         top={"0"}
@@ -71,11 +71,13 @@ export default function Header({
               height={"100%"}
               alignItems={"center"}
               display={"flex"}
+              fontWeight={"500"}
               fontSize={{ md: 28, xs: 20 }}
               width={"100%"}
             >
               {title}
             </Typography>
+
             {description && (
               <Typography id="description" variant="caption">
                 {description}

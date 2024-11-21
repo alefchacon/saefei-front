@@ -114,12 +114,18 @@ export default function CalendarCustom({
       >
         {" "}
         <Stack gap={1} direction={"row"}>
-          <LocalizationProvider dateAdapter={AdapterMoment}>
+          <LocalizationProvider
+            dateAdapter={AdapterMoment}
+            dateFormats={"MMM. 'YY"}
+          >
             <StyledDatePicker
               name="selected-months"
               value={moment(date)}
               onChange={(e) => handleSelectMonth(moment(e))}
               views={["month", "year"]}
+              renderValue={(date) =>
+                date ? moment(date).format("MMM. 'YY") : ""
+              }
             />
           </LocalizationProvider>
 
