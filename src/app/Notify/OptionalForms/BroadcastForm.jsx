@@ -9,6 +9,7 @@ import RadioList from "../../../components/RadioList";
 import UploadButton from "../../../components/UploadButton";
 import { useFormikContext } from "formik";
 import FILE_TYPES from "../../../stores/fileTypes";
+import MEDIA from "../../../stores/media";
 export default function BroadcastForm({ children, forEditing }) {
   const { values, setFieldValue } = useFormikContext();
 
@@ -45,17 +46,11 @@ export default function BroadcastForm({ children, forEditing }) {
           setFieldValue("media", checked);
         }}
       >
-        <Typography value={"Página Web Institucional de la Facultad"}>
-          Página Web Institucional de la Facultad
-        </Typography>
-        <Typography value={"Correo Institucional de la Facultad"}>
-          Correo Institucional de la Facultad
-        </Typography>
-        <Typography value={"Redes sociales (Facebook, Instagram, Twitter/X)"}>
-          Redes sociales (Facebook, Instagram, Twitter/X)
-        </Typography>
-        <Typography value={"Comunicación UV"}>Comunicación UV</Typography>
-        <Typography value={"Radio UV"}>Radio UV</Typography>
+        <Typography value={MEDIA.webPage}>{MEDIA.webPage}</Typography>
+        <Typography value={MEDIA.institutionalMail}>{MEDIA.institutionalMail}</Typography>
+        <Typography value={MEDIA.socialMedia}>{MEDIA.socialMedia}</Typography>
+        <Typography value={MEDIA.communicationUV}>{MEDIA.communicationUV}</Typography>
+        <Typography value={MEDIA.radioUV}>{MEDIA.radioUV}</Typography>
       </CheckList>
 
       <RadioList

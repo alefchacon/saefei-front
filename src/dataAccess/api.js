@@ -37,6 +37,15 @@ const apiClient = {
       throw error;
     }
   },
+  async put(url, data, config = {}) {
+    try {
+      const response = await api.put(url, data, config);
+      return response;
+    } catch (error) {
+      handleApiError(error);
+      throw error;
+    }
+  },
 
 
 };

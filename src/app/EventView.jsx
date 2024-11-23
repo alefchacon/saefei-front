@@ -6,7 +6,6 @@ import ChipCustom from "../components/Chip";
 import ChipTabs from "../components/ChipTabs";
 import { useEvents } from "../features/events/businessLogic/useEvents";
 import { useParams } from "react-router-dom";
-import { useModal } from "../components/hooks/useModal";
 import ExpandableText from "../features/events/components/ExpandableText";
 import ActivityViewer from "../features/events/components/ActivityViewer";
 import CardReservation from "../features/reservations/components/CardReservation";
@@ -29,6 +28,9 @@ import useAuth from "../features/auth/businessLogic/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ROUTE_EDIT } from "../stores/routes";
 import SendIcon from "@mui/icons-material/Send";
+import ResponsePanel from "../features/events/components/ResponsePanel";
+import { useModal } from "../components/providers/ModalProvider";
+
 export default function EventView({ defaultEventUV, onReply, disableLoading }) {
   const isMobile = useIsMobile();
   const { getUser } = useAuth();
@@ -36,7 +38,7 @@ export default function EventView({ defaultEventUV, onReply, disableLoading }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { Modal, openModal, closeModal } = useModal();
+  const { openModal, closeModal } = useModal();
   const { getEvent, eventUV, updateEvent, uploadFile } = useEvents();
   const { idEvento } = useParams();
 
@@ -59,17 +61,6 @@ export default function EventView({ defaultEventUV, onReply, disableLoading }) {
     );
   };
 
-  const showReplyModal = () => {
-    openModal(
-      "Responder notificación",
-      <ResponsePanel></ResponsePanel>,
-      "",
-      true,
-      "",
-      false
-    );
-  };
-
   const handleUpdatedEvent = (updatedEvent) => {
     //setEventUV(updatedEvent);
     if (onReply) {
@@ -79,67 +70,27 @@ export default function EventView({ defaultEventUV, onReply, disableLoading }) {
 
   const userCanEdit = user?.isCoordinator || eventUV.idUsuario === user?.id;
 
-  function ResponsePanel() {
-    return (
-      <Stack className="card" padding={"0px"} gap={"20px"}>
-        <TabsCustom>
-          {userCanEdit && (
-            <Stack label="Respuesta al organizador">
-              <ReplyForm
-                editable={user?.isCoordinator}
-                submitButton={user?.isCoordinator}
-                eventUV={eventUV}
-                onSuccess={handleUpdatedEvent}
-              ></ReplyForm>
-            </Stack>
-          )}
+  const responsePanel = 
+    <ResponsePanel 
+      eventUV={eventUV} 
+      user={user} 
+      onUpdateEvent={updateEvent}
+      userCanEdit={userCanEdit}
+      onUpdatedEvent={handleUpdatedEvent}
+    />
+    
 
-          {user?.isCoordinator && (
-            <Stack label="Notificación a medios">
-              <br />
-              <ChipTabs>
-                <Stack label="Página institucional" value={0}>
-                  <MediaNoticeForm
-                    key={"institutional-page"}
-                    id={"institutional-page"}
-                    mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_INSTITUTIONAL_PAGE}
-                  ></MediaNoticeForm>
-                </Stack>
-                <Stack label="Correo institucional" value={1}>
-                  <MediaNoticeForm
-                    key={"institutional-email"}
-                    id={"institutional-email"}
-                    mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_INSTITUTIONAL_EMAIL}
-                  ></MediaNoticeForm>
-                </Stack>
-                <Stack label="Redes sociales">
-                  <MediaNoticeForm
-                    key={"social-media"}
-                    id={"social-media"}
-                    mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_SOCIAL_MEDIA}
-                  ></MediaNoticeForm>
-                </Stack>
-                <Stack label="Comunicación UV">
-                  <MediaNoticeForm
-                    key={"comunication-uv"}
-                    id={"comunication-uv"}
-                    mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_COMUNICATION_UV}
-                  ></MediaNoticeForm>
-                </Stack>
-                <Stack label="Radio UV">
-                  <MediaNoticeForm
-                    key={"radio-uv"}
-                    id={"radio-uv"}
-                    mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_RADIO_UV}
-                  ></MediaNoticeForm>
-                </Stack>
-              </ChipTabs>
-            </Stack>
-          )}
-        </TabsCustom>
-      </Stack>
+  const showReplyModal = () => {
+    openModal(
+      "Responder notificación",
+      responsePanel,
+      "",
+      true,
+      "",
+      false
     );
-  }
+  };
+
 
   const navigateToEdit = () => {
     navigate(`${location.pathname}${ROUTE_EDIT}`, {
@@ -369,35 +320,10 @@ export default function EventView({ defaultEventUV, onReply, disableLoading }) {
               </Stack>
             </FabResponsive>
           )}
-          {!isMobile && <ResponsePanel></ResponsePanel>}
+          {!isMobile && responsePanel}
         </Stack>
       </Page>
-
-      <Modal></Modal>
     </>
   );
 
-  function MediaNoticeForm({ mediaNotice, id }) {
-    return (
-      <Stack gap={"20px"}>
-        <TextField
-          id={`${id}-email`}
-          variant="filled"
-          defaultValue={mediaNotice.email}
-          label={"Para"}
-          sx={{ maxWidth: "300px" }}
-        ></TextField>
-        <TextField
-          id={`${id}-notice`}
-          defaultValue={mediaNotice.notice}
-          multiline
-          rows={10}
-          variant="filled"
-        ></TextField>
-        <Stack className="button-row">
-          <ButtonResponsive>Notificar</ButtonResponsive>
-        </Stack>
-      </Stack>
-    );
-  }
 }

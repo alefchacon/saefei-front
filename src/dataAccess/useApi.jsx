@@ -2,13 +2,14 @@ import axios from "axios";
 import { useSnackbar } from "../components/providers/SnackbarProvider";
 import { useLoading } from "../components/providers/LoadingProvider";
 import { TOKEN_KEY } from "../stores/authKeys";
+import API_URL from "../stores/apiUrl";
 export default function useApi() {
   const { openSnackbar } = useSnackbar();
   const { setLoading } = useLoading();
   const token = localStorage.getItem(TOKEN_KEY);
 
   const api = axios.create({
-    baseURL: "https://seaback2.space/api/",
+    baseURL: API_URL,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,

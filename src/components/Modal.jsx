@@ -77,7 +77,7 @@ export default function Modal({
           },
         }}
       >
-        <DialogTitle sx={{ padding: "8px 16px" }}>
+        <DialogTitle sx={{ padding: {xs: "4px 8px", md: "18px 20px"} }}>
           {goFullscreen ? (
             <MobileTitle>{title}</MobileTitle>
           ) : (

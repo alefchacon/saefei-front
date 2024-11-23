@@ -40,6 +40,7 @@ class Event {
     this.changes = frontendEvent?.changes ||null;
     
     this.reply = frontendEvent?.reply || null;
+    this.replied = frontendEvent?.replied || null;
   }
 
 

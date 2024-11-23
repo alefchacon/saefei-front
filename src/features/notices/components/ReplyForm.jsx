@@ -11,13 +11,15 @@ import { useLoading } from "../../../components/providers/LoadingProvider";
 import { useNoticesContext } from "../../../app/Notices/Notices";
 import { Typography } from "@mui/material";
 
+
 export default function ReplyForm({
   eventUV,
   onSuccess,
   submitButton,
   editable,
+  children
 }) {
-  const { updateEvent } = useEvents();
+  const { replyToEvent } = useEvents();
   const { loading } = useLoading();
   const textRef = useRef(null);
   const handleSubmit = async () => {
@@ -25,11 +27,13 @@ export default function ReplyForm({
       id: eventUV?.id,
       reply: textRef.current.value,
     };
-    console.log(values);
-    const response = await updateEvent(values);
+    const response = await replyToEvent(values);
+
+    /*
     if (response.status === 200) {
       onSuccess(response.data.data);
     }
+      */
   };
 
   const handleChange = (e) => {
@@ -42,7 +46,8 @@ export default function ReplyForm({
   }
 
   return (
-    <Stack gap={"20px"}>
+    <Stack gap={"10px"}>
+    {children}
       <TextField
         inputRef={textRef}
         defaultValue={
@@ -51,9 +56,15 @@ export default function ReplyForm({
         }
         onChange={handleChange}
         multiline
-        rows={10}
+        //rows={10}
+        slotProps={{
+          htmlInput: {height: "fit-content", maxLength: 3000}
+        }}
+
         variant="filled"
       ></TextField>
+      
+      
       {submitButton && (
         <Stack className="button-row">
           <ButtonResponsive
@@ -65,6 +76,7 @@ export default function ReplyForm({
           </ButtonResponsive>
         </Stack>
       )}
+      
     </Stack>
   );
 }

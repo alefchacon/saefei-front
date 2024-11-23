@@ -4,6 +4,7 @@ import useApi from "../../../dataAccess/useApi";
 import STATUS from "../../../stores/status";
 import EventSerializer from "../domain/eventSerializer";
 import Event from "../domain/event";
+import { apiClient } from "../../../dataAccess/api";
 
 const formDataConfig = {
   headers: { "Content-Type": "multipart/form-data" },
@@ -101,7 +102,7 @@ export const useEvents = () => {
     );
     if (response.status === 200) {
       setEventUV((prev) => ({ ...prev, ...response.data.data }));
-      console.log(eventUV);
+      
     }
     return response;
   };
@@ -125,6 +126,13 @@ export const useEvents = () => {
     return await apiWrapper.post(`archivos/`, formData, formDataConfig);
   };
 
+  const replyToEvent = async (eventUV) => {
+    const body = {
+      "respuesta": eventUV.reply,
+    }
+    return await apiWrapper.put(`eventos/responder/${eventUV.id}`, body);
+  }
+
   return {
     events,
     eventUV,
@@ -134,5 +142,6 @@ export const useEvents = () => {
     getEvents,
     getCalendarEvents,
     uploadFile,
+    replyToEvent,
   };
 };
