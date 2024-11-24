@@ -92,7 +92,7 @@ export default function CardReservation({
           <Stack direction={"row"} gap={1} maxWidth={"100%"}>
             <PersonIcon></PersonIcon>
             <Stack direction={"column"}>
-              <Typography>{reservation.user?.names}</Typography>
+              <Typography>{reservation.user?.names} {reservation.user?.paternalName}</Typography>
               <Typography variant="caption">
                 {reservation.user?.email}
               </Typography>
