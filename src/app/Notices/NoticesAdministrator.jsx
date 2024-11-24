@@ -19,7 +19,7 @@ import CardActionArea from "@mui/material/CardActionArea";
 import { useNavigate } from "react-router-dom";
 //
 export default function NoticesAdministrator({ notices, onNoticeUpdate }) {
-  const { openModal } = useModal();
+  const { openModal, closeModal } = useModal();
   const [selectedNotice, setSelectedNotice] = useState(null);
   const isMobile = useIsMobile();
   const user = getUser();
@@ -44,6 +44,7 @@ export default function NoticesAdministrator({ notices, onNoticeUpdate }) {
       await onNoticeUpdate(notice);
       }*/
     await onNoticeUpdate(notice);
+    closeModal();
   };
 
   const handleAccept = async (notice) => {
@@ -129,6 +130,8 @@ export default function NoticesAdministrator({ notices, onNoticeUpdate }) {
           </Slide>
         ))}
       </TransitionGroup>
+      <br />
+      <br />
       <br />
       <br />
       <br />
