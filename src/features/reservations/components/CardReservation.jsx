@@ -42,10 +42,10 @@ export default function CardReservation({
       maxWidth={"100%"}
     >
       <Stack
-        direction={row ? "row" : "column"}
-        alignItems={row ? "center" : ""}
+        direction={"column"}
+        
         justifyContent={"center"}
-        gap={"20px"}
+        gap={"10px"}
       >
         <ChipSpace space={reservation?.space}></ChipSpace>
         <Stack

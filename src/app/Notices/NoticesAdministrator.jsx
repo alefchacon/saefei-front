@@ -73,6 +73,7 @@ export default function NoticesAdministrator({ notices, onNoticeUpdate }) {
           user
           reservationSchedule
           simpleSchedule
+          motive
         ></CardReservation>
         <br />
         <Typography>

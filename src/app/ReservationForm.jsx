@@ -82,8 +82,8 @@ export default function ReservationForm() {
   const navigate = useNavigate();
 
   const handleSubmit = async (values, actions) => {
-    //const response = await addReservation(values);
-    const response = { status: 201 };
+    const response = await addReservation(values);
+    //const response = { status: 201 };
     if (response.status === 201) {
       openModal(
         "Reservación enviada",
