@@ -21,11 +21,7 @@ export const useReservations = () => {
   };
 
   const getReservationsByMonth = async (date = moment()) => {
-    return apiWrapper.get(`reservaciones?
-      anio[eq]=${date.format("YYYY")}
-      &mes[eq]=${date.format("MM")}
-      &idEstado[eq]=${STATUS.ACCEPTED}
-      &idEstado[lte]=${STATUS.EVALUATED}`);
+    return apiWrapper.get(`reservaciones?anio[eq]=${date.format("YYYY")}&mes[eq]=${date.format("MM")}&idEstado[lte]=${STATUS.EVALUATED}`);
   };
 
   const getReservationsAvailableToUser = async (idUsuario = 0) => {
