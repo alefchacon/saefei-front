@@ -38,24 +38,24 @@ export default function NoticesAdministrator({ notices, onNoticeUpdate }) {
   }
 
   const handleReject = async (notice, reply) => {
-    /*
+    
     const response = await rejectReservation(notice.reservation, reply);
     if (response.status === 200) {
       await onNoticeUpdate(notice);
-      }*/
-    await onNoticeUpdate(notice);
+      }
+    //await onNoticeUpdate(notice);
     closeModal();
   };
 
   const handleAccept = async (notice) => {
-    /*
+  
     const response = await acceptReservation(notice.reservation);
     if (response.status === 200) {
       await onNoticeUpdate(notice);
     }
-      */
-    await onNoticeUpdate(notice);
-    console.log(notices.noticesAdministrator.length);
+      
+    //await onNoticeUpdate(notice);
+    //console.log(notices.noticesAdministrator.length);
   };
 
   if (
