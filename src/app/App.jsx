@@ -96,6 +96,7 @@ function App() {
     <>
       <ThemeProvider theme={theme}>
         <Stack height={"100%"}>
+        {/*testing something*/}
           <Stack
             role={"main"}
             sx={{ backgroundColor: "var(--bg)" }}
