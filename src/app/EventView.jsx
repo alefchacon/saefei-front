@@ -82,7 +82,7 @@ export default function EventView({ defaultEventUV, onReply, disableLoading }) {
 
   const showReplyModal = () => {
     openModal(
-      "Responder notificación",
+      "",
       responsePanel,
       "",
       true,

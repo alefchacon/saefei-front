@@ -118,7 +118,7 @@ export default function Bottombar({ noticeAmount, isAuthenticated, onLogIn }) {
             label="Bandeja"
             onClick={() => navigate(ROUTES.ROUTE_INBOX)}
             route={ROUTES.ROUTE_INBOX}
-            badgeContent={noticeAmount}
+            badgeContent={3}
             icon={<InboxIcon sx={iconSize} />}
           />
           <NavOption
