@@ -47,7 +47,6 @@ export default function ResponsePanel({onUpdateEvent, onUpdatedEvent, userCanEdi
     return (
       <Stack className={isMobile ? "" : "card"} padding={"0px"} gap={"20px"} height={"100%"}>
 
-        <TabsCustom>
           {userCanEdit && (
             <Stack label="Respuesta al organizador" height={"100%"}>
               <ReplyForm
@@ -70,49 +69,6 @@ export default function ResponsePanel({onUpdateEvent, onUpdatedEvent, userCanEdi
             </Stack>
           )}
 
-          {user?.isCoordinator && (
-            <Stack label="Notificación a medios">
-              <br />
-              <ChipTabs>
-                <Stack label={MEDIA.webPage} value={0}>
-                  <MediaNoticeForm
-                    key={"institutional-page"}
-                    id={"institutional-page"}
-                    mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_INSTITUTIONAL_PAGE}
-                  ></MediaNoticeForm>
-                </Stack>
-                <Stack label={MEDIA.institutionalMail} value={1}>
-                  <MediaNoticeForm
-                    key={"institutional-email"}
-                    id={"institutional-email"}
-                    mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_INSTITUTIONAL_EMAIL}
-                  ></MediaNoticeForm>
-                </Stack>
-                <Stack label={MEDIA.socialMedia}>
-                  <MediaNoticeForm
-                    key={"social-media"}
-                    id={"social-media"}
-                    mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_SOCIAL_MEDIA}
-                  ></MediaNoticeForm>
-                </Stack>
-                <Stack label={MEDIA.communicationUV}>
-                  <MediaNoticeForm
-                    key={"comunication-uv"}
-                    id={"comunication-uv"}
-                    mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_COMUNICATION_UV}
-                  ></MediaNoticeForm>
-                </Stack>
-                <Stack label={MEDIA.radioUV}>
-                  <MediaNoticeForm
-                    key={"radio-uv"}
-                    id={"radio-uv"}
-                    mediaNotice={MEDIA_NOTICES.MEDIA_NOTICE_RADIO_UV}
-                  ></MediaNoticeForm>
-                </Stack>
-              </ChipTabs>
-            </Stack>
-          )}
-        </TabsCustom>
       </Stack>
     );
   }

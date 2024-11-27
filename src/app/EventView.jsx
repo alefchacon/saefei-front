@@ -28,7 +28,7 @@ import useAuth from "../features/auth/businessLogic/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ROUTE_EDIT } from "../stores/routes";
 import SendIcon from "@mui/icons-material/Send";
-import ResponsePanel from "../features/events/components/ResponsePanel";
+import ResponsePanel from "../features/events/components/ResponsePanelSimple";
 import { useModal } from "../components/providers/ModalProvider";
 
 export default function EventView({ defaultEventUV, onReply, disableLoading }) {
