@@ -79,6 +79,20 @@ export default function Events({ userEvents = false, noPage = false }) {
     }));
   };
 
+  const downloadReport = () => {
+    downloadFile("https://alefchacon.github.io/saefei-front/reportesEventos.pdf", "reportesEventos.pdf");
+    downloadFile("https://alefchacon.github.io/saefei-front/reportesEvidencias.pdf", "reportesEvidencias.pdf");
+  }
+
+  function downloadFile(filePath, fileName) {
+    const link = document.createElement('a');
+    link.href = filePath; 
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link); 
+  }
+
   const eventList = (
     <>
       <Stack id={"principal"} gap={1}>
@@ -131,7 +145,7 @@ export default function Events({ userEvents = false, noPage = false }) {
               </Stack>
 
               {user?.isCoordinator && (
-                <Button variant="contained" disableElevation>
+                <Button variant="contained" disableElevation onClick={downloadReport}>
                   {isMobile ? "Reporte" : "Generar reporte"}
                 </Button>
               )}
